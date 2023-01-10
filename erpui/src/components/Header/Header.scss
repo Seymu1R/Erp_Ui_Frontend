@@ -1,0 +1,23 @@
+.nav-bar{
+    padding: 20px 0;
+    background-color: #2b80ec;
+    font-size: 20px;
+    color: #fff;
+  }
+  .give-task,
+  .calculator,
+  .today-profit,
+  .user,
+  .datatime,
+  .notification {
+    background: #2dce89;
+    border-color: #28b97b;
+    padding: 5px;
+    margin-left: 20px;
+  }
+  .content {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+  }
+  
