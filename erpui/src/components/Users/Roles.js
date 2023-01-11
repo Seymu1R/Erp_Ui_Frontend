@@ -1,5 +1,6 @@
 import React from "react";
 import { Table } from "antd";
+import './Roles.scss'
 import Button from "react-bootstrap/Button";
 const columns = [
   {
@@ -12,7 +13,7 @@ const columns = [
     dataIndex: "",
     key: "x",
     render: () => (
-      <div className="d-flex justify-content-around" >
+      <div className="d-flex " >
         <Button className="margin " variant="danger">Delete</Button>
         <Button variant="primary">Edit</Button>        
       </div>

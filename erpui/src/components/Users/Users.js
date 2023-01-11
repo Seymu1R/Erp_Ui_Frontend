@@ -1,6 +1,9 @@
 import React from "react";
 import { Table } from "antd";
+import './Roles.scss'
 import Button from "react-bootstrap/Button";
+import UsersUp from "./UsersUp";
+import { Link } from "react-router-dom";
 const columns = [
   {
     title: "UserName",
@@ -27,10 +30,10 @@ const columns = [
     dataIndex: "",
     key: "x",
     render: () => (
-      <div className="d-flex justify-content-around" >
+      <div className="d-flex " >
         <Button className="margin " variant="danger">Delete</Button>
-        <Button variant="primary">Edit</Button>
-        <Button variant="info">View</Button>
+        <Link to = '/edituser' > <Button variant="primary">Edit </Button> </Link>  
+        <Link to = '/userinfo' > <Button variant="info">View</Button></Link> 
       </div>
     ),
   },
@@ -83,6 +86,8 @@ const data = [
   }
 ];
 const Users = () => (
+  <>
+   <UsersUp/>
   <Table
     columns={columns}
     expandable={{
@@ -99,5 +104,6 @@ const Users = () => (
     }}
     dataSource={data}
   />
+  </> 
 );
 export default Users;
