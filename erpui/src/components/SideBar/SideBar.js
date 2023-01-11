@@ -1,4 +1,5 @@
 import Header from "../Header/Header";
+import "./SideBar.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState } from "react";
 import {
@@ -14,6 +15,8 @@ import {
   BarChartOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
+import Navigate from "../../routes/Routes";
 const { Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -25,49 +28,57 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
-  getItem("Home", "1", <PieChartOutlined />),
+  getItem("Home", "/", <PieChartOutlined />),
   getItem("UserManagment", "user", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
+    getItem("Users", "users"),
+    getItem("Roles", "roles"),
   ]),
   getItem("Contacts", "contacts", <ContactsOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
+    getItem("Suppliers", "suppliers"),
+    getItem("Customers", "customers"),
   ]),
   getItem("Products", "product", <CodepenOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
+    getItem("List Products", "list-product"),
+    getItem("Add Product", "add-product"),
+    getItem("Variations ", "variation"),
+    getItem("Units", "unit"),
+    getItem("Categories", "category"),
+    getItem("Brands", "brands"),
+    getItem("Categories", "categories"),
   ]),
   getItem("Purchases", "purchases", <VerticalAlignBottomOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
+    getItem("List Purchases", "list-purc"),
+    getItem("Add Purchase", "add-purc"),
   ]),
   getItem("Sell", "sell", <ToTopOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
+    getItem("All Sales", "all-sell"),
+    getItem("Add Sale", "add-sale"),
+    getItem("Discounts", "discount"),
   ]),
   getItem("StockTransfer", "transfer", <CarOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
+    getItem("Stock Transfer List", "stock-transfer-list"),
+    getItem("Add Transfer", "8"),
   ]),
   getItem("Stock", "stock", <DatabaseOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
+    getItem("Stocks List", "stock-list"),
+    getItem("Add Stock", "add-stock"),
   ]),
   getItem("PaymentAccount", "payment", <MoneyCollectOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
+    getItem("Balance Sheet", "balance-sheet"),
+    getItem("Trial Ballance", "trial-balance"),
+    getItem("Cash Flow", "cash-flow"),
   ]),
   getItem("Reports", "report", <BarChartOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
+    getItem("Profit", "profit"),
+    getItem("Purchase Report", "purchase-report"),
+    getItem("Sales Report", "sale-report"),
   ]),
 ];
 
 function SideBar() {
-    const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+  const {pathname} = useLocation();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -86,8 +97,10 @@ function SideBar() {
         }}
       >
         <div />
-
         <Menu
+        onClick={({key})=>{
+            navigate(key);                                                                             
+        }}
           theme="white"
           defaultSelectedKeys={["1"]}
           mode="inline"
@@ -96,7 +109,7 @@ function SideBar() {
             background: " #fff",
             color: "black",
           }}
-        />
+        ></Menu>
       </Sider>
       <Layout className="site-layout">
         <Header />
@@ -110,8 +123,7 @@ function SideBar() {
               margin: "16px 0",
             }}
           >
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            <Breadcrumb.Item>{pathname}</Breadcrumb.Item>            
           </Breadcrumb>
           <div
             style={{
@@ -120,9 +132,10 @@ function SideBar() {
               background: colorBgContainer,
             }}
           >
-            Bill is a cat.
+            <Navigate/>
           </div>
         </Content>
+        
         <Footer
           style={{
             textAlign: "center",
@@ -132,7 +145,7 @@ function SideBar() {
         </Footer>
       </Layout>
     </Layout>
-  )
+  );
 }
 
-export default SideBar
+export default SideBar;

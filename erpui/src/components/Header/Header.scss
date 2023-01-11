@@ -1,23 +1,42 @@
-.nav-bar{
-    padding: 20px 0;
-    background-color: #2b80ec;
-    font-size: 20px;
-    color: #fff;
+.nav-bar {
+  padding: 20px 0;
+  background-color: #2b80ec;
+  font-size: 20px;
+  color: #fff;
+}
+.give-task,
+.calculator,
+.today-profit,
+.user,
+.datatime,
+.notification {
+  padding: 1px;
+  margin-left: 20px;  
+}
+.give-task,
+.calculator,
+.today-profit {
+  background: #2dce89;
+  border-color: #28b97b;
+
+  &:hover {
+    background-color: #1f9260;
+    transition: 0.5s all;
+    cursor: pointer;
   }
-  .give-task,
-  .calculator,
-  .today-profit,
-  .user,
-  .datatime,
-  .notification {
-    background: #2dce89;
-    border-color: #28b97b;
-    padding: 5px;
-    margin-left: 20px;
+}
+.user,
+.datatime,
+.notification {
+  &:hover {
+    background-color: #2160b2;
+    transition: 0.5s all;
+    cursor: pointer;
+    transition: 0.5s all;
   }
-  .content {
-    display: flex;
-    justify-content: right;
-    align-items: center;
-  }
-  
+}
+.content {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
