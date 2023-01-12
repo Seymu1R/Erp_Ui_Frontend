@@ -4,7 +4,7 @@ import "./UsersUp.scss";
 import { UserAddOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 const UsersUp = () => (
-  <Row>
+  <Row style={{ marginBottom: "20px" }} >
     <Col span={18} push={6}>
     <Tooltip  title="Search User" color={'#2b80ec'} >
     <Input placeholder="Search users" />
