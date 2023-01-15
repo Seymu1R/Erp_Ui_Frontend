@@ -5,12 +5,16 @@ import Button from "react-bootstrap/Button";
 import CustomerHeader from "./CustomerHeader";
 import { Link } from "react-router-dom";
 import ErpContext from "../../store/erp-context";
+import DeleteModal from "../../UI/DeleteModal";
 
 function CustomerList() { 
 
-  const erpCtx = useContext(ErpContext);
+  const [{deleteState,setDeleteState}] = useContext(ErpContext);
 
- console.log(erpCtx.deletestate);
+  const c = () => {
+    setDeleteState(true)
+  }
+ 
   const items = [
     {
       label: <Button variant="info" >View</Button>,
@@ -21,7 +25,7 @@ function CustomerList() {
       key: "1",
     },
     {
-      label: <Button variant="danger"  >Delete</Button>,
+      label: <Button variant="danger" onClick={c} >Delete</Button>,
       key: "2",
     },
     {
@@ -209,6 +213,7 @@ function CustomerList() {
 
   return (
     <>
+       { deleteState && <DeleteModal/>}
       <CustomerHeader></CustomerHeader>{" "}
       <Table columns={columns} dataSource={data} onChange={onChange} />
     </>

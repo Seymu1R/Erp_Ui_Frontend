@@ -1,24 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import ErpContext from "./erp-context";
-let setValue = {};
 
 function ErpProvider(props) {
-  const [deleteState, setdeleteState] = useState(false);
-
-const a = () => {
-  return  setdeleteState(true)
  
-}
-
-  useEffect(() => {
-    setValue = {
-      deletestate : deleteState,
-      erpdelete : a,
-    };
-  },);
+  const [deleteState, setDeleteState] = useState(false)
 
   return (
-    <ErpContext.Provider value={setValue}>{props.children}</ErpContext.Provider>
+    <ErpContext.Provider value={[{deleteState,setDeleteState}]}>{props.children}</ErpContext.Provider>
   );
 }
 

@@ -24,7 +24,7 @@ function HeaderContent() {
               <BellFilled />
               </div>
               <div className="user">
-              Admin
+               Admin
               </div>
             </div>
           </Col>

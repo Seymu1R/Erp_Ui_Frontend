@@ -40,11 +40,10 @@ const items = [
   getItem("Products", "product", <CodepenOutlined />, [
     getItem("List Products", "productlist"),
     getItem("Add Product", "addproduct"),
-    getItem("Variations ", "variation"),
-    getItem("Units", "unit"),
-    getItem("Categories", "category"),
-    getItem("Brands", "brands"),
+    getItem("Variations ", "variations"),
+    getItem("Units", "units"),
     getItem("Categories", "categories"),
+    getItem("Brands", "brands")    
   ]),
   getItem("Purchases", "purchases", <VerticalAlignBottomOutlined />, [
     getItem("List Purchases", "list-purc"),

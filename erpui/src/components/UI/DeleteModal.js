@@ -1,24 +1,22 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { useState } from "react";
+import { useContext } from "react";
+import ErpContext from "../store/erp-context";
 
 function DeleteModal() {
-  const [show, setShow] = useState(true);
+  
+  const [{ setDeleteState }] = useContext(ErpContext)
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setDeleteState(false);
+ 
 
   return (
-    <>
-      <Button variant="primary" onClick={handleShow}>
-          Launch demo modal
-        </Button>
-
-      <Modal show={show} onHide={handleClose}>
+    <> 
+      <Modal show={true} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Delete Item</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+        <Modal.Body>Are you sure Delete</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
