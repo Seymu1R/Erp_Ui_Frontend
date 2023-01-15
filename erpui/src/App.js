@@ -1,11 +1,12 @@
-import './App.scss';
-import SideBar from './components/SideBar/SideBar';
+import "./App.scss";
+import SideBar from "./components/SideBar/SideBar";
+import ErpProvider from "./components/store/ErpProvider";
 
 function App() {
   return (
-    <div className="App">
-      <SideBar/>
-    </div>
+    <ErpProvider>
+      <SideBar />;
+    </ErpProvider>
   );
 }
 

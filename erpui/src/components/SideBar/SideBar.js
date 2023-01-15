@@ -38,8 +38,8 @@ const items = [
     getItem("Customers", "customers"),
   ]),
   getItem("Products", "product", <CodepenOutlined />, [
-    getItem("List Products", "list-product"),
-    getItem("Add Product", "add-product"),
+    getItem("List Products", "productlist"),
+    getItem("Add Product", "addproduct"),
     getItem("Variations ", "variation"),
     getItem("Units", "unit"),
     getItem("Categories", "category"),
@@ -131,8 +131,8 @@ function SideBar() {
               minHeight: 360,
               background: colorBgContainer,
             }}
-          >
-            <Navigate/>
+          >            
+            <Navigate/>            
           </div>
         </Content>
         

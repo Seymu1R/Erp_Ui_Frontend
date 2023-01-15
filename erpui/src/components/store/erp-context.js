@@ -1,7 +1,9 @@
 import React  from "react";
 
 const  ErpContext =  React.createContext({
-    deletecustomer : () => {}
+    deletestate : false ,
+    erpdelete : () => {}
+
 });
 
 export default ErpContext

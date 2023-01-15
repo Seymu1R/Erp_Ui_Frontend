@@ -1,25 +1,35 @@
-import React from "react";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import { Modal } from "antd";
-const { confirm } = Modal;
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import { useState } from "react";
 
-const DeleteModal = () => {
-   confirm({
-    title: "Are you sure delete this task?",
-    icon: <ExclamationCircleFilled />,
-    content: "Some descriptions",
-    okText: "Yes",
-    okType: "danger",
-    cancelText: "No",
-    onOk() {
-      console.log("OK");
-    },
-    onCancel() {
-      console.log("Cancel");
-    },
-  });
-};
+function DeleteModal() {
+  const [show, setShow] = useState(true);
 
-export default DeleteModal;
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
+  return (
+    <>
+      <Button variant="primary" onClick={handleShow}>
+          Launch demo modal
+        </Button>
 
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
+export default DeleteModal

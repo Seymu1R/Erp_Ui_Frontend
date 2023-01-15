@@ -1,38 +1,39 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Table, Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import Button from "react-bootstrap/Button";
-import CustomerHeader from "./CustomerHeader";
+
 import { Link } from "react-router-dom";
-import ErpContext from "../../store/erp-context";
+import SupplierHeader from "./SupplierHeader";
 
-function CustomerList() { 
-
-  const erpCtx = useContext(ErpContext);
-
- console.log(erpCtx.deletestate);
+function SupplierList() {
   const items = [
     {
-      label: <Button variant="info" >View</Button>,
+      label: <Button variant="info">View</Button>,
       key: "0",
     },
     {
-      label: <Link to = '/customers/updatecustomer' ><Button variant="warning">Edit</Button></Link>,
+      label: (
+        <Link to='/suppliers/updatesupplier'>
+          <Button variant="warning">Edit</Button>
+        </Link>
+      ),
       key: "1",
     },
     {
-      label: <Button variant="danger"  >Delete</Button>,
+      label: <Button variant="danger">Delete</Button>,
       key: "2",
     },
     {
-      label: <Button variant="primary" >Deactive</Button>,
+      label: <Button variant="primary">Deactive</Button>,
       key: "3",
     },
   ];
   const columns = [
     {
-      title: "CustomerCode",
-      dataIndex: "customercode",
+      title: "SupplierCode",
+      dataIndex: "supplierCode",
+      fixed: "left",
       filters: [
         {
           text: "xxx",
@@ -53,37 +54,12 @@ function CustomerList() {
       ],
       filterSearch: true,
       onFilter: (value, record) => record.customercode.startsWith(value),
-      width: "30%",
     },
     {
       title: "BusinessName",
       dataIndex: "businessname",
     },
-    {
-      title: "Name",
-      dataIndex: "name",
-      filterSearch: true,
-      filters: [
-        {
-          text: "xxx",
-          value: "xxx",
-        },
-        {
-          text: "zzz",
-          value: "zzz",
-        },
-        {
-          text: "xyz",
-          value: "xyz",
-        },
-        {
-          text: "ppp",
-          value: "ppp",
-        },
-      ],
-      onFilter: (value, record) => record.name.startsWith(value),
-      width: "30%",
-    },
+
     {
       title: "Taxnumber",
       dataIndex: "taxnumber",
@@ -135,13 +111,17 @@ function CustomerList() {
       dataIndex: "email",
     },
     {
-      title: "Totalsale",
-      dataIndex: "totalsale",
+      title: "PayTerm",
+      dataIndex: "payterm",
+    },
+    {
+      title: "TotalPurchase",
+      dataIndex: "totalpurchase",
       sorter: (a, b) => a.totalsale - b.totalsale,
     },
     {
-      title: "Totalsalereturn",
-      dataIndex: "totalsalereturn",
+      title: "TotalPurchaseReturn",
+      dataIndex: "totalpurchasereturn",
       sorter: (a, b) => a.totalsalereturn - b.totalsalereturn,
     },
     {
@@ -161,6 +141,7 @@ function CustomerList() {
     {
       title: "Actions",
       dataIndex: "action",
+      fixed: "right",
       render: () => (
         <Dropdown
           menu={{
@@ -209,10 +190,10 @@ function CustomerList() {
 
   return (
     <>
-      <CustomerHeader></CustomerHeader>{" "}
+      <SupplierHeader/>
       <Table columns={columns} dataSource={data} onChange={onChange} />
     </>
   );
 }
 
-export default CustomerList;
+export default SupplierList;
