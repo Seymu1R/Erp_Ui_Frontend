@@ -12,10 +12,19 @@ import UpdateCustomer from '../components/Contacts/Customer/UpdateCustomer'
 import AddSupplier from '../components/Contacts/Supplier/AddSupplier'
 import SupplierList from '../components/Contacts/Supplier/SupplierList'
 import UpdateSupplier from '../components/Contacts/Supplier/UpdateSupplier'
+import AddDiscount from '../components/Discount/AddDiscount'
+import DiscountList from '../components/Discount/DiscountList'
 import Home from '../components/Home/Home'
 import AddProduct from '../components/Products/AddProduct'
 import ProductList from '../components/Products/ProductList'
 import UpdateProduct from '../components/Products/UpdateProduct'
+import PurchaseAdd from '../components/Purchase/PurchaseAdd'
+import PurchaseList from '../components/Purchase/PurchaseList'
+import UpdatePurchase from '../components/Purchase/UpdatePurchase'
+import PurchaseCommerceAdd from '../components/PurchaseCommerce/PurchaseCommerceAdd'
+import AddSell from '../components/Sell/AddSell'
+import SellList from '../components/Sell/SellList'
+import UpdateSell from '../components/Sell/UpdateSell'
 import AddUnit from '../components/Units/AddUnit'
 import UnitList from '../components/Units/UnitList'
 import UpdateUnit from '../components/Units/UpdateUnit'
@@ -58,6 +67,15 @@ function Navigate() {
         <Route path='/brands' element={<BrandsList/>}></Route> 
         <Route path='/addbrand' element={<AddBrand/>}></Route> 
         <Route path='/brands/update' element={<UpdateBrand/>}></Route> 
+        <Route path='/purchases' element={<PurchaseList/>}></Route> 
+        <Route path='/addpurchase' element={<PurchaseAdd/>}></Route>
+        <Route path="/purchase/update" element={<UpdatePurchase/>}></Route>
+        <Route path='/addpurchasecommerce' element={<PurchaseCommerceAdd/>}></Route>
+        <Route path='/sales' element={<SellList/>}></Route>
+        <Route path='/addsell' element={<AddSell/>}></Route>
+        <Route path='/sales/update' element={<UpdateSell/>}></Route>
+        <Route path='/discounts' element={<DiscountList/>}></Route>
+        <Route path='/adddiscount' element={<AddDiscount/>}></Route>
     </Routes>
   )
 }

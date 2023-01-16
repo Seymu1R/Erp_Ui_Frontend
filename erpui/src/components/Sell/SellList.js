@@ -3,9 +3,9 @@ import { Table, Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
-import ProductHeader from "./ProductHeader";
+import SellHeader from "./SellHeader";
 
-function ProductList() {
+function SellList() {
   const items = [
     {
       label: <Button variant="info">View</Button>,
@@ -13,7 +13,7 @@ function ProductList() {
     },
     {
       label: (
-        <Link to='/productlist/updateproduct'>
+        <Link to="/sales/update">
           <Button variant="warning">Edit</Button>
         </Link>
       ),
@@ -30,74 +30,80 @@ function ProductList() {
   ];
   const columns = [
     {
-      title: "Image",
-      dataIndex: "image",     
+      title: "InvoiceNo",
+      dataIndex: "invoiceno",
+      defaultSortOrder: "descend",
+      sorter: (a, b) => a.invoiceno - b.invoiceno,
     },
     {
-      title: "Name",
-      dataIndex: "name",
+      title: "InvoiceStatuse",
+      dataIndex: "invoicestatuse",
       filters: [
         {
-          text: "xxx",
-          value: "xxx",
+          text: "Draft",
+          value: "Draft",
         },
         {
-          text: "zzz",
-          value: "zzz",
+          text: "Proforma",
+          value: "Proforma",
         },
         {
-          text: "xyz",
-          value: "xyz",
-        },
-        {
-          text: "ppp",
-          value: "ppp",
+          text: "Final",
+          value: "Final",
         },
       ],
+      onFilter: (value, record) => record.address.startsWith(value),
       filterSearch: true,
-      onFilter: (value, record) => record.customercode.startsWith(value),
-      width: "30%",
     },
     {
-      title: "UnitPrice",
-      dataIndex: "unitprice",
+      title: "PayTerm",
+      dataIndex: "payterm",
+      defaultSortOrder: "descend",
+      sorter: (a, b) => a.payterm - b.payterm,
     },
     {
-      title: "SellingPrice",
-      dataIndex: "sellingprice",
-     
-      
-      width: "30%",
+      title: "Customer",
+      dataIndex: "customer",
     },
     {
-      title: "Quantity",
-      dataIndex: "quantity",
-      
-      onFilter: (value, record) => record.name.startsWith(value),
-      width: "30%",
+      title: "Stock",
+      dataIndex: "stock",
     },
     {
-      title: "Amount",
-      dataIndex: "amount",
-    },   
-    {
-      title: "Category",
-      dataIndex: "category",
+      title: "Total",
+      dataIndex: "total",
+      defaultSortOrder: "descend",
+      sorter: (a, b) => a.total - b.total,
     },
     {
-      title: "Activestatus",
-      dataIndex: "activestatus",
+      title: "ShippingStatus",
+      dataIndex: "shippingstatus",
       filters: [
         {
-          text: "Active",
-          value: "active",
+          text: "Ordered",
+          value: "ordered",
         },
         {
-          text: "Deactive",
-          value: "deactive",
+          text: "Packed",
+          value: "packed",
+        },
+        {
+          text: "Shipped",
+          value: "shipped",
+        },
+        {
+          text: "Delivered",
+          value: "delivered",
+        },
+        {
+          text: "Cancelled",
+          value: "cancelled",
         },
       ],
+      onFilter: (value, record) => record.address.startsWith(value),
+      filterSearch: true,
     },
+
     {
       title: "Actions",
       dataIndex: "action",
@@ -149,10 +155,10 @@ function ProductList() {
 
   return (
     <>
-      <ProductHeader/>
+      <SellHeader />
       <Table columns={columns} dataSource={data} onChange={onChange} />
     </>
   );
 }
 
-export default ProductList;
+export default SellList;

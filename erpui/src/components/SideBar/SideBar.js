@@ -33,11 +33,11 @@ const items = [
     getItem("Users", "users"),
     getItem("Roles", "roles"),
   ]),
-  getItem("Contacts", "contacts", <ContactsOutlined />, [
+  getItem("Contacts", "1", <ContactsOutlined />, [
     getItem("Suppliers", "suppliers"),
     getItem("Customers", "customers"),
   ]),
-  getItem("Products", "product", <CodepenOutlined />, [
+  getItem("Products", "2", <CodepenOutlined />, [
     getItem("List Products", "productlist"),
     getItem("Add Product", "addproduct"),
     getItem("Variations ", "variations"),
@@ -45,14 +45,14 @@ const items = [
     getItem("Categories", "categories"),
     getItem("Brands", "brands")    
   ]),
-  getItem("Purchases", "purchases", <VerticalAlignBottomOutlined />, [
-    getItem("List Purchases", "list-purc"),
-    getItem("Add Purchase", "add-purc"),
+  getItem("Purchases", "3", <VerticalAlignBottomOutlined />, [
+    getItem("List Purchases", "purchases"),
+    getItem("Add Purchase", "addpurchase"),
   ]),
   getItem("Sell", "sell", <ToTopOutlined />, [
-    getItem("All Sales", "all-sell"),
-    getItem("Add Sale", "add-sale"),
-    getItem("Discounts", "discount"),
+    getItem("All Sales", "sales"),
+    getItem("Add Sell", "addsell"),
+    getItem("Discounts", "discounts"),
   ]),
   getItem("StockTransfer", "transfer", <CarOutlined />, [
     getItem("Stock Transfer List", "stock-transfer-list"),

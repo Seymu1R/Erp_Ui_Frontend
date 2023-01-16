@@ -3,17 +3,21 @@ import { Table, Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
-import ProductHeader from "./ProductHeader";
+import PurchaseHeader from "./PurchaseHeader";
 
-function ProductList() {
+function PurchaseList() {
   const items = [
     {
-      label: <Button variant="info">View</Button>,
-      key: "0",
-    },
+        label: (
+          <Link to="/purchase/view">
+            <Button variant="info">View</Button>
+          </Link>
+        ),
+        key: "1",
+      },
     {
       label: (
-        <Link to='/productlist/updateproduct'>
+        <Link to="/purchase/update">
           <Button variant="warning">Edit</Button>
         </Link>
       ),
@@ -23,81 +27,63 @@ function ProductList() {
       label: <Button variant="danger">Delete</Button>,
       key: "2",
     },
-    {
-      label: <Button variant="primary">Deactive</Button>,
-      key: "3",
-    },
   ];
   const columns = [
     {
-      title: "Image",
-      dataIndex: "image",     
+      title: "PurchaseCode",
+      dataIndex: "purchasecode"     
     },
     {
-      title: "Name",
-      dataIndex: "name",
+      title: "PurchaseStatus",
+      dataIndex: "purchasestatus",
       filters: [
         {
-          text: "xxx",
-          value: "xxx",
+          text: "Received",
+          value: "Received",
         },
         {
-          text: "zzz",
-          value: "zzz",
+          text: "Pending",
+          value: "Pending",
         },
         {
-          text: "xyz",
-          value: "xyz",
-        },
-        {
-          text: "ppp",
-          value: "ppp",
+          text: "Ordered",
+          value: "Ordered",
         },
       ],
+      onFilter: (value, record) => record.address.startsWith(value),
       filterSearch: true,
-      onFilter: (value, record) => record.customercode.startsWith(value),
-      width: "30%",
-    },
-    {
-      title: "UnitPrice",
-      dataIndex: "unitprice",
-    },
-    {
-      title: "SellingPrice",
-      dataIndex: "sellingprice",
      
-      
-      width: "30%",
     },
     {
-      title: "Quantity",
-      dataIndex: "quantity",
-      
-      onFilter: (value, record) => record.name.startsWith(value),
-      width: "30%",
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-    },   
-    {
-      title: "Category",
-      dataIndex: "category",
-    },
-    {
-      title: "Activestatus",
-      dataIndex: "activestatus",
-      filters: [
-        {
-          text: "Active",
-          value: "active",
-        },
-        {
-          text: "Deactive",
-          value: "deactive",
-        },
-      ],
-    },
+        title: "PayTerm",
+        dataIndex: "payterm",
+        defaultSortOrder: "descend",
+        sorter: (a, b) => a.payterm - b.payterm,
+      },
+      {
+        title: "AdditionalNote",
+        dataIndex: "additionalnote"        
+      },
+      {
+        title: "Supplier",
+        dataIndex: "supplier"        
+      },
+      {
+        title: "Stock",
+        dataIndex: "stock"        
+      },
+      {
+        title: "CreatedDate",
+        dataIndex: "createddate",
+        defaultSortOrder: "descend",
+        sorter: (a, b) => a.createddate - b.createddate,        
+      },
+      {
+        title: "CreatedBy",
+        dataIndex: "createdby",
+        defaultSortOrder: "descend",
+        sorter: (a, b) => a.createdby - b.createdby,        
+      },
     {
       title: "Actions",
       dataIndex: "action",
@@ -120,7 +106,7 @@ function ProductList() {
   const data = [
     {
       key: "1",
-      customercode: "xxx",
+      name: "xxx",
       age: 32,
       address: "New York No. 1 Lake Park",
     },
@@ -149,10 +135,10 @@ function ProductList() {
 
   return (
     <>
-      <ProductHeader/>
+      <PurchaseHeader/>
       <Table columns={columns} dataSource={data} onChange={onChange} />
     </>
   );
 }
 
-export default ProductList;
+export default PurchaseList;

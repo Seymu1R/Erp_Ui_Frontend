@@ -3,9 +3,9 @@ import { Table, Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
-import ProductHeader from "./ProductHeader";
+import DiscountHeader from "./DiscountHeader";
 
-function ProductList() {
+function DiscountList() {
   const items = [
     {
       label: <Button variant="info">View</Button>,
@@ -13,7 +13,7 @@ function ProductList() {
     },
     {
       label: (
-        <Link to='/productlist/updateproduct'>
+        <Link to="/productlist/updateproduct">
           <Button variant="warning">Edit</Button>
         </Link>
       ),
@@ -30,71 +30,37 @@ function ProductList() {
   ];
   const columns = [
     {
-      title: "Image",
-      dataIndex: "image",     
-    },
-    {
       title: "Name",
       dataIndex: "name",
-      filters: [
-        {
-          text: "xxx",
-          value: "xxx",
-        },
-        {
-          text: "zzz",
-          value: "zzz",
-        },
-        {
-          text: "xyz",
-          value: "xyz",
-        },
-        {
-          text: "ppp",
-          value: "ppp",
-        },
-      ],
-      filterSearch: true,
-      onFilter: (value, record) => record.customercode.startsWith(value),
-      width: "30%",
     },
     {
-      title: "UnitPrice",
-      dataIndex: "unitprice",
-    },
-    {
-      title: "SellingPrice",
-      dataIndex: "sellingprice",
-     
+      title: "StartTime",
+      dataIndex: "start",
       
-      width: "30%",
     },
     {
-      title: "Quantity",
-      dataIndex: "quantity",
-      
-      onFilter: (value, record) => record.name.startsWith(value),
-      width: "30%",
+      title: "EndTime",
+      dataIndex: "endtime",
     },
     {
-      title: "Amount",
-      dataIndex: "amount",
-    },   
-    {
-      title: "Category",
-      dataIndex: "category",
+      title: "DiscountAmount",
+      dataIndex: "discountamount",     
     },
     {
-      title: "Activestatus",
+      title: "ProductList",
+      dataIndex: "productlist",      
+    },    
+    {
+      title: "DiscountType",
       dataIndex: "activestatus",
       filters: [
         {
-          text: "Active",
-          value: "active",
+          text: "Fixed",
+          value: "fixed",
         },
         {
-          text: "Deactive",
-          value: "deactive",
+          text: "Percentage",
+          value: "percentage",
         },
       ],
     },
@@ -149,10 +115,10 @@ function ProductList() {
 
   return (
     <>
-      <ProductHeader/>
+    <DiscountHeader/>
       <Table columns={columns} dataSource={data} onChange={onChange} />
     </>
   );
 }
 
-export default ProductList;
+export default DiscountList;
