@@ -10,9 +10,7 @@ import {
   UserOutlined,
   VerticalAlignBottomOutlined,
   CarOutlined,
-  DatabaseOutlined,
-  MoneyCollectOutlined,
-  BarChartOutlined,
+  DatabaseOutlined, 
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -49,29 +47,19 @@ const items = [
     getItem("List Purchases", "purchases"),
     getItem("Add Purchase", "addpurchase"),
   ]),
-  getItem("Sell", "sell", <ToTopOutlined />, [
+  getItem("Sell", "4", <ToTopOutlined />, [
     getItem("All Sales", "sales"),
     getItem("Add Sell", "addsell"),
     getItem("Discounts", "discounts"),
   ]),
-  getItem("StockTransfer", "transfer", <CarOutlined />, [
-    getItem("Stock Transfer List", "stock-transfer-list"),
-    getItem("Add Transfer", "8"),
+  getItem("StockTransfer", "5", <CarOutlined />, [
+    getItem("Stock Transfer List", "stocktransferlist"),
+    getItem("Add Transfer", "addstocktransfer"),
   ]),
-  getItem("Stock", "stock", <DatabaseOutlined />, [
-    getItem("Stocks List", "stock-list"),
-    getItem("Add Stock", "add-stock"),
-  ]),
-  getItem("PaymentAccount", "payment", <MoneyCollectOutlined />, [
-    getItem("Balance Sheet", "balance-sheet"),
-    getItem("Trial Ballance", "trial-balance"),
-    getItem("Cash Flow", "cash-flow"),
-  ]),
-  getItem("Reports", "report", <BarChartOutlined />, [
-    getItem("Profit", "profit"),
-    getItem("Purchase Report", "purchase-report"),
-    getItem("Sales Report", "sale-report"),
-  ]),
+  getItem("Stock", "6", <DatabaseOutlined />, [
+    getItem("Stocks List", "stocklist"),
+    getItem("Add Stock", "addstock"),
+  ]),  
 ];
 
 function SideBar() {

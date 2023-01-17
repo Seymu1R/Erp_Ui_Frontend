@@ -22,9 +22,16 @@ import PurchaseAdd from '../components/Purchase/PurchaseAdd'
 import PurchaseList from '../components/Purchase/PurchaseList'
 import UpdatePurchase from '../components/Purchase/UpdatePurchase'
 import PurchaseCommerceAdd from '../components/PurchaseCommerce/PurchaseCommerceAdd'
+import StockTransferCommerceAdd from '../components/PurchaseCommerce/StockTransferCommerceAdd'
 import AddSell from '../components/Sell/AddSell'
 import SellList from '../components/Sell/SellList'
 import UpdateSell from '../components/Sell/UpdateSell'
+import AddStock from '../components/Stock/AddStock'
+import EditStock from '../components/Stock/EditStock'
+import StockList from '../components/Stock/StockList'
+import AddStockTransfer from '../components/StockTransfer/AddStockTransfer'
+import StockTransferEdit from '../components/StockTransfer/StockTransferEdit'
+import StockTransferList from '../components/StockTransfer/StockTransferList'
 import AddUnit from '../components/Units/AddUnit'
 import UnitList from '../components/Units/UnitList'
 import UpdateUnit from '../components/Units/UpdateUnit'
@@ -76,6 +83,13 @@ function Navigate() {
         <Route path='/sales/update' element={<UpdateSell/>}></Route>
         <Route path='/discounts' element={<DiscountList/>}></Route>
         <Route path='/adddiscount' element={<AddDiscount/>}></Route>
+        <Route path='/stocktransferlist' element={<StockTransferList/>}></Route>
+        <Route path='/addstocktransfer' element={<AddStockTransfer/>}></Route>
+        <Route path='/addstocktransfercommerce' element={<StockTransferCommerceAdd/>}></Route>
+        <Route path='/stocktransfer/edit' element={<StockTransferEdit/>}></Route>
+        <Route path='/stocklist' element={<StockList/>}></Route>
+        <Route path='/addstock' element={<AddStock/>}></Route>
+        <Route path='/editstock' element={<EditStock/>}></Route>
     </Routes>
   )
 }
