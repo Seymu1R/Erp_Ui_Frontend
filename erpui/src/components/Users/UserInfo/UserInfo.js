@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Col, Row, Card, Avatar } from "antd";
 import { EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import classes from './UserInfo.module.scss'
+import ErpContext from '../../store/erp-context';
 const { Meta } = Card;
 
 function UserInfo() {
+
+ const [{item}] =useContext(ErpContext)
     
   return (
     <Row>
@@ -25,13 +28,13 @@ function UserInfo() {
                 </div>
                 <div className='col-md-6' >
                 <ul className={classes.info} >
-                        <li>Dummydata</li>
-                        <li>Dummydata</li>
-                        <li>Dummydata</li>
-                        <li>Dummydata</li>
-                        <li>Dummydata</li>
-                        <li>Dummydata</li>
-                        <li>Dummydata?</li>
+                        <li>{item.name}</li>
+                        <li>{item.surName}</li>
+                        <li>{item.fatherName}</li>
+                        <li>{item.userName}</li>
+                        <li>{item.phoneNumber}</li>
+                        <li>Role</li>
+                        <li>{item.onlineState}?</li>
                     </ul>
                 </div>
             </div>
@@ -54,8 +57,8 @@ function UserInfo() {
   >
     <Meta
       avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-      title="Username"
-      description="Admin"
+      title={item.userName}
+      description="Role"
     />
   </Card>
     </Col>

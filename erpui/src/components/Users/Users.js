@@ -1,109 +1,91 @@
-import React from "react";
+import React, { useContext, useEffect , useState } from "react";
 import { Table } from "antd";
-import './Roles.scss'
+import "./Roles.scss";
 import Button from "react-bootstrap/Button";
 import UsersUp from "./UsersUp";
 import { Link } from "react-router-dom";
-const columns = [
-  {
-    title: "UserName",
-    dataIndex: "username",
-    key: "username",
-  },
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Role",
-    dataIndex: "role",
-    key: "role",
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-    key: "email",
-  },
-  {
-    title: "Action",
-    dataIndex: "",
-    key: "x",
-    render: () => (
-      <div className="d-flex " >
-        <Button className="margin " variant="danger">Delete</Button>
-        <Link to = '/edituser' > <Button variant="primary">Edit </Button> </Link>  
-        <Link to = '/userinfo' > <Button variant="info">View</Button></Link> 
-      </div>
-    ),
-  },
-];
-const data = [
-  {
-    key: 1,
-    username: "John Brown",
-    name: "John Brown",
-    role: 32,
-    email: "New York No. 1 Lake Park",
-    description:
-      "My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.",
-  },
-  {
-    key: 3,
-    username: "John Brown",
-    name: "John Brown",
-    role: 32,
-    email: "New York No. 1 Lake Park",
-    description:
-      "My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.",
-  },
-  {
-    key: 5,
-    username: "John Brown",
-    name: "John Brown",
-    role: 32,
-    email: "New York No. 1 Lake Park",
-    description:
-      "My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.",
-  },
-  {
-    key: 4,
-    username: "John Brown",
-    name: "John Brown",
-    role: 32,
-    email: "New York No. 1 Lake Park",
-    description:
-      "My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.",
-  },
-  {
-    key: 2,
-    username: "John Brown",
-    name: "John Brown",
-    role: 32,
-    email: "New York No. 1 Lake Park",
-    description:
-      "My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.",
+import { userservice } from "../APIs/Services/UserServices";
+import ErpContext from "../store/erp-context";
+
+const Users = () => {
+
+  const [users, setUsers] = useState([])
+  const [{setItem}] = useContext(ErpContext)
+
+  useEffect(() => {
+    userservice.getAllUsers().then(({ data: usersData }) => {
+     setUsers(usersData.data)
+    })     
+    
+  },[users]);
+
+  const getUser = (id) =>{
+    userservice.getUser(id).then(({data : user})=>{
+      setItem(user.data)
+    })
   }
-];
-const Users = () => (
-  <>
-   <UsersUp/>
-  <Table
-    columns={columns}
-    expandable={{
-      expandedRowRender: (record) => (
-        <p
-          style={{
-            margin: 0,
-          }}
-        >
-          {record.description}
-        </p>
+
+  const deleteUser = (id) => {
+   userservice.deleteUser(id).then(data => {
+    console.log(data);
+   })
+  }
+
+  const columns = [
+  
+    {
+      title: "UserName",
+      dataIndex: "surName",
+      key: "surName",
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <div className="d-flex ">
+          <Button id={record.id} onClick={()=>{deleteUser(record.id)}} className="margin " variant="danger">
+            Delete
+          </Button>
+          <Link to="/edituser">            
+            <Button variant="primary">Edit </Button>
+          </Link>
+          <Link to="/userinfo">            
+            <Button id={record.id} onClick={()=>{getUser(record.id)}} variant="info">View</Button>
+          </Link>
+        </div>
       ),
-      rowExpandable: (record) => record.name !== "Not Expandable",
-    }}
-    dataSource={data}
-  />
-  </> 
-);
+    },
+  ];
+
+
+
+ 
+
+  return (
+    <>
+      <UsersUp />
+      <Table      
+        rowKey={record => record.id}      
+        columns={columns}       
+        dataSource={users}
+      />
+    </>
+  );
+};
 export default Users;
