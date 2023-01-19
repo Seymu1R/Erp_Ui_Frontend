@@ -12,7 +12,7 @@ function Roles() {
     roleservice.getAllRoles().then(({data : roles}) => {
       setRoles(roles.data)
     })
-  },[rolearr])
+  },[])
 
   const deleteRole = (id) => {
     roleservice.deleteRole(id).then(data => {

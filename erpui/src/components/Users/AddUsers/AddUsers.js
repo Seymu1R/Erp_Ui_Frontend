@@ -1,81 +1,273 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./AddUsers.scss";
-import { Col, Row, Input } from "antd";
-import Button from "react-bootstrap/Button";
-import AssignRole from "../AssignRole/AssignRole";
+import { Col, Row, Input, Form, Button, Select } from "antd";
+import { roleservice } from "../../APIs/Services/RoleServices";
+import { userservice } from "../../APIs/Services/UserServices";
 
 function AddUsers() {
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    roleservice.getAllRoles().then(({ data: roles }) => {
+      const transformedData = roles.data.map((role) => {
+        return {
+          value: role.name,
+          label: role.name,
+        };
+      });
+      setOptions(transformedData);
+    });
+  }, []);
+
+  const addUSer = (body) => {
+    userservice
+      .createUser(body)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((eror) => {
+        window.alert(eror);
+      });
+  };
+
   return (
-    <form>
+    <Form
+      autoComplete="off"
+      onFinish={(values) => {
+       const postObj = {
+        "name": `${values.name}`,
+        "surName": `${values.surName}`,
+        "email": `${values.email}`,
+        "fatherName": `${values.fatherName}`,
+        "userName": `${values.userName}`,
+        "phoneNumber": `${values.phoneNumber}`,
+        "password": `${values.password}`,
+        "confirmPassword": `${values.confirmPassword}`
+       }
+        addUSer(postObj);
+      }}
+    >
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
-          <label htmlFor="username">UserName</label>
-          <Input
-            type="text"
-            id="username"
-            size="large"
-            placeholder="UserName"
-          />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your UserName",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="userName"
+            label="UserName"
+          >
+            <Input              
+              type="text"
+              id="userName"
+              size="large"
+              placeholder="UserName"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
         </Col>
         <Col span={8}>
-          <label htmlFor="email">Email</label>
-          <Input type="email" id="email" size="large" placeholder="Email" />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter a valid Email",
+                whitespace: true,
+                type: "email",
+              },
+            ]}
+            hasFeedback
+            name="email"
+            label="Email"
+          >
+            <Input
+              style={{ width: "90%" }}
+              type="email"
+              id="email"
+              size="large"
+              placeholder="Email"
+            />
+          </Form.Item>
         </Col>
         <Col span={8}>
-          <label htmlFor="phonenumber">PhoneNumber</label>
-          <Input
-            type="phone"
-            id="phonenumber"
-            size="large"
-            placeholder="PhoneNumber"
-          />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter a valid Phonenumber",
+                whitespace: true,
+              },
+            ]}
+            hasFeedback
+            name="phoneNumber"
+            label="PhoneNumber"
+          >
+            <Input
+              type="phone"
+              id="phoneNumber"
+              size="large"
+              placeholder="PhoneNumber"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
         </Col>
       </Row>
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
-          <label htmlFor="name">Name</label>
-          <Input type="text" id="name" size="large" placeholder="Name" />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter valid Name",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="name"
+            label="Name"
+          >
+            <Input
+              style={{ width: "90%" }}
+              type="text"
+              id="name"
+              size="large"
+              placeholder="Name"
+            />
+          </Form.Item>
         </Col>
         <Col span={8}>
-          <label htmlFor="surname">SurName</label>
-          <Input type="text" id="surname" size="large" placeholder="Surname" />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter valid Surname",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="surName"
+            label="Surname"
+          >
+            <Input
+              style={{ width: "90%" }}
+              type="text"
+              id="surName"
+              size="large"
+              placeholder="Surname"
+            />
+          </Form.Item>
         </Col>
         <Col span={8}>
-          <label htmlFor="fathername">FatherName</label>
-          <Input
-            type="text"
-            id="fathername"
-            size="large"
-            placeholder="FatherName"
-          />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter valid FatherName",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="fatherName"
+            label="FatherName"
+          >
+            <Input
+              style={{ width: "90%" }}
+              type="text"
+              id="fatherName"
+              size="large"
+              placeholder="FatherName"
+            />
+          </Form.Item>
         </Col>
       </Row>
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
-          <label htmlFor="password">Password</label>
-          <Input.Password
-            type="password"
-            id="password"
-            size="medium"
-            placeholder="Password"
-          />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                min: 6,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="password"
+            label="Password"
+          >
+            <Input.Password
+              style={{ width: "90%" }}
+              type="password"
+              id="password"
+              size="large"
+              placeholder="Password"
+            />
+          </Form.Item>
         </Col>
         <Col span={8}>
-          <label htmlFor="confirmedpassword">Confirm Password</label>
-          <Input.Password
-            type="password"
-            id="confirmedpassword"
-            size="medium"
-            placeholder="ConfirmedPassword"
-          />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                min: 6,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            dependencies={["password"]}
+            name="confirmPassword"
+            label="Confirm Password"
+          >
+            <Input.Password
+              style={{ width: "90%" }}
+              type="password"
+              id="confirmPassword"
+              size="large"
+              placeholder="ConfirmedPassword"
+            />
+          </Form.Item>
         </Col>
         <Col span={8}>
-          <label htmlFor="assignrole">Assign Role</label>
-          <AssignRole />
+          {/* <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your Role",
+              },
+            ]}
+            hasFeedback
+            name="assignrole"
+            label="Assign Role"
+          >
+            <Select
+              id="assignrole"
+              mode="tags"
+              style={{
+                width: "100%",
+              }}
+              tokenSeparators={[","]}
+              options={options}
+            />
+          </Form.Item> */}
         </Col>
       </Row>
-      <Button variant="primary">Add</Button>
-    </form>
+      <Button htmlType={"submit"} type="primary">
+        Add
+      </Button>
+    </Form>
   );
 }
 

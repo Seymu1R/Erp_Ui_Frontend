@@ -17,7 +17,7 @@ const Users = () => {
      setUsers(usersData.data)
     })     
     
-  },[users]);
+  },[]);
 
   const getUser = (id) =>{
     userservice.getUser(id).then(({data : user})=>{
@@ -29,7 +29,7 @@ const Users = () => {
    userservice.deleteUser(id).then(data => {
     console.log(data);
    })
-  }
+  } 
 
   const columns = [
   
@@ -63,7 +63,7 @@ const Users = () => {
             Delete
           </Button>
           <Link to="/edituser">            
-            <Button variant="primary">Edit </Button>
+            <Button id={record.id} onClick={()=>{getUser(record.id)}} variant="primary"> Edit </Button>
           </Link>
           <Link to="/userinfo">            
             <Button id={record.id} onClick={()=>{getUser(record.id)}} variant="info">View</Button>

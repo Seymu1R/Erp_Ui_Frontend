@@ -15,9 +15,10 @@ class UsersService extends HttpClient {
   deleteUser(id) {
     return this.delete(`DeleteUser?userId=${id}`);
   }
-  postNewPosts(body) {
-    return this.post("posts", body);
-  }
+
+  createUser(body){
+    return this.post("CreateUser", body);
+  } 
 
   editPost(id, body) {
     return this.put("posts", body, id);
