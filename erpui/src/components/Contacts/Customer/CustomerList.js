@@ -1,138 +1,57 @@
-import React, { useContext } from "react";
-import { Table, Dropdown, Space } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import React, { useContext, useEffect, useState } from "react";
+import { Table } from "antd";
 import Button from "react-bootstrap/Button";
 import CustomerHeader from "./CustomerHeader";
 import { Link } from "react-router-dom";
 import ErpContext from "../../store/erp-context";
 import DeleteModal from "../../UI/DeleteModal";
+import { customerservice } from "../../APIs/Services/CustomerServices";
 
-function CustomerList() { 
+function CustomerList() {
+  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [customerlist, setCustomerList] = useState([]);
 
-  const [{deleteState,setDeleteState}] = useContext(ErpContext);
+  useEffect(() => {
+    customerservice.getAllCustomers().then(({ data: customers }) => {
+      setCustomerList(customers.data);
+    });
+  }, [deleteState]);
 
-  const c = () => {
-    setDeleteState(true)
-  }
- 
-  const items = [
-    {
-      label: <Button variant="info" >View</Button>,
-      key: "0",
-    },
-    {
-      label: <Link to = '/customers/updatecustomer' ><Button variant="warning">Edit</Button></Link>,
-      key: "1",
-    },
-    {
-      label: <Button variant="danger" onClick={c} >Delete</Button>,
-      key: "2",
-    },
-    {
-      label: <Button variant="primary" >Deactive</Button>,
-      key: "3",
-    },
-  ];
+  const deleteCustomer = (id) => {
+    customerservice.deleteCustomer(id).then((data) => {
+      console.log(data.message);
+    });
+  };
+
+  const deleteMOdalHandling = (id) => {
+    setId(id);
+    setDeleteState(true);
+  };
+
   const columns = [
     {
       title: "CustomerCode",
-      dataIndex: "customercode",
-      filters: [
-        {
-          text: "xxx",
-          value: "xxx",
-        },
-        {
-          text: "zzz",
-          value: "zzz",
-        },
-        {
-          text: "xyz",
-          value: "xyz",
-        },
-        {
-          text: "ppp",
-          value: "ppp",
-        },
-      ],
-      filterSearch: true,
-      onFilter: (value, record) => record.customercode.startsWith(value),
-      width: "30%",
+      dataIndex: "customerCode",
     },
     {
       title: "BusinessName",
-      dataIndex: "businessname",
+      dataIndex: "businessName",
     },
     {
       title: "Name",
       dataIndex: "name",
-      filterSearch: true,
-      filters: [
-        {
-          text: "xxx",
-          value: "xxx",
-        },
-        {
-          text: "zzz",
-          value: "zzz",
-        },
-        {
-          text: "xyz",
-          value: "xyz",
-        },
-        {
-          text: "ppp",
-          value: "ppp",
-        },
-      ],
-      onFilter: (value, record) => record.name.startsWith(value),
-      width: "30%",
     },
     {
       title: "Taxnumber",
-      dataIndex: "taxnumber",
-      filterSearch: true,
-      filters: [
-        {
-          text: "xxx",
-          value: "xxx",
-        },
-        {
-          text: "zzz",
-          value: "zzz",
-        },
-        {
-          text: "xyz",
-          value: "xyz",
-        },
-        {
-          text: "ppp",
-          value: "ppp",
-        },
-      ],
-      onFilter: (value, record) => record.name.startsWith(value),
-      width: "30%",
+      dataIndex: "taxNumber",
     },
     {
       title: "Address",
       dataIndex: "address",
-      filters: [
-        {
-          text: "London",
-          value: "London",
-        },
-        {
-          text: "New York",
-          value: "New York",
-        },
-      ],
-      onFilter: (value, record) => record.address.startsWith(value),
-      filterSearch: true,
-      width: "40%",
     },
     {
       title: "Phonenumber",
-      dataIndex: "phonenumber",
+      dataIndex: "phoneNumber",
     },
     {
       title: "Email",
@@ -140,82 +59,64 @@ function CustomerList() {
     },
     {
       title: "Totalsale",
-      dataIndex: "totalsale",
-      sorter: (a, b) => a.totalsale - b.totalsale,
+      dataIndex: "totalSale",
+      sorter: (a, b) => a.totalSale - b.totalSale,
     },
     {
       title: "Totalsalereturn",
-      dataIndex: "totalsalereturn",
-      sorter: (a, b) => a.totalsalereturn - b.totalsalereturn,
-    },
-    {
-      title: "Activestatus",
-      dataIndex: "activestatus",
-      filters: [
-        {
-          text: "Active",
-          value: "active",
-        },
-        {
-          text: "Deactive",
-          value: "deactive",
-        },
-      ],
+      dataIndex: "totalSaleReturn",
+      sorter: (a, b) => a.totalSaleReturn - b.totalSaleReturn,
     },
     {
       title: "Actions",
-      dataIndex: "action",
-      render: () => (
-        <Dropdown
-          menu={{
-            items,
-          }}
-          trigger={["click"]}
-        >
-          <Link onClick={(e) => e.preventDefault()}>
-            <Space>
-              <DownOutlined />
-            </Space>
+      dataIndex: "",
+      key: "x",
+      fixed: "right",
+
+      render: (record) => (
+        <div className="d-flex ">
+          <Button
+            id={record.id}
+            onClick={() => {
+              deleteMOdalHandling(record.id);
+            }}
+            className="margin "
+            variant="danger"
+          >
+            Delete
+          </Button>
+          <Link to="/customers/updatecustomer">
+            <Button
+              id={record.id}
+              onClick={() => {
+                setId(record.id)
+              }}
+              variant="primary"
+            >
+              Edit
+            </Button>
           </Link>
-        </Dropdown>
+          <Link to="">
+            <Button id={record.id} variant="info">
+              Deactive
+            </Button>
+          </Link>
+        </div>
       ),
     },
   ];
-  const data = [
-    {
-      key: "1",
-      customercode: "xxx",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      customercode: "ppp",
-      age: 42,
-      address: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      customercode: "yyy",
-      age: 32,
-      address: "Sidney No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      customercode: "xyz",
-      age: 32,
-      address: "London No. 2 Lake Park",
-    },
-  ];
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
-  };
-
   return (
     <>
-       { deleteState && <DeleteModal/>}
+      {deleteState && <DeleteModal deleteItem={deleteCustomer} />}
       <CustomerHeader></CustomerHeader>{" "}
-      <Table columns={columns} dataSource={data} onChange={onChange} />
+      <Table
+        scroll={{
+          x: 1500,
+        }}
+        rowKey={(record) => record.id}
+        columns={columns}
+        dataSource={customerlist}
+      />
     </>
   );
 }

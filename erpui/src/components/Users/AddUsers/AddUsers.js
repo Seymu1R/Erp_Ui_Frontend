@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./AddUsers.scss";
-import { Col, Row, Input, Form, Button, Select } from "antd";
+import { Col, Row, Input, Form, Button } from "antd";
 import { roleservice } from "../../APIs/Services/RoleServices";
 import { userservice } from "../../APIs/Services/UserServices";
 
@@ -34,16 +34,16 @@ function AddUsers() {
     <Form
       autoComplete="off"
       onFinish={(values) => {
-       const postObj = {
-        "name": `${values.name}`,
-        "surName": `${values.surName}`,
-        "email": `${values.email}`,
-        "fatherName": `${values.fatherName}`,
-        "userName": `${values.userName}`,
-        "phoneNumber": `${values.phoneNumber}`,
-        "password": `${values.password}`,
-        "confirmPassword": `${values.confirmPassword}`
-       }
+        const postObj = {
+          name: `${values.name}`,
+          surName: `${values.surName}`,
+          email: `${values.email}`,
+          fatherName: `${values.fatherName}`,
+          userName: `${values.userName}`,
+          phoneNumber: `${values.phoneNumber}`,
+          password: `${values.password}`,
+          confirmPassword: `${values.confirmPassword}`,
+        };
         addUSer(postObj);
       }}
     >
@@ -63,7 +63,7 @@ function AddUsers() {
             name="userName"
             label="UserName"
           >
-            <Input              
+            <Input
               type="text"
               id="userName"
               size="large"

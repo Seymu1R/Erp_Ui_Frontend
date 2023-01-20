@@ -1,14 +1,11 @@
-import React, { useContext } from "react";
+import React  from "react";
 import "../AddUsers/AddUsers.scss";
-import { Col, Row, Input, Select } from "antd";
+import { Col, Row, Input, Select,Form } from "antd";
 import Button from "react-bootstrap/Button";
-import ErpContext from "../../store/erp-context";
+
 
 function EditUser() {
-  
-  const [{item}] =useContext(ErpContext)
-
-  console.log(item);
+ const itemlocal = JSON.parse(localStorage.getItem('item'));
   const options = [];
   for (let i = 10; i < 36; i++) {
     options.push({
@@ -17,22 +14,38 @@ function EditUser() {
     });
   }
 
+console.log(itemlocal);
   return (
-    <form>
+    <Form>
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
-          <label htmlFor="username">UserName</label>
-          <Input
-            defaultValue={item.userName}
-            type="text"
-            id="username"
-            size="large"
-            placeholder="UserName"
-          />
+        <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your UserName",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="userName"
+            label="UserName"
+          >
+            <Input              
+              type="text"
+              id="userName"
+              size="large"
+              placeholder="UserName"
+              style={{ width: "90%" }}
+              defaultValue={itemlocal?itemlocal.userName:null}
+            />
+          </Form.Item>
         </Col>
         <Col span={8}>
           <label htmlFor="email">Email</label>
-          <Input type="email" id="email" size="large" placeholder="Email" />
+          <Input  type="email" id="email" size="large" placeholder="Email" />
         </Col>
         <Col span={8}>
           <label htmlFor="phonenumber">PhoneNumber</label>
@@ -78,7 +91,7 @@ function EditUser() {
         </Col>
       </Row>
       <Button variant="primary">Edit</Button>
-    </form>
+    </Form>
   );
 }
 

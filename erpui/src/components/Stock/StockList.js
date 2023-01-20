@@ -1,102 +1,94 @@
-import React from "react";
-import { Table, Dropdown, Space } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import React,{useContext, useState, useEffect} from "react";
+import ErpContext from "../store/erp-context";
+import { Table } from "antd";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import StockHeader from "./StockHeader";
+import { stockservices } from "../APIs/Services/StockService";
+import DeleteModal from "../UI/DeleteModal";
 
 
 function StockList() {
-    const items = [
-        {
-          label: <Button variant="info">View</Button>,
-          key: "0",
-        },
-        {
-          label: (
-            <Link to="/editstock">
-              <Button variant="warning">Edit</Button>
-            </Link>
-          ),
-          key: "1",
-        },
-        {
-          label: <Button variant="danger">Delete</Button>,
-          key: "2",
-        },
-        {
-          label: <Button variant="primary">Deactive</Button>,
-          key: "3",
-        },
-      ];
+  
+  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [stocklist, setStockList] = useState([]);
+
+  useEffect(() => {
+    stockservices.getAllStocks().then(({ data: stocks }) => {
+      setStockList(stocks.data);
+    });
+  }, [deleteState]);
+
+  const deleteStock = (id) => {
+    stockservices.deleteStock(id).then((data) => {
+      console.log(data.message);
+    });
+  };
+
+  const deleteMOdalHandling = (id) => {
+    setId(id);
+    setDeleteState(true);
+  };
+
+  
       const columns = [
         {
           title: "StockCode",
-          dataIndex: "stockcode",          
+          dataIndex: "stockCode",          
         }, 
         {
             title: "BuisnessLocation",
-            dataIndex: "buisnesslocation",
+            dataIndex: "buisnessLocation",
           },      
         {
           title: "TotalAmount",
-          dataIndex: "totalamount",
+          dataIndex: "totalAmount",
           defaultSortOrder: "descend",
           sorter: (a, b) => a.totalamount - b.totalamount,
         },       
         {
           title: "Actions",
-          dataIndex: "action",
-          render: () => (
-            <Dropdown
-              menu={{
-                items,
-              }}
-              trigger={["click"]}
-            >
-              <Link onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <DownOutlined />
-                </Space>
+          dataIndex: "",
+          key: "x",
+          render: (record) => (
+            <div className="d-flex ">
+              <Button
+                id={record.id}
+                onClick={() => {
+                  deleteMOdalHandling(record.id);
+                }}
+                className="margin "
+                variant="danger"
+              >
+                Delete
+              </Button>
+              <Link to="/editstock">
+                <Button
+                  id={record.id}
+                  onClick={() => {
+                    setId(record.id)
+                  }}
+                  variant="primary"
+                >
+                  Edit
+                </Button>
               </Link>
-            </Dropdown>
+              <Link to="">
+                <Button id={record.id} variant="info">
+                  Deactive
+                </Button>
+              </Link>
+            </div>
           ),
         },
-      ];
-      const data = [
-        {
-          key: "1",
-          customercode: "xxx",
-          age: 32,
-          address: "New York No. 1 Lake Park",
-        },
-        {
-          key: "2",
-          customercode: "ppp",
-          age: 42,
-          address: "London No. 1 Lake Park",
-        },
-        {
-          key: "3",
-          customercode: "yyy",
-          age: 32,
-          address: "Sidney No. 1 Lake Park",
-        },
-        {
-          key: "4",
-          customercode: "xyz",
-          age: 32,
-          address: "London No. 2 Lake Park",
-        },
-      ];
-      const onChange = (pagination, filters, sorter, extra) => {
-        console.log("params", pagination, filters, sorter, extra);
-      };
+      ]; 
+     
     
       return (
         <>
+        {deleteState && <DeleteModal deleteItem={deleteStock} />}
           <StockHeader/>        
-          <Table columns={columns} dataSource={data} onChange={onChange} />
+          <Table columns={columns} dataSource={stocklist}  />
         </>
       );
 }
