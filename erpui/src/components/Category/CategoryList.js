@@ -1,95 +1,100 @@
-import React from 'react'
-import { Table, Dropdown, Space } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import React, { useEffect, useState, useContext } from "react";
+import { Table } from "antd";
+import ErpContext from "../store/erp-context";
 import Button from "react-bootstrap/Button";
-import { Link } from 'react-router-dom';
-import CategoryHeader from './CategoryHeader';
+import { Link } from "react-router-dom";
+import CategoryHeader from "./CategoryHeader";
+import { categoriesservices } from "../APIs/Services/CategoryServices";
+import DeleteModal from "../UI/DeleteModal";
 
 function CategoryList() {
-    const items = [       
-        {
-          label: (
-            <Link to='/categories/update'>
-              <Button variant="warning">Edit</Button>
-            </Link>
-          ),
-          key: "1",
-        },
-        {
-          label: <Button variant="danger">Delete</Button>,
-          key: "2",
-        },       
-      ];
-      const columns = [
-        {
-          title: "Name",
-          dataIndex: "name", 
-          defaultSortOrder: 'descend',
-          sorter: (a, b) => a.name - b.name,  
-        },        
-        {
-          title: "IsMain?",
-          dataIndex: "ismain",
-        },
-        {
-            title: "ParentCategory",
-            dataIndex: "parentcategory",
-          },        
-        {
-          title: "Actions",
-          dataIndex: "action",
-          render: () => (
-            <Dropdown
-              menu={{
-                items,
+  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [categoryList, setCategoryList] = useState([]);
+
+  useEffect(() => {
+    categoriesservices.getAllCategories().then(({ data: categories }) => {
+      setCategoryList(categories.data);
+    });
+  }, [deleteState]);
+
+  const transFormedData = categoryList.map((el) =>
+    el.isMain === true ? { ...el, Main: "Main" } : { ...el, Main: "Notmain" }
+  );
+
+  const deleteCategory = (id) => {
+    categoriesservices.deleteCategory(id).then((data) => {
+      console.log(data.message);
+    });
+  };
+
+  const deleteMOdalHandling = (id) => {
+    setId(id);
+    setDeleteState(true);
+  };
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+    },
+    {
+      title: "IsMain?",
+      dataIndex: "Main",
+    },
+    {
+      title: "Actions",
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <div className="d-flex ">
+          <Button
+            id={record.id}
+            onClick={() => {
+              deleteMOdalHandling(record.id);
+            }}
+            className="margin "
+            variant="danger"
+          >
+            Delete
+          </Button>
+          <Link to='/categories/update'>
+            <Button
+              id={record.id}
+              onClick={() => {
+                setId(record.id);
               }}
-              trigger={["click"]}
+              variant="primary"
             >
-              <Link onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <DownOutlined />
-                </Space>
-              </Link>
-            </Dropdown>
-          ),
-        },
-      ];
-      const data = [
-        {
-          key: "1",
-          customercode: "xxx",
-          age: 32,
-          address: "New York No. 1 Lake Park",
-        },
-        {
-          key: "2",
-          customercode: "ppp",
-          age: 42,
-          address: "London No. 1 Lake Park",
-        },
-        {
-          key: "3",
-          customercode: "yyy",
-          age: 32,
-          address: "Sidney No. 1 Lake Park",
-        },
-        {
-          key: "4",
-          customercode: "xyz",
-          age: 32,
-          address: "London No. 2 Lake Park",
-        },
-      ];
-      const onChange = (pagination, filters, sorter, extra) => {
-        console.log("params", pagination, filters, sorter, extra);
-      };
-    
-      return (
-        <> 
-          <CategoryHeader/>  
-          <Table columns={columns} dataSource={data} onChange={onChange} />
-        </>
-      );
+              Edit
+            </Button>
+          </Link>
+          <Link to="/brands/View">
+            <Button
+              id={record.id}
+              onClick={() => {
+                setId(record.id);
+              }}
+              variant="info"
+            >
+              View
+            </Button>
+          </Link>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      {deleteState && <DeleteModal deleteItem={deleteCategory} />}
+      <CategoryHeader />
+      <Table
+        rowKey={(record) => record.id}
+        columns={columns}
+        dataSource={transFormedData}
+      />
+    </>
+  );
 }
 
-export default CategoryList
+export default CategoryList;

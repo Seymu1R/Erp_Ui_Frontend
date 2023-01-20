@@ -1,41 +1,87 @@
 import React from 'react'
-import { Col, Row, Input, Button } from "antd";
+import { Col, Row, Input, Button , Form} from "antd";
+import { unitservices } from '../APIs/Services/UnitsServices';
 
 function AddUnit() {
 
-    const options = [];
-    for (let i = 10; i < 36; i++) {
-      options.push({
-        value: i.toString(36) + i,
-        label: i.toString(36) + i,
+  const addUnit = (body) => {
+    unitservices
+      .createUnit(body)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((eror) => {
+        window.alert(eror);
       });
-    }
+  };   
 
   return (
-    <form>
-      <Row style={{ marginBottom: "20px" }}>
-        <Col span={8}>
-          <label htmlFor="name">VariationName</label>
+    <Form
+    autoComplete="off"
+    onFinish={(values) => {
+      console.log(values);
+      const postObj = {
+        unitName: `${values.unitName}`,
+        unitType: `${values.unitType}`
+      };
+      addUnit(postObj);
+    }}
+  >
+    <Row style={{ marginBottom: "20px" }}>
+      <Col span={8}>
+        <Form.Item
+          rules={[
+            {
+              required: true,
+              message: "Please enter your unitName",
+              whitespace: true,
+              min: 3,
+              max: 20,
+            },
+          ]}
+          hasFeedback
+          name="unitName"
+          label="UnitName"
+        >
           <Input
             type="text"
-            id="name"
+            id="unitName"
             size="large"
-            placeholder="VariationName"
+            placeholder="UnitName"
+            style={{ width: "90%" }}
           />
-        </Col>
-        <Col span={8}>
-        <label htmlFor="shortname">Short Name</label>
+        </Form.Item>
+      </Col>
+      <Col span={8}>
+        <Form.Item
+          rules={[
+            {
+              required: true,
+              message: "Please enter your UnitType",
+              whitespace: true,
+              min: 3,
+              max: 20,
+            },
+          ]}
+          hasFeedback
+          name="unitType"
+          label="UnitType"
+        >
           <Input
             type="text"
-            id="shortname"
+            id="unitType"
             size="large"
-            placeholder="Short Name"
+            placeholder="UnitType"
+            style={{ width: "90%" }}
           />
-        </Col>
-      </Row>
+        </Form.Item>
+      </Col>
+    </Row>
 
-      <Button type="primary">Add</Button>
-    </form>
+    <Button htmlType={"submit"} type="primary">
+      Add
+    </Button>
+  </Form>     
   )
 }
 

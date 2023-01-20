@@ -1,62 +1,65 @@
-import React from "react";
-import { Col, Row, Input, Button, Checkbox, Select } from "antd";
+import React, { useContext } from "react";
+import ErpContext from "../store/erp-context";
+import { Col, Row, Input, Button, Form } from "antd";
+import { categoriesservices } from "../APIs/Services/CategoryServices";
 
 function UpdateCategory() {
-  const options = [];
-  for (let i = 10; i < 36; i++) {
-    options.push({
-      value: i.toString(36) + i,
-      label: i.toString(36) + i,
-    });
-  }
-return(
-<form>
-    <Row style={{ marginBottom: "20px" }}>
-      <Col span={8}>
-        <label htmlFor="name">CategoryName</label>
-        <Input type="text" id="name" size="large" placeholder="CategoryName" />
-      </Col>
-      <Col span={8}>
-        <label style={{ width: "100%", marginLeft: "20px" }}>Is Main?</label>
-        <Checkbox style={{ marginLeft: "20px" }} />
-      </Col>
-      <Col span={8}>
-        <label style={{ width: "100%", marginLeft: "20px" }}>
-          ParentCategory
-        </label>
-        <Select
-          disabled
-          defaultValue="lucy"
-          style={{
-            width: "100%",
-            marginLeft: "20px",
-          }}
-          options={[
-            {
-              value: "jack",
-              label: "Jack",
-            },
-            {
-              value: "lucy",
-              label: "Lucy",
-            },
-            {
-              value: "disabled",
-              disabled: true,
-              label: "Disabled",
-            },
-            {
-              value: "Yiminghe",
-              label: "yiminghe",
-            },
-          ]}
-        />
-      </Col>
-    </Row>
-    <Button type="primary">Update</Button>
-  </form>
-)
-  
+  const [{ id }] = useContext(ErpContext);
+
+  const updateCategory = (body) => {
+    categoriesservices
+      .updateCategory(body)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((eror) => {
+        window.alert(eror);
+      });
+  };
+
+  return (
+    <Form
+      autoComplete="off"
+      onFinish={(values) => {
+        console.log(values);
+        const postCategory = {
+          id: `${id}`,
+          name: `${values.name}`,
+        };
+        updateCategory(postCategory);
+      }}
+    >
+      <Row style={{ marginBottom: "20px" }}>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your BrandName",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="name"
+            label="CategoryName"
+          >
+            <Input
+              type="text"
+              id="name"
+              size="large"
+              placeholder="CategoryName"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Button htmlType={"submit"} type="primary">
+        Add
+      </Button>
+    </Form>
+  );
 }
 
 export default UpdateCategory;
