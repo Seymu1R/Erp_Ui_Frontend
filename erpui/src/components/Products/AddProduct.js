@@ -1,189 +1,401 @@
-import React from "react";
-import { Col, Row, Input, Button, Upload } from "antd";
-import { DatePicker, Space, Select , message} from "antd";
-import { UploadOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from "react";
+import { Col, Row, Input, Button, Form } from "antd";
+import { DatePicker, Select } from "antd";
+import { productservices } from "../APIs/Services/ProductServices";
+import { unitservices } from "../APIs/Services/UnitsServices";
+import { categoriesservices } from "../APIs/Services/CategoryServices";
+import { brandservices } from "../APIs/Services/BrandsService";
+import { supplierservices } from "../APIs/Services/SupplierServices";
 
 function AddProduct() {
-    const onChange = (value, dateString) => {
-        console.log("Selected Time: ", value);
-        console.log("Formatted Selected Time: ", dateString);
-      };
-      const onOk = (value) => {
-        console.log("onOk: ", value);
-      };
-    
-      const options = [];
-      for (let i = 10; i < 36; i++) {
-        options.push({
-          value: i.toString(36) + i,
-          label: i.toString(36) + i,
-        });
-      }
-      const handleChange = (value) => {
-        console.log(`selected ${value}`);
-      };
-      const props = {
-        name: 'file',
-        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-        headers: {
-          authorization: 'authorization-text',
-        },
-        onChange(info) {
-          if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
-          }
-          if (info.file.status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully`);
-          } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-          }
-        },
-      };
-  return (
-    <form>
-    <Row style={{ marginBottom: "20px" }}>
-      <Col span={8}>
-        <label htmlFor="name">Name</label>
-        <Input type="text" id="name" size="large" placeholder="Name" />
-      </Col>
-      <Col span={8}>
-        <label htmlFor="name">SkuCode</label>
-        <Input type="name" id="skucode" size="large" placeholder="SkuCode" />
-      </Col>
-      <Col span={8}>
-        <label htmlFor="barcode">BarCode</label>
-        <Input type="text" id="barcode" size="large" placeholder="BarCode" />
-      </Col>
-    </Row>
-    <Row style={{ marginBottom: "20px" }}>
-      <Col span={8}>
-        <label style={{ width:"100%" }} htmlFor="amount">Image</label>
-        <Upload {...props}>
-          <Button icon={<UploadOutlined />}>Click to Upload</Button>
-        </Upload>
-      </Col>
-      <Col span={8}>
-        <label htmlFor="desc">Description</label>
-        <Input type="text" id="desc" size="large" placeholder="Description" />
-      </Col>
-      <Col span={8}>
-        <label htmlFor="purchaseprice">PurchasePrice</label>
-        <Input
-          type="number"
-          id="purchaseprice"
-          size="large"
-          placeholder="PurchasePrice"
-        />
-      </Col>
-    </Row>
-    <Row style={{ marginBottom: "20px" }}>
-      <Col span={8}>
-        <label htmlFor="sellingprice">SellingPrice</label>
-        <Input
-          type="number"
-          id="sellingprice"
-          size="large"
-          placeholder="SellingPrice"
-        />
-      </Col>
-      <Col span={8}>
-        <label htmlFor="alertquantity">AlertQuantity</label>
-        <Input
-          type="number"
-          id="alertquantity"
-          size="large"
-          placeholder="AlertQuantity"
-        />
-      </Col>
-      <Col span={8}>
-        <label htmlFor="weight">Weight</label>
-        <Input
-          type="number"
-          id="weight"
-          size="large"
-          placeholder="PurchasePrice"
-        />
-      </Col>
-    </Row>
-    <Row style={{ marginBottom: "20px" }}>
-      <Col span={8}>
-        <label>ProduceDate</label>
-        <Space direction="vertical" size={12} style={{ width: "100%" }}>
-          <DatePicker showTime onChange={onChange} onOk={onOk} />
-        </Space>
-      </Col>
-      <Col span={8}>
-        <label>ExpirationDate</label>
-        <Space direction="vertical" size={12} style={{ width: "100%" }}>
-          <DatePicker showTime onChange={onChange} onOk={onOk} />
-        </Space>
-      </Col>
-      <Col span={8}>
-        <label>Unit</label>
-        <Select
-          defaultValue="Kg"
-          style={{
-            width: "100%",
-          }}
-          allowClear
-          options={[
-            {
-              value: "kg",
-              label: "Kg",
-            },
-          ]}
-        />
-      </Col>
-    </Row>
-    <Row style={{ marginBottom: "20px" }}>
-      <Col span={8}>
-        <label>Category</label>
-        <Select
-          defaultValue="Electronic"
-          style={{
-            width: "100%",
-          }}
-          allowClear
-          options={[
-            {
-              value: "electronic",
-              label: "Electronic",
-            },
-          ]}
-        />
-      </Col>
-      <Col span={8}>
-        <label>Brand</label>
-        <Select
-          defaultValue="Apple"
-          style={{
-            width: "100%",
-          }}
-          allowClear
-          options={[
-            {
-              value: "apple",
-              label: "Apple",
-            },
-          ]}
-        />
-      </Col>
-      <Col span={8}>
-        <label htmlFor="unit">Suppliers</label>
-        <Select
-          mode="tags"
-          style={{
-            width: "100%",
-          }}
-          onChange={handleChange}
-          tokenSeparators={[","]}
-          options={options}
-        />
-      </Col>
-    </Row>
+  const [units, setUnit] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [suppliers, setSupliers] = useState([]);
+  useEffect(() => {
+    unitservices.getAllUnits().then(({ data: units }) => {
+      setUnit(units.data);
+    });
+    categoriesservices.getAllCategories().then(({ data: categories }) => {
+      setCategories(categories.data);
+    });
+    brandservices.getAllBrands().then(({ data: brands }) => {
+      setBrands(brands.data);
+    });
+    supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
+      setSupliers(suppliers.data);
+    });
+  } ,[]);
 
-    <Button type="primary">Add</Button>
-  </form>
+  const optionsUnits = units.map((unit) => {
+    return { label: unit.unitName, value: unit.id };
+  });
+  const optionsBrands = brands.map((brand) => {
+    return { label: brand.brandName, value: brand.id };
+  });
+  const optionsCategories = categories.map((category)=>{
+    return { label: category.name, value: category.id };
+  })
+  const optionsSuppliers = suppliers.map((supplier)=>{
+    return { label: supplier.businessName, value: supplier.id };
+  })
+  // const onChange = (value, dateString) => {
+  //   console.log("Selected Time: ", value);
+  //   console.log("Formatted Selected Time: ", dateString);
+  // };
+  // const onOk = (value) => {
+  //   console.log("onOk: ", value);
+  // };
+
+  const addProduct = (body) => {
+    productservices
+      .createProduct(body)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((eror) => {
+        window.alert(eror);
+      });
+  };
+
+  return (
+    <Form
+      autoComplete="off"
+      onFinish={(values) => {
+        console.log(values);
+        const postObj = {
+          name: `${values.name}`,
+          skuCode: `${values.skuCode}`,
+          barCode: `${values.barCode}`,
+          imageUrl: `${values.imageUrl}`,
+          description: `${values.description}`,
+          purchasePrice: `${values.purchasePrice}`,
+          sellingPrice: `${values.sellingPrice}`,
+          alertQuantityOrAmount: `${values.alertQuantityOrAmount}`,
+          weight: `${values.weight}`,
+          produceDate: values.produceDate,
+          expirationDate: values.expirationDate,
+          unitId: `${values.unitId}`,
+          caregoryId: `${values.caregoryId}`,
+          brandId: `${values.brandId}`,
+          suppliersID: `${values.suppliersID}`,
+        };
+        addProduct(postObj);
+      }}
+    >
+      <Row style={{ marginBottom: "20px" }}>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your ProductName",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="name"
+            label="ProductName"
+          >
+            <Input
+              type="text"
+              id="name"
+              size="large"
+              placeholder="ProductName"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your SkuCode",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="skuCode"
+            label="SkuCode"
+          >
+            <Input
+              type="text"
+              id="skuCode"
+              size="large"
+              placeholder="SkuCode"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your BarCode",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="barCode"
+            label="BarCode"
+          >
+            <Input
+              type="text"
+              id="barCode"
+              size="large"
+              placeholder="BarCode"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row style={{ marginBottom: "20px" }}>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="imageUrl"
+            label="Image"
+          >
+            <input type={"file"} />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your Description",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="description"
+            label="Description"
+          >
+            <Input
+              type="text"
+              id="description"
+              size="large"
+              placeholder="Description"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="purchasePrice"
+            label="PurchasePrice"
+          >
+            <Input
+              type="number"
+              id="purchasePrice"
+              size="large"
+              placeholder="PurchasePrice"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row style={{ marginBottom: "20px" }}>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="sellingPrice"
+            label="SellingPrice"
+          >
+            <Input
+              type="number"
+              id="sellingPrice"
+              size="large"
+              placeholder="SellingPrice"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="alertQuantityOrAmount"
+            label="AlertQuantity"
+          >
+            <Input
+              type="number"
+              id="alertQuantityOrAmount"
+              size="large"
+              placeholder="AlertQuantity"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="weight"
+            label="Weight"
+          >
+            <Input
+              type="number"
+              id="weight"
+              size="large"
+              placeholder="Weight"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row style={{ marginBottom: "20px" }}>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="produceDate"
+            label="ProduceDate"
+          >
+            <DatePicker showTime  />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="expirationDate"
+            label="ExpirationDate"
+          >
+            <DatePicker showTime />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="unitId"
+            label="Unit"
+          >
+            <Select
+              defaultValue="Kg"
+              style={{
+                width: "100%",
+              }}
+              allowClear
+              options={optionsUnits}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row style={{ marginBottom: "20px" }}>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="caregoryId"
+            label="Category"
+          >
+            <Select
+              defaultValue="Electronic"
+              style={{
+                width: "100%",
+              }}
+              allowClear
+              options={optionsCategories}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="brandId"
+            label="Brand"
+          >
+            <Select
+              style={{
+                width: "100%",
+              }}
+              allowClear
+              options={optionsBrands}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="suppliersID"
+            label="Supplier"
+          >
+            <Select
+              style={{
+                width: "100%",
+              }}
+              options={optionsSuppliers}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Button htmlType={"submit"} type="primary">
+        Add
+      </Button>
+    </Form>
   );
 }
 

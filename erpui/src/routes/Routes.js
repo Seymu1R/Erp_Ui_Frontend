@@ -16,6 +16,7 @@ import AddDiscount from '../components/Discount/AddDiscount'
 import DiscountList from '../components/Discount/DiscountList'
 import Home from '../components/Home/Home'
 import AddProduct from '../components/Products/AddProduct'
+import ProductInfoPage from '../components/Products/ProductInfo'
 import ProductList from '../components/Products/ProductList'
 import UpdateProduct from '../components/Products/UpdateProduct'
 import PurchaseAdd from '../components/Purchase/PurchaseAdd'
@@ -61,7 +62,8 @@ function Navigate() {
         <Route path='/suppliers/updatesupplier' element={<UpdateSupplier/>}></Route> 
         <Route path='/productlist' element={<ProductList/>}></Route> 
         <Route path='/addproduct' element={<AddProduct/>}></Route> 
-        <Route path='/productlist/updateproduct' element={<UpdateProduct/>}></Route> 
+        <Route path='/productlist/updateproduct' element={<UpdateProduct/>}></Route>
+        <Route path='/productlist/view' element={<ProductInfoPage/>}></Route>  
         <Route path='/variations' element={<Variationslist/>}></Route> 
         <Route path='/addvariation' element={<AddVariation/>}></Route> 
         <Route path = '/variations/update' element={<UpdateVariation/>}></Route> 

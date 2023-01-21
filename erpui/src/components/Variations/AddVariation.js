@@ -1,42 +1,82 @@
 import React from "react";
-import { Col, Row, Input, Button, Select } from "antd";
+import { Col, Row, Input, Button, Select, Form } from "antd";
+import { variationservices } from "../APIs/Services/VariationServices";
 
 function AddVariation() {
-  const options = [];
-  for (let i = 10; i < 36; i++) {
-    options.push({
-      value: i.toString(36) + i,
-      label: i.toString(36) + i,
-    });
-  }
+  const addVariation = (body) => {
+    variationservices
+      .createVariation(body)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((eror) => {
+        window.alert(eror);
+      });
+  };
 
   return (
-    <form>
+    <Form
+      autoComplete="off"
+      onFinish={(values) => {
+        console.log(values);
+        const postObj = {
+          variationName: `${values.variationName}`,
+          variationValues: values.variationValues.map((item) => {
+            return item;
+          }),
+        };
+        addVariation(postObj);
+      }}
+    >
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
-          <label htmlFor="name">VariationName</label>
-          <Input
-            type="text"
-            id="name"
-            size="large"
-            placeholder="VariationName"
-          />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your VariationName",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="variationName"
+            label="VariationName"
+          >
+            <Input
+              type="text"
+              id="variationName"
+              size="large"
+              placeholder="VariationName"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
         </Col>
         <Col span={8}>
-          <label >Variations</label>
-          <Select
-            mode="tags"
-            style={{
-              width: "100%",
-            }}
-            tokenSeparators={[","]}
-            options={options}
-          />
+          <Form.Item
+           rules={[
+            {
+              required: true,             
+            },
+          ]}
+           name="variationValues" label="Variations">
+            <Select
+             defaultValue={"VariationValues"}
+              mode="tags"
+              style={{
+                width: "100%",
+              }}
+              tokenSeparators={[","]}
+            />
+          </Form.Item>
         </Col>
       </Row>
 
-      <Button type="primary">Add</Button>
-    </form>
+      <Button htmlType={"submit"} type="primary">
+        Add
+      </Button>
+    </Form>
   );
 }
 

@@ -2,27 +2,28 @@ import { HttpClient } from "../HttpClient/Index";
 
 class VariationServices extends HttpClient{
     constructor() {
-        super("https://localhost:7004/api/Units");
+        super("https://localhost:7004/api/Variations");
       }
     
-      getUnit(id) {
-        return this.get(`GetUnitById?unitid=${id}`);
+      getVariation(id) {
+        return this.get(`GetVariationById?variationId=${id}`);
       }
     
-      getAllUnits(){
-        return this.getall("GetAllUnits")
+      getAllVariations(){
+        return this.getall("GetAllVariations")
       }
     
-      deleteUnit(id){
-        return this.delete(`DeleteUnit?unitid=${id}`)
+      deleteVariation(id){
+        return this.delete(`DeleteVariation?variationId=${id}`)
       }
     
-      createUnit(body){
-        return this.post("CreateUnit", body)
+      createVariation(body){
+        return this.post("CreateVariation", body)
       }
     
-      updateUnit(body){
-        return this.put("UpdateUnit", body)
+      updateVariation(body){
+        return this.put("UpdateVariation", body)
       }
 }
-}
+
+export const variationservices = new VariationServices()
