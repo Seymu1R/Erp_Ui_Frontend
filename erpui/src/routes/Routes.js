@@ -13,7 +13,9 @@ import AddSupplier from '../components/Contacts/Supplier/AddSupplier'
 import SupplierList from '../components/Contacts/Supplier/SupplierList'
 import UpdateSupplier from '../components/Contacts/Supplier/UpdateSupplier'
 import AddDiscount from '../components/Discount/AddDiscount'
+import DiscountInfo from '../components/Discount/DiscountInfo'
 import DiscountList from '../components/Discount/DiscountList'
+import UpdateDiscount from '../components/Discount/UpdateDiscount'
 import Home from '../components/Home/Home'
 import AddProduct from '../components/Products/AddProduct'
 import ProductInfoPage from '../components/Products/ProductInfo'
@@ -85,6 +87,8 @@ function Navigate() {
         <Route path='/sales/update' element={<UpdateSell/>}></Route>
         <Route path='/discounts' element={<DiscountList/>}></Route>
         <Route path='/adddiscount' element={<AddDiscount/>}></Route>
+        <Route path="/discountlist/view" element={<DiscountInfo/>}></Route>
+        <Route path="/discount/update" element={<UpdateDiscount/>}></Route>
         <Route path='/stocktransferlist' element={<StockTransferList/>}></Route>
         <Route path='/addstocktransfer' element={<AddStockTransfer/>}></Route>
         <Route path='/addstocktransfercommerce' element={<StockTransferCommerceAdd/>}></Route>

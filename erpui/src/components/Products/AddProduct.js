@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row, Input, Button, Form } from "antd";
+import { MDBFile } from "mdb-react-ui-kit";
 import { DatePicker, Select } from "antd";
 import { productservices } from "../APIs/Services/ProductServices";
 import { unitservices } from "../APIs/Services/UnitsServices";
@@ -25,7 +26,7 @@ function AddProduct() {
     supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
       setSupliers(suppliers.data);
     });
-  } ,[]);
+  }, []);
 
   const optionsUnits = units.map((unit) => {
     return { label: unit.unitName, value: unit.id };
@@ -33,20 +34,13 @@ function AddProduct() {
   const optionsBrands = brands.map((brand) => {
     return { label: brand.brandName, value: brand.id };
   });
-  const optionsCategories = categories.map((category)=>{
+  const optionsCategories = categories.map((category) => {
     return { label: category.name, value: category.id };
-  })
-  const optionsSuppliers = suppliers.map((supplier)=>{
+  });
+  const optionsSuppliers = suppliers.map((supplier) => {
     return { label: supplier.businessName, value: supplier.id };
-  })
-  // const onChange = (value, dateString) => {
-  //   console.log("Selected Time: ", value);
-  //   console.log("Formatted Selected Time: ", dateString);
-  // };
-  // const onOk = (value) => {
-  //   console.log("onOk: ", value);
-  // };
-
+  });
+  
   const addProduct = (body) => {
     productservices
       .createProduct(body)
@@ -169,7 +163,9 @@ function AddProduct() {
             name="imageUrl"
             label="Image"
           >
-            <input type={"file"} />
+            <div>
+              <MDBFile  id="customFile" />
+            </div>
           </Form.Item>
         </Col>
         <Col span={8}>
@@ -291,7 +287,7 @@ function AddProduct() {
             name="produceDate"
             label="ProduceDate"
           >
-            <DatePicker showTime  />
+            <DatePicker showTime />
           </Form.Item>
         </Col>
         <Col span={8}>

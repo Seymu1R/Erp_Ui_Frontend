@@ -1,33 +1,33 @@
-import React from "react";
-import { Table, Dropdown, Space } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import React, { useContext, useState, useEffect } from "react";
+import ErpContext from "../store/erp-context";
+import { Table } from "antd";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import DiscountHeader from "./DiscountHeader";
+import { discountservices } from "../APIs/Services/DiscountsServices";
+import DeleteModal from "../UI/DeleteModal";
 
 function DiscountList() {
-  const items = [
-    {
-      label: <Button variant="info">View</Button>,
-      key: "0",
-    },
-    {
-      label: (
-        <Link to="/productlist/updateproduct">
-          <Button variant="warning">Edit</Button>
-        </Link>
-      ),
-      key: "1",
-    },
-    {
-      label: <Button variant="danger">Delete</Button>,
-      key: "2",
-    },
-    {
-      label: <Button variant="primary">Deactive</Button>,
-      key: "3",
-    },
-  ];
+  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [discountList, setDiscountList] = useState([]);
+
+  useEffect(() => {
+    discountservices.getAllDiscounts().then(({ data: Products }) => {
+      setDiscountList(Products.data);
+    });
+  }, []);
+
+  const deleteDiscount = (id) => {
+    discountservices.deleteDiscount(id).then((data) => {
+      console.log(data.message);
+    });
+  };
+
+  const deleteMOdalHandling = (id) => {
+    setId(id);
+    setDeleteState(true);
+  };
+
   const columns = [
     {
       title: "Name",
@@ -35,88 +35,63 @@ function DiscountList() {
     },
     {
       title: "StartTime",
-      dataIndex: "start",
-      
+      dataIndex: "startsAt",
     },
     {
       title: "EndTime",
-      dataIndex: "endtime",
+      dataIndex: "endsTime",
     },
     {
       title: "DiscountAmount",
-      dataIndex: "discountamount",     
+      dataIndex: "discountAmount",
     },
     {
-      title: "ProductList",
-      dataIndex: "productlist",      
-    },    
-    {
       title: "DiscountType",
-      dataIndex: "activestatus",
-      filters: [
-        {
-          text: "Fixed",
-          value: "fixed",
-        },
-        {
-          text: "Percentage",
-          value: "percentage",
-        },
-      ],
+      dataIndex: "discountType",
+      render: (discountType) => (discountType === 1 ? "Fixed" : "Percentage"),
     },
     {
       title: "Actions",
-      dataIndex: "action",
-      render: () => (
-        <Dropdown
-          menu={{
-            items,
-          }}
-          trigger={["click"]}
-        >
-          <Link onClick={(e) => e.preventDefault()}>
-            <Space>
-              <DownOutlined />
-            </Space>
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <div className="d-flex ">
+          <Button
+            id={record.id}
+            onClick={() => {
+              deleteMOdalHandling(record.id);
+            }}
+            className="margin "
+            variant="danger"
+          >
+            Delete
+          </Button>
+
+          <Link to="/discountlist/view">
+            <Button
+              id={record.id}
+              onClick={() => {
+                setId(record.id);
+              }}
+              variant="info"
+            >
+              View
+            </Button>
           </Link>
-        </Dropdown>
+        </div>
       ),
     },
   ];
-  const data = [
-    {
-      key: "1",
-      customercode: "xxx",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      customercode: "ppp",
-      age: 42,
-      address: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      customercode: "yyy",
-      age: 32,
-      address: "Sidney No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      customercode: "xyz",
-      age: 32,
-      address: "London No. 2 Lake Park",
-    },
-  ];
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
-  };
 
   return (
     <>
-    <DiscountHeader/>
-      <Table columns={columns} dataSource={data} onChange={onChange} />
+      {deleteState && <DeleteModal deleteItem={deleteDiscount} />}
+      <DiscountHeader />
+      <Table
+        rowKey={(record) => record.id}
+        columns={columns}
+        dataSource={discountList}
+      />
     </>
   );
 }
