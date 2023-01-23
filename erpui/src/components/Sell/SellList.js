@@ -1,43 +1,62 @@
-import React from "react";
-import { Table, Dropdown, Space } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import Button from "react-bootstrap/Button";
+import React, { useContext, useEffect, useState } from "react";
+import ErpContext from "../store/erp-context";
+import { Table } from "antd";
+import Button from "react-bootstrap/esm/Button";
 import { Link } from "react-router-dom";
 import SellHeader from "./SellHeader";
+import { sellservices } from "../APIs/Services/SellsServices";
+import DeleteModal from "../UI/DeleteModal";
 
 function SellList() {
-  const items = [
-    {
-      label: <Button variant="info">View</Button>,
-      key: "0",
-    },
-    {
-      label: (
-        <Link to="/sales/update">
-          <Button variant="warning">Edit</Button>
-        </Link>
-      ),
-      key: "1",
-    },
-    {
-      label: <Button variant="danger">Delete</Button>,
-      key: "2",
-    },
-    {
-      label: <Button variant="primary">Deactive</Button>,
-      key: "3",
-    },
-  ];
+  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [sellList, setSellList] = useState([]);
+  useEffect(() => {
+    sellservices.getAllSells().then(({ data: sells }) => {
+      setSellList(sells.data);
+    });
+  }, []);
+
+  const sellModifiedByShippingStatus = sellList.map((sell) => {
+    if (sell.shippingStatus === 1) {
+      return { ...sell, ShippingStatus: "Ordered" };
+    } else if (sell.shippingStatus === 2) {
+      return { ...sell, ShippingStatus: "Shipped" };
+    } else if (sell.shippingStatus === 3) {
+      return { ...sell, ShippingStatus: "Delivered" };
+    } else if (sell.shippingStatus === 4) {
+      return { ...sell, ShippingStatus: "Cancelled" };
+    }
+    return "Error";
+  });
+
+  const sellModifiedByInvoiceStatus = sellModifiedByShippingStatus.map(
+    (sell) => {
+      if (sell.invoiceStatuse === 1) {
+        return { ...sell, InvoiceStatus: "Draft" };
+      } else if (sell.invoiceStatuse === 2) {
+        return { ...sell, InvoiceStatus: "Proforma" };
+      } else if (sell.invoiceStatuse === 3) {
+        return { ...sell, InvoiceStatus: "Final" };
+      }
+      return "Error";
+    }
+  );
+
+  const deleteSell = (id) => {
+    sellservices.deleteSell(id).then((data) => {
+      console.log(data.message);
+    });
+  };
+
+  const deleteMOdalHandling = (id) => {
+    setId(id);
+    setDeleteState(true);
+  };
+
   const columns = [
     {
       title: "InvoiceNo",
-      dataIndex: "invoiceno",
-      defaultSortOrder: "descend",
-      sorter: (a, b) => a.invoiceno - b.invoiceno,
-    },
-    {
-      title: "InvoiceStatuse",
-      dataIndex: "invoicestatuse",
+      dataIndex: "invoiceNo",
       filters: [
         {
           text: "Draft",
@@ -56,18 +75,30 @@ function SellList() {
       filterSearch: true,
     },
     {
+      title: "InvoiceStatuse",
+      dataIndex: "InvoiceStatus",
+      filters: [
+        {
+          text: "Draft",
+          value: "Draft",
+        },
+        {
+          text: "Proforma",
+          value: "Proforma",
+        },
+        {
+          text: "Final",
+          value: "Final",
+        },
+      ],
+      onFilter: (value, record) => record.InvoiceStatus.startsWith(value),
+      filterSearch: true,
+    },
+    {
       title: "PayTerm",
-      dataIndex: "payterm",
+      dataIndex: "payTerm",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.payterm - b.payterm,
-    },
-    {
-      title: "Customer",
-      dataIndex: "customer",
-    },
-    {
-      title: "Stock",
-      dataIndex: "stock",
     },
     {
       title: "Total",
@@ -77,86 +108,69 @@ function SellList() {
     },
     {
       title: "ShippingStatus",
-      dataIndex: "shippingstatus",
+      dataIndex: "ShippingStatus",
       filters: [
         {
           text: "Ordered",
-          value: "ordered",
-        },
-        {
-          text: "Packed",
-          value: "packed",
+          value: "Ordered",
         },
         {
           text: "Shipped",
-          value: "shipped",
+          value: "Shipped",
         },
         {
           text: "Delivered",
-          value: "delivered",
+          value: "Delivered",
         },
         {
           text: "Cancelled",
-          value: "cancelled",
+          value: "Cancelled",
         },
       ],
-      onFilter: (value, record) => record.address.startsWith(value),
+      onFilter: (value, record) => record.ShippingStatus.startsWith(value),
       filterSearch: true,
     },
-
     {
       title: "Actions",
-      dataIndex: "action",
-      render: () => (
-        <Dropdown
-          menu={{
-            items,
-          }}
-          trigger={["click"]}
-        >
-          <Link onClick={(e) => e.preventDefault()}>
-            <Space>
-              <DownOutlined />
-            </Space>
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <div className="d-flex ">
+          <Button
+            id={record.id}
+            onClick={() => {
+              deleteMOdalHandling(record.id);
+            }}
+            className="margin "
+            variant="danger"
+          >
+            Delete
+          </Button>
+
+          <Link to="/productlist/view">
+            <Button
+              id={record.id}
+              onClick={() => {
+                setId(record.id);
+              }}
+              variant="info"
+            >
+              View
+            </Button>
           </Link>
-        </Dropdown>
+        </div>
       ),
     },
   ];
-  const data = [
-    {
-      key: "1",
-      customercode: "xxx",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      customercode: "ppp",
-      age: 42,
-      address: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      customercode: "yyy",
-      age: 32,
-      address: "Sidney No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      customercode: "xyz",
-      age: 32,
-      address: "London No. 2 Lake Park",
-    },
-  ];
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
-  };
-
   return (
     <>
+      {deleteState && <DeleteModal deleteItem={deleteSell} />}
       <SellHeader />
-      <Table columns={columns} dataSource={data} onChange={onChange} />
+      <Table
+        rowKey={(record) => record.id}
+        columns={columns}
+        dataSource={sellModifiedByInvoiceStatus}
+      />
     </>
   );
 }

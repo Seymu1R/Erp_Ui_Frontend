@@ -1,36 +1,52 @@
-import React from "react";
-import { Col, Row, Input, Select, Tooltip, Table, Dropdown, Space } from "antd";
-import { AppstoreAddOutlined, DownOutlined } from "@ant-design/icons";
+import React, { useState, useEffect, useContext } from "react";
+import ErpContext from "../store/erp-context";
+import { Col, Row, Input, Select, Tooltip, Table, Form } from "antd";
+import { Option } from "antd/es/mentions";
+import { AppstoreAddOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import DeleteModal from "../UI/DeleteModal";
+import { productcommerceservices } from "../APIs/Services/ProductCommerce";
+import { stockservices } from "../APIs/Services/StockService";
+import { discountservices } from "../APIs/Services/DiscountsServices";
+import { customerservice } from "../APIs/Services/CustomerServices";
 
 function AddSell() {
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
+  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [customers, setCustomers] = useState([]);
+  const [stocks, setStocks] = useState([]);
+  const [discounts, setDiscounts] = useState([]);
+  const deleteMOdalHandling = (id) => {
+    setId(id);
+    setDeleteState(true);
+  };
+  const deleteProductCommerce = (id) => {
+    productcommerceservices.deleteProductCommerce(id).then((data) => {
+      console.log(data.message);
+    });
   };
 
-  const items = [
-    {
-      label: <Button variant="info">View</Button>,
-      key: "0",
-    },
-    {
-      label: (
-        <Link to="/sales/update">
-          <Button variant="warning">Edit</Button>
-        </Link>
-      ),
-      key: "1",
-    },
-    {
-      label: <Button variant="danger">Delete</Button>,
-      key: "2",
-    },
-    {
-      label: <Button variant="primary">Deactive</Button>,
-      key: "3",
-    },
-  ];
+  useEffect(() => {
+    customerservice.getAllCustomers().then(({ data: customers }) => {
+      setCustomers(customers.data);
+    });
+    stockservices.getAllStocks().then(({ data: stocks }) => {
+      setStocks(stocks.data);
+    });
+    discountservices.getAllDiscounts().then(({data: discounts}) => {
+      setDiscounts(discounts.data)
+    })
+  }, []);
+
+  const optionsCategory = customers.map((category) => {
+    return <Option value={category.id}>{category.name}</Option>;
+  });
+  const optionsStocks = stocks.map((stock) => {
+    return <Option value={stock.id}>{stock.buisnessLocation}</Option>;
+  });
+  const discountOptions = discounts.map((discount) => {
+    return <Option value={discount.id}>{discount.name}</Option>;
+  })
   const columns = [
     {
       title: "ProductName",
@@ -38,7 +54,7 @@ function AddSell() {
     },
     {
       title: "ProductAmount",
-      dataIndex: "productamount",
+      dataIndex: "productAmount",
     },
     {
       title: "SubTotal",
@@ -46,20 +62,33 @@ function AddSell() {
     },
     {
       title: "Actions",
-      dataIndex: "action",
-      render: () => (
-        <Dropdown
-          menu={{
-            items,
-          }}
-          trigger={["click"]}
-        >
-          <Link onClick={(e) => e.preventDefault()}>
-            <Space>
-              <DownOutlined />
-            </Space>
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <div className="d-flex ">
+          <Button
+            id={record.id}
+            onClick={() => {
+              deleteMOdalHandling(record.id);
+            }}
+            className="margin "
+            variant="danger"
+          >
+            Delete
+          </Button>
+
+          <Link to="/productlist/view">
+            <Button
+              id={record.id}
+              onClick={() => {
+                setId(record.id);
+              }}
+              variant="info"
+            >
+              Edit
+            </Button>
           </Link>
-        </Dropdown>
+        </div>
       ),
     },
   ];
@@ -89,97 +118,126 @@ function AddSell() {
       address: "London No. 2 Lake Park",
     },
   ];
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
-  };
 
   return (
-    <form>
+    <Form>
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
-          <label style={{ width: "100%" }}>Customer</label>
-          <Select
-            defaultValue="lucy"
-            style={{
-              width: 120,
-            }}
-            onChange={handleChange}
-            options={[
+          <Form.Item
+            rules={[
               {
-                value: "jack",
-                label: "Jack",
-              },
-              {
-                value: "lucy",
-                label: "Lucy",
-              },
-              {
-                value: "disabled",
-                label: "Disabled",
-              },
-              {
-                value: "Yiminghe",
-                label: "yiminghe",
+                required: true,
               },
             ]}
-          />
+            hasFeedback
+            name="customerId"
+            label="Customers"
+          >
+            <Select
+              showSearch
+              style={{ width: 200 }}
+              placeholder="Search Customer"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {optionsCategory}
+            </Select>
+          </Form.Item>
         </Col>
         <Col span={8}>
-          <label style={{ width: "100%" }}>Stock</label>
-          <Select
-            defaultValue="lucy"
-            style={{
-              width: 120,
-            }}
-            onChange={handleChange}
-            options={[
+          <Form.Item
+            rules={[
               {
-                value: "jack",
-                label: "Jack",
-              },
-              {
-                value: "lucy",
-                label: "Lucy",
-              },
-              {
-                value: "disabled",
-                label: "Disabled",
-              },
-              {
-                value: "Yiminghe",
-                label: "yiminghe",
+                required: true,
               },
             ]}
-          />
+            hasFeedback
+            name="stockId"
+            label="Stock"
+          >
+            <Select
+              showSearch
+              style={{ width: 200 }}
+              placeholder="Search Stock"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {optionsStocks}
+            </Select>
+          </Form.Item>
         </Col>
         <Col span={8}>
-          <label htmlFor="payterm">PayTerm</label>
-          <Input
-            type="number"
-            id="payterm"
-            size="large"
-            placeholder="PayTerm"
-          />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+            name="payTerm"
+            label="PayTerm"
+          >
+            <Input
+              type="number"
+              id="payTerm"
+              size="large"
+              placeholder="PayTerm"
+            />
+          </Form.Item>
         </Col>
       </Row>
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
-          <label htmlFor="note">SellNote</label>
-          <Input
-            type="text"
-            id="note"
-            size="large"
-            placeholder="AdditionalNote"
-          />
+        <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your Description",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="sellNote"
+            label="SellNote"
+          >
+            <Input
+              type="text"
+              id="sellNote"
+              size="large"
+              placeholder="SellNote"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
         </Col>
         <Col span={8}>
-          <label htmlFor="shippingadress">ShippingAddress</label>
-          <Input
-            type="phone"
-            id="shippingadress"
-            size="large"
-            placeholder="ShippingAddress"
-          />
+        <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please enter your SellNote",
+                whitespace: true,
+                min: 3,
+                max: 20,
+              },
+            ]}
+            hasFeedback
+            name="shippingAddress"
+            label="ShippingAddress"
+          >
+            <Input
+              type="text"
+              id="shippingAddress"
+              size="large"
+              placeholder="ShippingAddress"
+              style={{ width: "90%" }}
+            />
+          </Form.Item>
         </Col>
         <Col span={8}>
           <label style={{ width: "100%" }}>ProductCommerce</label>
@@ -199,38 +257,34 @@ function AddSell() {
       </Row>
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
-        <label style={{ width: "100%" }}>Discount</label>
-          <Select
-            defaultValue="lucy"
-            style={{
-              width: 120,
-            }}
-            onChange={handleChange}
-            options={[
+        <Form.Item
+            rules={[
               {
-                value: "jack",
-                label: "Jack",
-              },
-              {
-                value: "lucy",
-                label: "Lucy",
-              },
-              {
-                value: "disabled",
-                label: "Disabled",
-              },
-              {
-                value: "Yiminghe",
-                label: "yiminghe",
+                required: true,
               },
             ]}
-          />
-        </Col> 
-        
+            hasFeedback
+            name="discountIds"
+            label="Discounts"
+          >
+          <Select
+              showSearch
+              style={{ width: 200 }}
+              placeholder="Search Discount"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {discountOptions}
+            </Select>
+            </Form.Item>
+        </Col>
       </Row>
-      <Table columns={columns} dataSource={data} onChange={onChange} />
+      {deleteState && <DeleteModal deleteItem={deleteProductCommerce} />}
+      <Table rowKey={(record) => record.id} columns={columns} dataSource={data} />
       <Button variant="primary">Add</Button>
-    </form>
+    </Form>
   );
 }
 
