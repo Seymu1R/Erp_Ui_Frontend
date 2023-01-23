@@ -146,6 +146,17 @@ function SellList() {
           >
             Delete
           </Button>
+          <Link to='/sales/update'>
+            <Button
+              id={record.id}
+              onClick={() => {
+                setId(record.id);
+              }}
+              variant="warning"
+            >
+              Edit
+            </Button>
+          </Link>
 
           <Link to="/productlist/view">
             <Button

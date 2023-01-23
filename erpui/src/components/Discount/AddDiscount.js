@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Col, Row, Input, DatePicker, Form, Select } from "antd";
-import { Option } from "antd/es/mentions";
 import Button from "react-bootstrap/Button";
 import { discountservices } from "../APIs/Services/DiscountsServices";
 import { productservices } from "../APIs/Services/ProductServices";
@@ -14,7 +13,7 @@ function AddDiscount() {
   }, []);
 
   const optionsProduct = products.map((product) => {
-    return <Option value={product.id}>{product.name}</Option>;
+    return <Select.Option key={product.id} value={product.id}>{product.name}</Select.Option>;
   });
 
   const addDiscount = (body) => {
@@ -148,9 +147,7 @@ function AddDiscount() {
           </Form.Item>
         </Col>        
       </Row>      
-      <Button htmlType={"submit"} type="primary">
-        Add
-      </Button>
+      <Button type="primary">Add</Button>
     </Form>
   );
 }

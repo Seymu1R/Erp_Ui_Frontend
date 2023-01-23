@@ -9,7 +9,7 @@ class ProductCommerceServices extends HttpClient {
     return this.get(`GetProductCommerce?productcommerceId=${id}`);
   }
 
-  getAllProductCimmerce() {
+  getAllProductCommerce() {
     return this.getall("GetAllProductCommerces");
   }
 
