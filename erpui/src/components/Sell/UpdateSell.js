@@ -7,7 +7,7 @@ import { discountservices } from "../APIs/Services/DiscountsServices";
 import { customerservice } from "../APIs/Services/CustomerServices";
 import { sellservices } from "../APIs/Services/SellsServices";
 import ProductCommerceList from "../UI/ProductCommerceList";
-import PurchaseCommerceAdd from "../PurchaseCommerce/SellCommerceAdd";
+import SellCommerceAdd from "../PurchaseCommerce/SellCommerceAdd";
 
 
 function UpdateSell() {
@@ -227,7 +227,7 @@ function UpdateSell() {
         </Row>
         <Button variant="warning">Edit</Button>
       </Form>
-      <PurchaseCommerceAdd sellId = {id}  />
+      <SellCommerceAdd sellId = {id}  />
       <ProductCommerceList sellId = {id}  />
     </>
   );

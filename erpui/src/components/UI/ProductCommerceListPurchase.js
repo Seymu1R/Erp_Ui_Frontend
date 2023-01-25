@@ -6,7 +6,7 @@ import DeleteModal from "../UI/DeleteModal";
 import { productcommerceservices } from "../APIs/Services/ProductCommerce";
 import { productservices } from "../APIs/Services/ProductServices";
 
-function ProductCommerceList({ sellId }) {
+function ProductCommerceListPurchase({productId}) {
   const [productList, setProductList] = useState([]);
   const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
   const [productCommerces, setProductcommerces] = useState([]);
@@ -21,26 +21,32 @@ function ProductCommerceList({ sellId }) {
       setProductList(products.data);
     });
   }, []);
-
   const modifiedData = productCommerces.filter((item) => {
-    return item.sellId === sellId;
+    return item.productId === productId;
   });
 
-  const arr = modifiedData.map((item) => {
+  const productCommerceList = modifiedData.map((item) => {
     for (let j = 0; j < productList.length; j++) {
       if (item.productId === productList[j].id) {
         return {
-          key :productList[j].id,
           prductAmount: item.productAmount,
           ProductName: productList[j].name,
-          SellingPrice: productList[j].sellingPrice,
+          PurchasePrice: productList[j].purchasePrice,
           SubTotal : productList[j].sellingPrice*item.productAmount
         };
       }
     }
   });
-
-
+console.log(productCommerceList);
+  const deleteMOdalHandling = (id) => {
+    setId(id);
+    setDeleteState(true);
+  };
+  const deleteProductCommerce = (id) => {
+    productcommerceservices.deleteProductCommerce(id).then((data) => {
+      console.log(data.message);
+    });
+  };
 
   const columns = [
     {
@@ -48,8 +54,8 @@ function ProductCommerceList({ sellId }) {
       dataIndex: "ProductName",
     },
     {
-      title: "SellingPrice",
-      dataIndex: "SellingPrice",
+      title: "PurchasePrice",
+      dataIndex: "PurchasePrice",
     },
     {
       title: "ProductAmount",
@@ -80,22 +86,10 @@ function ProductCommerceList({ sellId }) {
     },
   ];
 
-  const deleteMOdalHandling = (id) => {
-    setId(id);
-    setDeleteState(true);
-  };
-  const deleteProductCommerce = (id) => {
-    productcommerceservices.deleteProductCommerce(id).then((data) => {
-      console.log(data.message);
-    });
-  };
-
-  return (
-    <div>
+  return <div>
       {deleteState && <DeleteModal deleteItem={deleteProductCommerce} />}
-      <Table columns={columns} dataSource={arr} />
-    </div>
-  );
+      <Table rowKey={(record) => record.id} columns={columns} dataSource={productCommerceList} />
+    </div>;
 }
 
-export default ProductCommerceList;
+export default ProductCommerceListPurchase;

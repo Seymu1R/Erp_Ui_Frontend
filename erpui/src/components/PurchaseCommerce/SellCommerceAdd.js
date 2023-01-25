@@ -13,7 +13,7 @@ function SellCommerceAdd({sellId}) {
   }, []);
 
   const optionsProduct = products.map((product) => {
-    return <Option value={product.id}>{product.name}</Option>;
+    return <Option key={product.id} value={product.id}>{product.name}</Option>;
   });
 
   const addPurchaseCommerce = (body) => {

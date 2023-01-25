@@ -1,41 +1,41 @@
-import React from "react";
-import { Table, Dropdown, Space } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import React, { useContext, useEffect, useState } from "react";
+import ErpContext from "../store/erp-context";
+import { Table } from "antd";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import PurchaseHeader from "./PurchaseHeader";
+import { purchaseservices } from "../APIs/Services/PurchaseServices";
+import DeleteModal from "../UI/DeleteModal";
 
 function PurchaseList() {
-  const items = [
-    {
-        label: (
-          <Link to="/purchase/view">
-            <Button variant="info">View</Button>
-          </Link>
-        ),
-        key: "1",
-      },
-    {
-      label: (
-        <Link to="/purchase/update">
-          <Button variant="warning">Edit</Button>
-        </Link>
-      ),
-      key: "1",
-    },
-    {
-      label: <Button variant="danger">Delete</Button>,
-      key: "2",
-    },
-  ];
+  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [purchaseList, setPurchaseList] = useState([]);
+
+  useEffect(() => {
+    purchaseservices.getAllPurchases().then(({data:purchases}) => {
+      setPurchaseList(purchases.data)
+    })
+  },[])
+
+  const deletePurchase = (id) => {
+    purchaseservices.deletePurchase(id).then((data) => {
+      console.log(data.message);
+    });
+  };
+
+  const deleteMOdalHandling = (id) => {
+    setId(id);
+    setDeleteState(true);
+  };
+
   const columns = [
     {
       title: "PurchaseCode",
-      dataIndex: "purchasecode"     
+      dataIndex: "purchaseCode",
     },
     {
       title: "PurchaseStatus",
-      dataIndex: "purchasestatus",
+      dataIndex: "purchaseStatus",
       filters: [
         {
           text: "Received",
@@ -52,91 +52,66 @@ function PurchaseList() {
       ],
       onFilter: (value, record) => record.address.startsWith(value),
       filterSearch: true,
-     
     },
     {
-        title: "PayTerm",
-        dataIndex: "payterm",
-        defaultSortOrder: "descend",
-        sorter: (a, b) => a.payterm - b.payterm,
-      },
-      {
-        title: "AdditionalNote",
-        dataIndex: "additionalnote"        
-      },
-      {
-        title: "Supplier",
-        dataIndex: "supplier"        
-      },
-      {
-        title: "Stock",
-        dataIndex: "stock"        
-      },
-      {
-        title: "CreatedDate",
-        dataIndex: "createddate",
-        defaultSortOrder: "descend",
-        sorter: (a, b) => a.createddate - b.createddate,        
-      },
-      {
-        title: "CreatedBy",
-        dataIndex: "createdby",
-        defaultSortOrder: "descend",
-        sorter: (a, b) => a.createdby - b.createdby,        
-      },
+      title: "PayTerm",
+      dataIndex: "payTerm",
+      defaultSortOrder: "descend",
+      sorter: (a, b) => a.payterm - b.payterm,
+    },
+    {
+      title: "AdditionalNote",
+      dataIndex: "additionalNote",
+    },  
     {
       title: "Actions",
-      dataIndex: "action",
-      render: () => (
-        <Dropdown
-          menu={{
-            items,
-          }}
-          trigger={["click"]}
-        >
-          <Link onClick={(e) => e.preventDefault()}>
-            <Space>
-              <DownOutlined />
-            </Space>
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <div className="d-flex ">
+          <Button
+            id={record.id}
+            onClick={() => {
+              deleteMOdalHandling(record.id);
+            }}
+            className="margin "
+            variant="danger"
+          >
+            Delete
+          </Button>
+          <Link to="/purchase/update">
+            <Button
+              id={record.id}
+              onClick={() => {
+                setId(record.id);
+              }}
+              variant="warning"
+            >
+              Edit
+            </Button>
           </Link>
-        </Dropdown>
+
+          <Link to="/productlist/view">
+            <Button
+              id={record.id}
+              onClick={() => {
+                setId(record.id);
+              }}
+              variant="info"
+            >
+              View
+            </Button>
+          </Link>
+        </div>
       ),
     },
-  ];
-  const data = [
-    {
-      key: "1",
-      name: "xxx",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      customercode: "ppp",
-      age: 42,
-      address: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      customercode: "yyy",
-      age: 32,
-      address: "Sidney No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      customercode: "xyz",
-      age: 32,
-      address: "London No. 2 Lake Park",
-    },
-  ];
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
-  };
-
+  ]; 
+ 
   return (
     <>
-      <PurchaseHeader/>
-      <Table columns={columns} dataSource={data} onChange={onChange} />
+      {deleteState && <DeleteModal deleteItem={deletePurchase} />}
+      <PurchaseHeader />
+      <Table columns={columns} dataSource={purchaseList}/>
     </>
   );
 }

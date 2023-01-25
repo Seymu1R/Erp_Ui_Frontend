@@ -1,196 +1,172 @@
-import React from "react";
-import { Col, Row, Input, Select, Tooltip, Table, Dropdown, Space } from "antd";
-import { AppstoreAddOutlined, DownOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import { Col, Row, Input, Select, Form } from "antd";
 import Button from "react-bootstrap/Button";
+import { stockservices } from "../APIs/Services/StockService";
+import { supplierservices } from "../APIs/Services/SupplierServices";
+import { purchaseservices } from "../APIs/Services/PurchaseServices";
 
 function PurchaseAdd() {
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
-  };
-  const items = [
-    {
-      label: (
-        <Link to="/units/update">
-          <Button variant="warning">Edit</Button>
-        </Link>
-      ),
-      key: "1",
-    },
-    {
-      label: <Button variant="danger">Delete</Button>,
-      key: "2",
-    },
-  ];
-  const columns = [
-    {
-      title: "ProductName",
-      dataIndex: "productname",
-    },
-    {
-      title: "ProductAmount",
-      dataIndex: "productamount",
-    },
-    {
-      title: "SubTotal",
-      dataIndex: "subtotal",
-    },
-    {
-      title: "Actions",
-      dataIndex: "action",
-      render: () => (
-        <Dropdown
-          menu={{
-            items,
-          }}
-          trigger={["click"]}
-        >
-          <Link onClick={(e) => e.preventDefault()}>
-            <Space>
-              <DownOutlined />
-            </Space>
-          </Link>
-        </Dropdown>
-      ),
-    },
-  ];
-  const data = [
-    {
-      key: "1",
-      name: "xxx",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      customercode: "ppp",
-      age: 42,
-      address: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      customercode: "yyy",
-      age: 32,
-      address: "Sidney No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      customercode: "xyz",
-      age: 32,
-      address: "London No. 2 Lake Park",
-    },
-  ];
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
+  const [suppliers, setSuppliers] = useState([]);
+  const [stocks, setStocks] = useState([]);
+  
+
+  useEffect(() => {
+    supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
+      setSuppliers(suppliers.data);
+    });
+    stockservices.getAllStocks().then(({ data: stocks }) => {
+      setStocks(stocks.data);
+    });  
+  }, []);
+
+  const optionsSuppliers = suppliers.map((supplier) => {
+    return (
+      <Select.Option key={supplier.id} value={supplier.id}>
+        {supplier.name}
+      </Select.Option>
+    );
+  });
+  const optionsStocks = stocks.map((stock) => {
+    return (
+      <Select.Option key={stock.id} value={stock.id}>
+        {stock.buisnessLocation}
+      </Select.Option>
+    );
+  });
+ 
+
+  const addPurchase = (body) => {
+    purchaseservices
+      .createPurchase(body)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((eror) => {
+        window.alert(eror);
+      });
   };
 
   return (
-    <form>
-      <Row style={{ marginBottom: "20px" }}>
-        <Col span={8}>
-          <label style={{ width: "100%" }}>Supplier</label>
-          <Select
-            defaultValue="lucy"
-            style={{
-              width: 120,
-            }}
-            onChange={handleChange}
-            options={[
-              {
-                value: "jack",
-                label: "Jack",
-              },
-              {
-                value: "lucy",
-                label: "Lucy",
-              },
-              {
-                value: "disabled",
-                label: "Disabled",
-              },
-              {
-                value: "Yiminghe",
-                label: "yiminghe",
-              },
-            ]}
-          />
-        </Col>
-        <Col span={8}>
-          <label style={{ width: "100%" }}>Stock</label>
-          <Select
-            defaultValue="lucy"
-            style={{
-              width: 120,
-            }}
-            onChange={handleChange}
-            options={[
-              {
-                value: "jack",
-                label: "Jack",
-              },
-              {
-                value: "lucy",
-                label: "Lucy",
-              },
-              {
-                value: "disabled",
-                label: "Disabled",
-              },
-              {
-                value: "Yiminghe",
-                label: "yiminghe",
-              },
-            ]}
-          />
-        </Col>
-        <Col span={8}>
-          <label htmlFor="payterm">PayTerm</label>
-          <Input
-            type="number"
-            id="payterm"
-            size="large"
-            placeholder="PayTerm"
-          />
-        </Col>
-      </Row>
-      <Row style={{ marginBottom: "20px" }}>
-        <Col span={8}>
-          <label htmlFor="note">AdditionalNote</label>
-          <Input
-            type="text"
-            id="note"
-            size="large"
-            placeholder="AdditionalNote"
-          />
-        </Col>
-        <Col span={8}>
-          <label htmlFor="phonenumber">PhoneNumber</label>
-          <Input
-            type="phone"
-            id="phonenumber"
-            size="large"
-            placeholder="PhoneNumber"
-          />
-        </Col>
-        <Col span={8}>
-          <label style={{ width: "100%" }}>ProductCommerce</label>
-          <Link to="/addpurchasecommerce">
-            <Tooltip title="Add PurchaseCommerce" color={"#2b80ec"}>
-              <AppstoreAddOutlined
-                style={{
-                  fontSize: "30px",
-                  color: "#2b80ec",
-                  cursor: "pointer",
-                  marginLeft: "20px",
-                }}
+    <>
+      <Form
+        autoComplete="off"
+        onFinish={(values) => {
+          console.log(values);
+          const postObj = {
+            supplierId: `${values.supplierId}`,
+            stockId: `${values.stockId}`,            
+            payTerm: `${values.payTerm}`,
+            additionalNote: `${values.additionalNote}`,
+          };
+          addPurchase(postObj);
+        }}
+      >
+        <Row style={{ marginBottom: "20px" }}>
+          <Col span={8}>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+              hasFeedback
+              name="supplierId"
+              label="Suppliers"
+            >
+              <Select
+                showSearch
+                style={{ width: 200 }}
+                placeholder="Search Supplier"
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                  0
+                }
+              >
+                {optionsSuppliers}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+              hasFeedback
+              name="stockId"
+              label="Stock"
+            >
+              <Select
+                showSearch
+                style={{ width: 200 }}
+                placeholder="Search Stock"
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                  0
+                }
+              >
+                {optionsStocks}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+              hasFeedback
+              name="payTerm"
+              label="PayTerm"
+            >
+              <Input
+                type="number"
+                id="payTerm"
+                size="large"
+                placeholder="PayTerm"
               />
-            </Tooltip>
-          </Link>
-        </Col>
-      </Row>
-      <Table columns={columns} dataSource={data} onChange={onChange} />
-      <Button variant="primary">Add</Button>
-    </form>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row style={{ marginBottom: "20px" }}>
+          <Col span={8}>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your Description",
+                  whitespace: true,
+                  min: 3,
+                  max: 20,
+                },
+              ]}
+              hasFeedback
+              name="additionalNote"
+              label="AdditionalNote"
+            >
+              <Input
+                type="text"
+                id="additionalNote"
+                size="large"
+                placeholder="AdditionalNote"
+                style={{ width: "90%" }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+           
+          </Col>
+          <Col span={8}>
+            
+          </Col>
+        </Row>
+        <Button type="primary">Add</Button>
+      </Form>
+    </>
   );
 }
 
