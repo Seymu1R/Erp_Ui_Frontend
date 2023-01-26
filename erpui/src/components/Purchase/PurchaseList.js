@@ -79,7 +79,7 @@ function PurchaseList() {
           >
             Delete
           </Button>
-          <Link to="/purchase/update">
+          <Link to={`/purchase/update/${record.id}`}>
             <Button
               id={record.id}
               onClick={() => {
@@ -91,7 +91,7 @@ function PurchaseList() {
             </Button>
           </Link>
 
-          <Link to="/productlist/view">
+          <Link to={`view/${record.id}`}>
             <Button
               id={record.id}
               onClick={() => {

@@ -6,16 +6,19 @@ import { Link } from "react-router-dom";
 import ProductHeader from "./ProductHeader";
 import DeleteModal from "../UI/DeleteModal";
 import { productservices } from "../APIs/Services/ProductServices";
+import Loading from "../UI/Loading";
 
 
 function ProductList() {
   const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
   const [productList, setProductList] = useState([]); 
+  const [loading, setLoading] = useState(true)
 
 
   useEffect(() => {
     productservices.getAllpRoducts().then(({ data: Products }) => {
       setProductList(Products.data);
+      setLoading(false)
     });
   }, []);
 
@@ -56,17 +59,7 @@ function ProductList() {
       title: "SellingPrice",
       dataIndex: "sellingPrice",
       key: "sellingPrice",
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-    }, 
+    },  
     {
       title: "Actions",
       dataIndex: "",
@@ -102,6 +95,7 @@ function ProductList() {
 
   return (
     <>
+    {loading&&<Loading/>}
       {deleteState && <DeleteModal deleteItem={deleteProduct} />}
       <ProductHeader />
       <Table

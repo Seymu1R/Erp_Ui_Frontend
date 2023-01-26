@@ -1,10 +1,20 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import ErpContext from "../store/erp-context";
 import { Col, Row, Input, Button, Form } from "antd";
 import { categoriesservices } from "../APIs/Services/CategoryServices";
+import { useForm } from "antd/es/form/Form";
 
 function UpdateCategory() {
   const [{ id }] = useContext(ErpContext);
+  const [form] = useForm();
+
+  useEffect(() => {
+    categoriesservices.getCategory(id).then(({ data: category }) => {
+      form.setFieldsValue({
+        name: category.data.name,
+      });
+    });
+  });
 
   const updateCategory = (body) => {
     categoriesservices
@@ -19,6 +29,7 @@ function UpdateCategory() {
 
   return (
     <Form
+      form={form}
       autoComplete="off"
       onFinish={(values) => {
         console.log(values);

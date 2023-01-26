@@ -39,7 +39,16 @@ function ProductCommerceList({ sellId }) {
       }
     }
   });
-
+  
+  const deleteMOdalHandling = (id) => {
+    setId(id);
+    setDeleteState(true);
+  };
+  const deleteProductCommerce = (id) => {
+    productcommerceservices.deleteProductCommerce(id).then((data) => {
+      console.log(data.message);
+    });
+  };
 
 
   const columns = [
@@ -65,8 +74,7 @@ function ProductCommerceList({ sellId }) {
       key: "x",
       render: (record) => (
         <div className="d-flex ">
-          <Button
-            id={record.id}
+          <Button           
             onClick={() => {
               deleteMOdalHandling(record.id);
             }}
@@ -80,15 +88,7 @@ function ProductCommerceList({ sellId }) {
     },
   ];
 
-  const deleteMOdalHandling = (id) => {
-    setId(id);
-    setDeleteState(true);
-  };
-  const deleteProductCommerce = (id) => {
-    productcommerceservices.deleteProductCommerce(id).then((data) => {
-      console.log(data.message);
-    });
-  };
+ 
 
   return (
     <div>

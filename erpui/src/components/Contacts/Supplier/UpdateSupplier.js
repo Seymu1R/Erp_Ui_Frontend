@@ -21,7 +21,7 @@ function UpdateSupplier() {
         payTerm: supplier.data.payTerm,
       });
     });
-  }, [id]);
+  }, [id,form]);
 
   const updateSupplier = (body) => {
     supplierservices

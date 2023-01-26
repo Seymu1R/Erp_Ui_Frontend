@@ -1,17 +1,21 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import ErpContext from "../store/erp-context";
 import { Col, Row, Input, Button, Form } from "antd";
 import { unitservices } from "../APIs/Services/UnitsServices";
+import { useForm } from "antd/es/form/Form";
 
 function UpdateUnit() {
   const [{ id }] = useContext(ErpContext);
-  const [unitItem, setUnit] = useState({});
+  const [form] = useForm();
 
   useEffect(() => {
     unitservices.getUnit(id).then(({ data: unit }) => {
-      setUnit(unit.data);
+      form.setFieldsValue({
+        unitName: unit.data.unitName,
+        unitType: unit.data.unitType,
+      });
     });
-  }, [id]);
+  }, [id, form]);
 
   const editBrand = (body) => {
     unitservices
@@ -26,11 +30,12 @@ function UpdateUnit() {
 
   return (
     <Form
+      form={form}
       autoComplete="off"
       onFinish={(values) => {
         console.log(values);
         const Obj = {
-          id : `${id}`,
+          id: `${id}`,
           unitName: `${values.unitName}`,
           unitType: `${values.unitType}`,
         };
@@ -54,7 +59,6 @@ function UpdateUnit() {
             label="UnitName"
           >
             <Input
-              defaultValue={unitItem.unitName}
               type="text"
               id="unitName"
               size="large"
@@ -78,8 +82,7 @@ function UpdateUnit() {
             name="unitType"
             label="UnitType"
           >
-            <Input
-              defaultValue={unitItem.unitType}
+            <Input             
               type="text"
               id="unitType"
               size="large"

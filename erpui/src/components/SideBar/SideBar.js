@@ -12,7 +12,7 @@ import {
   CarOutlined,
   DatabaseOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Breadcrumb, Layout, Menu } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navigate from "../../routes/Routes";
 const { Content, Footer, Sider } = Layout;
@@ -66,9 +66,7 @@ function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+
   return (
     <Layout
       style={{
@@ -80,7 +78,7 @@ function SideBar() {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         style={{
-          background: " #fff",
+          background: " #cce7e8",
         }}
       >
         <div />
@@ -93,7 +91,7 @@ function SideBar() {
           mode="inline"
           items={items}
           style={{
-            background: " #fff",
+            background: " #cce7e8",
             color: "black",
           }}
         ></Menu>
@@ -102,7 +100,7 @@ function SideBar() {
         <Header />
         <Content
           style={{
-            margin: "0 16px",
+            background: " #cce7e8",
           }}
         >
           <Breadcrumb
@@ -116,7 +114,7 @@ function SideBar() {
             style={{
               padding: 24,
               minHeight: 360,
-              background: colorBgContainer,
+              background: "#cce7e8",
             }}
           >
             <Navigate />
@@ -126,6 +124,7 @@ function SideBar() {
         <Footer
           style={{
             textAlign: "center",
+            background: "#cce7e8",
           }}
         >
           Ant Design ©2023 Created by Ant UED

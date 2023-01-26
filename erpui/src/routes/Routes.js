@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import Login from "../components/Auths/Login/Login";
 import AddBrand from "../components/Brands/AddBrand";
 import BrandsList from "../components/Brands/BrandsList";
 import UpdateBrand from "../components/Brands/UpdateBrand";
@@ -23,6 +24,7 @@ import ProductList from "../components/Products/ProductList";
 import UpdateProduct from "../components/Products/UpdateProduct";
 import PurchaseAdd from "../components/Purchase/PurchaseAdd";
 import PurchaseList from "../components/Purchase/PurchaseList";
+import PurchaseView from "../components/Purchase/PurchaseView";
 import UpdatePurchase from "../components/Purchase/UpdatePurchase";
 import PurchaseCommerceAdd from "../components/PurchaseCommerce/SellCommerceAdd";
 import StockTransferCommerceAdd from "../components/PurchaseCommerce/StockTransferCommerceAdd";
@@ -96,17 +98,27 @@ function Navigate() {
       <Route path="/brands/update" element={<UpdateBrand />}></Route>
       <Route path="/purchases" element={<PurchaseList />}></Route>
       <Route path="/addpurchase" element={<PurchaseAdd />}></Route>
-      <Route path="/purchase/update" element={<UpdatePurchase />}></Route>
+      <Route
+        path="/purchase/update/:purchaseId"
+        element={<UpdatePurchase />}
+      ></Route>
+      <Route
+        path="/purchases/view/:purchaseId"
+        element={<PurchaseView />}
+      ></Route>
       <Route
         path="/addpurchasecommerce"
         element={<PurchaseCommerceAdd />}
       ></Route>
       <Route path="/sales" element={<SellList />}></Route>
       <Route path="/addsell" element={<AddSell />}></Route>
-      <Route path="/sales/update" element={<UpdateSell />}></Route>
+      <Route path="/sales/update/:sellId" element={<UpdateSell />}></Route>
       <Route path="/discounts" element={<DiscountList />}></Route>
       <Route path="/adddiscount" element={<AddDiscount />}></Route>
-      <Route path="/discountlist/view" element={<DiscountInfo />}></Route>
+      <Route
+        path="/discountlist/view/:discountId"
+        element={<DiscountInfo />}
+      ></Route>
       <Route path="/discount/update" element={<UpdateDiscount />}></Route>
       <Route path="/stocktransferlist" element={<StockTransferList />}></Route>
       <Route path="/addstocktransfer" element={<AddStockTransfer />}></Route>
@@ -117,7 +129,8 @@ function Navigate() {
       <Route path="/stocktransfer/edit" element={<StockTransferEdit />}></Route>
       <Route path="/stocklist" element={<StockList />}></Route>
       <Route path="/addstock" element={<AddStock />}></Route>
-      <Route path="/editstock" element={<EditStock />}></Route>
+      <Route path="/editstock/:stockId" element={<EditStock />}></Route>
+      <Route path="/login" element={<Login />}></Route>
     </Routes>
   );
 }

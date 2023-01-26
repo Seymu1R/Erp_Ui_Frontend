@@ -36,6 +36,12 @@ function CategoryList() {
     {
       title: "Name",
       dataIndex: "name",
+      filters: categoryList.map((category) => {
+        return { text: category.name, value: category.name };
+      }),
+      filterSearch: true,
+      onFilter: (value, record) => record.name.startsWith(value),
+      width: "25%",
     },
     {
       title: "IsMain?",
@@ -57,7 +63,7 @@ function CategoryList() {
           >
             Delete
           </Button>
-          <Link to='/categories/update'>
+          <Link to="/categories/update">
             <Button
               id={record.id}
               onClick={() => {
@@ -66,17 +72,6 @@ function CategoryList() {
               variant="primary"
             >
               Edit
-            </Button>
-          </Link>
-          <Link to="/brands/View">
-            <Button
-              id={record.id}
-              onClick={() => {
-                setId(record.id);
-              }}
-              variant="info"
-            >
-              View
             </Button>
           </Link>
         </div>

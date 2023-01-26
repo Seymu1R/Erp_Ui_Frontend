@@ -34,11 +34,25 @@ function StockList() {
       const columns = [
         {
           title: "StockCode",
-          dataIndex: "stockCode",          
+          dataIndex: "stockCode",  
+          filters: stocklist.map((stock) => {
+            return { text: stock.stockCode, value: stock.stockCode };
+          }),
+          filterSearch: true,
+          onFilter: (value, record) => record.stockCode.startsWith(value),
+          width: "25%",
+          key: "stockCode",        
         }, 
         {
             title: "BuisnessLocation",
             dataIndex: "buisnessLocation",
+            filters: stocklist.map((stock) => {
+              return { text: stock.buisnessLocation, value: stock.buisnessLocation };
+            }),
+            filterSearch: true,
+            onFilter: (value, record) => record.buisnessLocation.startsWith(value),
+            width: "25%",
+            key: "buisnessLocation", 
           },      
         {
           title: "TotalAmount",
@@ -62,22 +76,14 @@ function StockList() {
               >
                 Delete
               </Button>
-              <Link to="/editstock">
+              <Link to={`/editstock/${record.id}`}>
                 <Button
-                  id={record.id}
-                  onClick={() => {
-                    setId(record.id)
-                  }}
+                  id={record.id}                  
                   variant="primary"
                 >
                   Edit
                 </Button>
-              </Link>
-              <Link to="">
-                <Button id={record.id} variant="info">
-                  Deactive
-                </Button>
-              </Link>
+              </Link>            
             </div>
           ),
         },

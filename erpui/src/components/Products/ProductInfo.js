@@ -1,5 +1,4 @@
-import React, { useContext, useState } from "react";
-import ErpContext from "../store/erp-context";
+import React, {useEffect, useState } from "react";
 import { Image } from "antd";
 import {
   Card,
@@ -30,7 +29,7 @@ function ProductInfoPage() {
   let expirationDate = new Date(productitem.expirationDate);
 
   const stocks = productitem.stockIds;
-  useState(() => {
+  useEffect(() => {
     productservices.getProduct(productid).then(({ data: product }) => {
       setProduct(product.data);
       unitservices.getUnit(product.data.unitId).then(({ data: unit }) => {
@@ -50,7 +49,7 @@ function ProductInfoPage() {
           });
       });
     });
-  }, []);
+  }, [productid]);
 
   return (
     <Container>

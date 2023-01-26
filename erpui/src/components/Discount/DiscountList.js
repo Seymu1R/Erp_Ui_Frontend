@@ -10,6 +10,7 @@ import DeleteModal from "../UI/DeleteModal";
 function DiscountList() {
   const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
   const [discountList, setDiscountList] = useState([]);
+  
 
   useEffect(() => {
     discountservices.getAllDiscounts().then(({ data: Products }) => {
@@ -32,6 +33,12 @@ function DiscountList() {
     {
       title: "Name",
       dataIndex: "name",
+      filters: discountList.map((discount) => {
+        return { text: discount.name, value: discount.name };
+      }),
+      filterSearch: true,
+      onFilter: (value, record) => record.name.startsWith(value),
+      width: "25%",
     },
     {
       title: "StartTime",
@@ -67,7 +74,7 @@ function DiscountList() {
             Delete
           </Button>
 
-          <Link to="/discountlist/view">
+          <Link to={`/discountlist/view/${record.id}`}>
             <Button
               id={record.id}
               onClick={() => {

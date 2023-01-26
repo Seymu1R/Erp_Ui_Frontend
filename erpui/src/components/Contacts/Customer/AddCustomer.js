@@ -1,8 +1,10 @@
 import React from "react";
 import { Col, Row, Input, Form, Button } from "antd";
 import { customerservice } from "../../APIs/Services/CustomerServices";
+import { useNavigate } from "react-router-dom";
 
 function AddCustomer() {
+  const navigate =  useNavigate()
 
   const addCustomer = (body) => {
     customerservice
@@ -12,7 +14,9 @@ function AddCustomer() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(
+        navigate('/customers')
+      );
   };
 
   return (

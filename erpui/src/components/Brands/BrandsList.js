@@ -32,7 +32,13 @@ function BrandsList() {
       const columns = [
         {
           title: "Brand",
-          dataIndex: "brandName"        
+          dataIndex: "brandName",
+          filters: brandList.map((brand) => {
+            return { text: brand.brandName, value: brand.brandName };
+          }),
+          filterSearch: true,
+          onFilter: (value, record) => record.brandName.startsWith(value),
+          width: "25%",       
         },       
               
         {

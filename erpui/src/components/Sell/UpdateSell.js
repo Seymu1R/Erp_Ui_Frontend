@@ -1,5 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
-import ErpContext from "../store/erp-context";
+import React, { useState, useEffect } from "react";
 import { Col, Row, Input, Select, Form } from "antd";
 import Button from "react-bootstrap/esm/Button";
 import { stockservices } from "../APIs/Services/StockService";
@@ -8,15 +7,17 @@ import { customerservice } from "../APIs/Services/CustomerServices";
 import { sellservices } from "../APIs/Services/SellsServices";
 import ProductCommerceList from "../UI/ProductCommerceList";
 import SellCommerceAdd from "../PurchaseCommerce/SellCommerceAdd";
-
+import { useParams } from "react-router-dom";
+import { useForm } from "antd/es/form/Form";
 
 function UpdateSell() {
-  const [{ id}] = useContext(ErpContext);
   const [customers, setCustomers] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [discounts, setDiscounts] = useState([]);
+  let { sellId } = useParams();
+  const [form] = useForm();
 
-  useEffect(() => {
+  useEffect(() => {    
     customerservice.getAllCustomers().then(({ data: customers }) => {
       setCustomers(customers.data);
     });
@@ -26,7 +27,19 @@ function UpdateSell() {
     discountservices.getAllDiscounts().then(({ data: discounts }) => {
       setDiscounts(discounts.data);
     });
-  }, []);
+    sellservices.getSell(sellId).then(({ data: sell }) => {
+      form.setFieldsValue({
+        payTerm: sell.data.payTerm,
+        invoiceStatuse: sell.data.invoiceStatuse,
+        shippingAddress: sell.data.shippingAddress,
+        sellNote: sell.data.sellNote,
+        customerId: sell.data.customerId,
+        stockId: sell.data.stockId,
+        shippingStatus: sell.data.shippingStatus,
+        discountIds: sell.data.discountIds
+      });
+    });
+  }, [form, sellId]);
 
   const optionsCategory = customers.map((category) => {
     return (
@@ -64,6 +77,7 @@ function UpdateSell() {
   return (
     <>
       <Form
+      form={form}
         autoComplete="off"
         onFinish={(values) => {
           console.log(values);
@@ -227,10 +241,10 @@ function UpdateSell() {
         </Row>
         <Button variant="warning">Edit</Button>
       </Form>
-      <SellCommerceAdd sellId = {id}  />
-      <ProductCommerceList sellId = {id}  />
+      <SellCommerceAdd sellId={sellId} />
+      <ProductCommerceList sellId={sellId} />
     </>
   );
 }
 
-export default UpdateSell
+export default UpdateSell;

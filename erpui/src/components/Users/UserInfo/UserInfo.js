@@ -16,7 +16,7 @@ import { userservice } from "../../APIs/Services/UserServices";
 import { roleservice } from "../../APIs/Services/RoleServices";
 
 function UserInfo() {
-  const [{ id, setId }] = useContext(ErpContext);
+  const [{ setId }] = useContext(ErpContext);
   const [roles, setRole] = useState([]);
   let { userId } = useParams();
   const [user, setUser] = useState({});

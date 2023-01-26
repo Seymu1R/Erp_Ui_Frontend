@@ -7,12 +7,14 @@ import { unitservices } from "../APIs/Services/UnitsServices";
 import { categoriesservices } from "../APIs/Services/CategoryServices";
 import { brandservices } from "../APIs/Services/BrandsService";
 import { supplierservices } from "../APIs/Services/SupplierServices";
+import { useNavigate } from "react-router-dom";
 
 function AddProduct() {
   const [units, setUnit] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [suppliers, setSupliers] = useState([]);
+  const navigate =  useNavigate()
   useEffect(() => {
     unitservices.getAllUnits().then(({ data: units }) => {
       setUnit(units.data);
@@ -46,22 +48,25 @@ function AddProduct() {
       .createProduct(body)
       .then((res) => {
         console.log(res.data);
-      })
+      }).finally(
+        navigate("./")
+      )
       .catch((eror) => {
         window.alert(eror);
       });
   };
 
+
   return (
-    <Form
+    <Form      
       autoComplete="off"
-      onFinish={(values) => {
-        console.log(values);
+      onFinish={(values) => {   
+        console.log(values);     
         const postObj = {
           name: `${values.name}`,
           skuCode: `${values.skuCode}`,
           barCode: `${values.barCode}`,
-          imageUrl: `${values.imageUrl}`,
+          productImage : values.productImage,     
           description: `${values.description}`,
           purchasePrice: `${values.purchasePrice}`,
           sellingPrice: `${values.sellingPrice}`,
@@ -153,18 +158,14 @@ function AddProduct() {
       </Row>
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-              },
-            ]}
+          <Form.Item           
+            
             hasFeedback
-            name="imageUrl"
+            name="productImage"
             label="Image"
           >
             <div>
-              <MDBFile  id="customFile" />
+              <MDBFile accept=".jpg, .png, .jpeg"  id="productImage" />
             </div>
           </Form.Item>
         </Col>

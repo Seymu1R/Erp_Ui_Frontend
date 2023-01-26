@@ -1,31 +1,41 @@
-import React, {useContext, useState, useEffect} from 'react'
-import ErpContext from '../store/erp-context';
-import { Col, Row, Input, Select, Form} from "antd";
+import React, { useState, useEffect } from "react";
+import { Col, Row, Input, Select, Form } from "antd";
 import Button from "react-bootstrap/Button";
-import ProductCommerceList from '../UI/ProductCommerceList';
-import { supplierservices } from '../APIs/Services/SupplierServices';
-import { stockservices } from '../APIs/Services/StockService';
-import { purchaseservices } from '../APIs/Services/PurchaseServices';
-import PurchaseCommerceAdd from '../PurchaseCommerce/PurchaseCommerceAdd';
+import { supplierservices } from "../APIs/Services/SupplierServices";
+import { stockservices } from "../APIs/Services/StockService";
+import { purchaseservices } from "../APIs/Services/PurchaseServices";
+import PurchaseCommerceAdd from "../PurchaseCommerce/PurchaseCommerceAdd";
+import { useParams } from "react-router-dom";
+import { useForm } from "antd/es/form/Form";
+import ProductCommerceListPruchase from "../PurchaseCommerce/ProductCommerceListPruchase";
 
 function UpdatePurchase() {
-  const [{ id}] = useContext(ErpContext);
-  const [purchases, setPurchases] = useState([]);
+  let { purchaseId } = useParams();
+  const [form] = useForm();
+  const [suppliers, setSuppliers] = useState([]);
   const [stocks, setStocks] = useState([]);
 
   useEffect(() => {
     supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
-      setPurchases(suppliers.data);
+      setSuppliers(suppliers.data);
     });
     stockservices.getAllStocks().then(({ data: stocks }) => {
       setStocks(stocks.data);
-    }); 
-  }, []);
+    });
+    purchaseservices.getPurchase(purchaseId).then(({ data: purchase }) => {
+      form.setFieldsValue({
+        supplierId: purchase.data.supplierId,
+        stockId: purchase.data.stockId,
+        payTerm: purchase.data.payTerm,
+        additionalNote: purchase.data.additionalNote,
+      });
+    });
+  }, [purchaseId, form]);
 
-  const optionsPurchase = purchases.map((purchase) => {
+  const optionsPurchase = suppliers.map((supplier) => {
     return (
-      <Select.Option key={purchase.id} value={purchase.id}>
-        {purchase.name}
+      <Select.Option key={supplier.id} value={supplier.id}>
+        {supplier.businessName}
       </Select.Option>
     );
   });
@@ -51,14 +61,15 @@ function UpdatePurchase() {
   return (
     <>
       <Form
+        form={form}
         autoComplete="off"
         onFinish={(values) => {
           console.log(values);
           const postObj = {
             supplierId: `${values.supplierId}`,
-            stockId: `${values.stockId}`,           
+            stockId: `${values.stockId}`,
             payTerm: `${values.payTerm}`,
-            additionalNote: `${values.additionalNote}`,          
+            additionalNote: `${values.additionalNote}`,
           };
           addSell(postObj);
         }}
@@ -158,14 +169,14 @@ function UpdatePurchase() {
                 style={{ width: "90%" }}
               />
             </Form.Item>
-          </Col>          
+          </Col>
         </Row>
         <Button variant="warning">Edit</Button>
       </Form>
-      <PurchaseCommerceAdd  purchaseId = {id} />
-      <ProductCommerceList sellId = {id}  />
+      <PurchaseCommerceAdd purchaseId={purchaseId} />
+      <ProductCommerceListPruchase purchaseId={purchaseId} />
     </>
   );
 }
 
-export default UpdatePurchase
+export default UpdatePurchase;

@@ -1,19 +1,21 @@
-import React, {useEffect, useContext, useState} from "react";
-import ErpContext from "../store/erp-context";
-import { Col, Row, Input ,Form} from "antd";
+import React, { useEffect } from "react";
+import { Col, Row, Input, Form } from "antd";
 import Button from "react-bootstrap/Button";
 import { stockservices } from "../APIs/Services/StockService";
+import { useParams } from "react-router-dom";
+import { useForm } from "antd/es/form/Form";
 
 function EditStock() {
+  const { stockId } = useParams();
+  const [form] = useForm();
 
-  const [{ id }] = useContext(ErpContext);
-  const [stockItem, setStock] = useState({});
-
-  useEffect(()=>{
-  stockservices.getStock(id).then(({data:stock})=>{
-    setStock(stock.data)
-  })
-  },[id])
+  useEffect(() => {
+    stockservices.getStock(stockId).then(({ data: stock }) => {
+      form.setFieldsValue({
+        buisnessLocation: stock.data.buisnessLocation,
+      });
+    });
+  }, [stockId, form]);
 
   const editStock = (body) => {
     stockservices
@@ -26,14 +28,14 @@ function EditStock() {
       });
   };
 
-
-    return (
-      <Form
+  return (
+    <Form
+    form={form}
       autoComplete="off"
       onFinish={(values) => {
         console.log(values);
         const Obj = {
-          id: `${id}`,
+          id: `${stockId}`,
           buisnessLocation: `${values.buisnessLocation}`,
         };
         editStock(Obj);
@@ -55,8 +57,7 @@ function EditStock() {
             name="buisnessLocation"
             label="BusinessLocation"
           >
-            <Input
-              defaultValue={stockItem.buisnessLocation}
+            <Input              
               type="text"
               id="buisnessLocation"
               size="large"
@@ -71,7 +72,7 @@ function EditStock() {
         Add
       </Button>
     </Form>
-      );
+  );
 }
 
-export default EditStock
+export default EditStock;
