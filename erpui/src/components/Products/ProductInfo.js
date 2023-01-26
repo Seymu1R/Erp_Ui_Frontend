@@ -16,19 +16,22 @@ import { unitservices } from "../APIs/Services/UnitsServices";
 import { categoriesservices } from "../APIs/Services/CategoryServices";
 import { brandservices } from "../APIs/Services/BrandsService";
 import { supplierservices } from "../APIs/Services/SupplierServices";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-function ProductInfoPage() {
-  const [{ id, setId }] = useContext(ErpContext);
-  const [product, setProduct] = useState({});
+function ProductInfoPage() {  
+  const [productitem, setProduct] = useState({});
   const [unit, setunit] = useState("");
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [supplier, setSupplier] = useState("");
+  let { productid } = useParams();
 
-  const stocks = product.stockIds;
+  let produceDate = new Date(productitem.produceDate);
+  let expirationDate = new Date(productitem.expirationDate);
+
+  const stocks = productitem.stockIds;
   useState(() => {
-    productservices.getProduct(id).then(({ data: product }) => {
+    productservices.getProduct(productid).then(({ data: product }) => {
       setProduct(product.data);
       unitservices.getUnit(product.data.unitId).then(({ data: unit }) => {
         setunit(unit.data.unitName);
@@ -41,33 +44,28 @@ function ProductInfoPage() {
           setBrand(brand.data.brandName);
         });
         supplierservices
-          .getSupplier(product.data.suppliersID)
+          .getSupplier(product.data.suplierId)
           .then(({ data: supplier }) => {
-            setSupplier(supplier.data.suppliersID);
+            setSupplier(supplier.data.businessName);
           });
       });
     });
   }, []);
-  console.log(stocks);
+
   return (
     <Container>
       <Row>
         <Col xs="12" sm="4">
           <Card>
-            <Image width={350} src="https://picsum.photos/300/200" />
+            <Image width={385} src="https://picsum.photos/300/200" />
 
-            <CardBody>
+            <CardBody CardBody style={{ fontSize: "25px", height: "244px" }}>
               <CardTitle>
-                <h2>Name: {product.name} </h2>
+                <h2>Name: {productitem.name} </h2>
               </CardTitle>
-              <Link to="/productlist/updateproduct">
+              <Link to={`/productlist/updateproduct/${productid}`}>
                 {" "}
-                <Button
-                  onClick={() => {
-                    setId(product.id);
-                  }}
-                  color="primary"
-                >
+                <Button style={{ backgroundColor: "#002140" }} color="primary">
                   {" "}
                   Edit Product{" "}
                 </Button>
@@ -75,32 +73,40 @@ function ProductInfoPage() {
             </CardBody>
           </Card>
         </Col>
-        <Col xs="12" sm="4">
+        <Col xs="12" sm="8">
           <Card>
-            <CardBody>
-              <CardText>SkuCode: {product.skuCode}</CardText>
-              <CardText>BarCode: {product.barCode}</CardText>
-              <CardText>PurchasePrice: {product.purchasePrice}$</CardText>
-              <CardText>SellingPrice: {product.sellingPrice}$</CardText>
-              <CardText>
-                AllertQuantity: {product.alertQuantityOrAmount}
-              </CardText>
-              <CardText>Weight: {product.weight}</CardText>
-              <CardText>Stocks: {product.alertQuantityOrAmount}</CardText>
-            </CardBody>
-          </Card>
-        </Col>
-        <Col xs="12" sm="4">
-          <Card>
-            <CardBody>
-              <CardText>ProfitMargin: {product.profitMargin}</CardText>
-              <CardText>ProduceDate: {product.produceDate}</CardText>
-              <CardText>ExpirationDate: {product.expirationDate}</CardText>
-              <CardText>Unit: {unit} </CardText>
-              <CardText>Category: {category} </CardText>
-              <CardText>Brand: {brand} </CardText>
-              <CardText>Supplier: {supplier}</CardText>
-              <CardText>Stocks: {stocks}</CardText>
+            <CardBody CardBody style={{ fontSize: "25px", height: "500px" }}>
+              <Row>
+                <Col xs="12" sm="6">
+                  <CardText>SkuCode: {productitem.skuCode}</CardText>
+                  <CardText>BarCode: {productitem.barCode}</CardText>
+                  <CardText>
+                    PurchasePrice: {productitem.purchasePrice}$
+                  </CardText>
+                  <CardText>SellingPrice: {productitem.sellingPrice}$</CardText>
+                  <CardText>
+                    AllertQuantity: {productitem.alertQuantityOrAmount}
+                  </CardText>
+                  <CardText>Weight: {productitem.weight}</CardText>
+                  <CardText>
+                    Stocks: {productitem.alertQuantityOrAmount}
+                  </CardText>
+                  <CardText>ProfitMargin: {productitem.profitMargin}</CardText>
+                </Col>
+                <Col xs="12" sm="6">
+                  <CardText>
+                    ProduceDate: {produceDate.toLocaleString("en-US")}
+                  </CardText>
+                  <CardText>
+                    ExpirationDate: {expirationDate.toLocaleString("en-US")}
+                  </CardText>
+                  <CardText>Unit: {unit} </CardText>
+                  <CardText>Category: {category} </CardText>
+                  <CardText>Brand: {brand} </CardText>
+                  <CardText>Supplier: {supplier}</CardText>
+                  <CardText>Stocks: {stocks}</CardText>
+                </Col>
+              </Row>
             </CardBody>
           </Card>
         </Col>

@@ -12,6 +12,7 @@ function ProductList() {
   const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
   const [productList, setProductList] = useState([]); 
 
+
   useEffect(() => {
     productservices.getAllpRoducts().then(({ data: Products }) => {
       setProductList(Products.data);
@@ -83,7 +84,7 @@ function ProductList() {
             Delete
           </Button>
          
-          <Link to="/productlist/view">
+          <Link to={`/productlist/${record.id}`}>
             <Button
               id={record.id}
               onClick={() => {

@@ -10,7 +10,7 @@ import {
   UserOutlined,
   VerticalAlignBottomOutlined,
   CarOutlined,
-  DatabaseOutlined, 
+  DatabaseOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -41,7 +41,7 @@ const items = [
     getItem("Variations ", "variations"),
     getItem("Units", "units"),
     getItem("Categories", "categories"),
-    getItem("Brands", "brands")    
+    getItem("Brands", "brands"),
   ]),
   getItem("Purchases", "3", <VerticalAlignBottomOutlined />, [
     getItem("List Purchases", "purchases"),
@@ -59,13 +59,13 @@ const items = [
   getItem("Stock", "6", <DatabaseOutlined />, [
     getItem("Stocks List", "stocklist"),
     getItem("Add Stock", "addstock"),
-  ]),  
+  ]),
 ];
 
 function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
-  const {pathname} = useLocation();
+  const { pathname } = useLocation();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -85,9 +85,9 @@ function SideBar() {
       >
         <div />
         <Menu
-        onClick={({key})=>{
-            navigate(key);                                                                             
-        }}
+          onClick={({ key }) => {
+            navigate(key);
+          }}
           theme="white"
           defaultSelectedKeys={["1"]}
           mode="inline"
@@ -110,7 +110,7 @@ function SideBar() {
               margin: "16px 0",
             }}
           >
-            <Breadcrumb.Item>{pathname}</Breadcrumb.Item>            
+            <Breadcrumb.Item>{pathname}</Breadcrumb.Item>
           </Breadcrumb>
           <div
             style={{
@@ -118,11 +118,11 @@ function SideBar() {
               minHeight: 360,
               background: colorBgContainer,
             }}
-          >            
-            <Navigate/>            
+          >
+            <Navigate />
           </div>
         </Content>
-        
+
         <Footer
           style={{
             textAlign: "center",

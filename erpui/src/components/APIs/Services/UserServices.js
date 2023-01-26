@@ -20,8 +20,11 @@ class UsersService extends HttpClient {
     return this.post("CreateUser", body);
   } 
 
-  editPost(id, body) {
-    return this.put("posts", body, id);
+  editUser( body) {
+    return this.put("UptadeUser", body);
+  }
+  assignRoleToUser(body) {
+    return this.post("AssignRoleToUser", body)
   }
 }
 

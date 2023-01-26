@@ -72,7 +72,7 @@ function AddProduct() {
           unitId: `${values.unitId}`,
           caregoryId: `${values.caregoryId}`,
           brandId: `${values.brandId}`,
-          suppliersID: `${values.suppliersID}`,
+          suplierId: `${values.suplierId}`,
         };
         addProduct(postObj);
       }}
@@ -376,7 +376,7 @@ function AddProduct() {
               },
             ]}
             hasFeedback
-            name="suppliersID"
+            name="suplierId"
             label="Supplier"
           >
             <Select

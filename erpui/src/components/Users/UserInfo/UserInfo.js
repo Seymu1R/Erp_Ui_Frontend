@@ -1,68 +1,72 @@
-import React from "react";
-import { Col, Row, Card, Avatar } from "antd";
-import { EditOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import classes from "./UserInfo.module.scss";
-const { Meta } = Card;
+import React, { useContext, useState, useEffect } from "react";
+import ErpContext from "../../store/erp-context";
+import { Image } from "antd";
+import {
+  Card,
+  CardText,
+  CardBody,
+  CardTitle,
+  Container,
+  Row,
+  Col,
+  Button,
+} from "reactstrap";
+import { Link, useParams } from "react-router-dom";
+import { userservice } from "../../APIs/Services/UserServices";
+import { roleservice } from "../../APIs/Services/RoleServices";
 
 function UserInfo() {
-  const itemlocal = JSON.parse(localStorage.getItem("item"));
-
+  const [{ id, setId }] = useContext(ErpContext);
+  const [roles, setRole] = useState([]);
+  let { userId } = useParams();
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    userservice.getUser(userId).then(({ data: user }) => {
+      setUser(user.data);
+    });
+    roleservice.getRoleUser(userId).then(({ data: role }) => {
+      setRole(role.data);
+    });
+  }, [userId]);
   return (
-    <Row>
-      <Col span={18} push={6}>
-        <div className="container">
-          <div className="row">
-            <div className="col-md-6">
-              <ul className={classes.info}>
-                <li>Name</li>
-                <li>Surname</li>
-                <li>Fathername</li>
-                <li>Username</li>
-                <li>Phonenumber</li>
-                <li>Role</li>
-                <li>Isactive?</li>
-              </ul>
-            </div>
-            <div className="col-md-6">
-              <ul className={classes.info}>
-                <li>{itemlocal ? itemlocal.name : null}</li>
-                <li>{itemlocal ? itemlocal.surName : null}</li>
-                <li>{itemlocal ? itemlocal.fatherName : null}</li>
-                <li>{itemlocal ? itemlocal.userName : null}</li>
-                <li>{itemlocal ? itemlocal.phoneNumber : null}</li>
-                <li>Role</li>
-                <li>{itemlocal ? itemlocal.onlineState : null}</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </Col>
-      <Col span={6} pull={18}>
-        <Card
-          style={{
-            width: 300,
-          }}
-          cover={
-            <img
-              alt="example"
-              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-            />
-          }
-          actions={[
-            <Link to="/edituser">
-              <EditOutlined key="edit" />
-            </Link>,
-          ]}
-        >
-          <Meta
-            avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-            title={itemlocal ? itemlocal.userName : null}
-            description="Role"
-          />
-        </Card>
-      </Col>
-    </Row>
+    <Container>
+      <Row>
+        <Col xs="12" sm="4">
+          <Card>
+            <Image width={386} src="https://picsum.photos/300/200" />
+
+            <CardBody>
+              <CardTitle>
+                <h2>Role: {roles} </h2>
+              </CardTitle>
+              <Link to={`/edituser/${userId}`}>
+                <Button
+                  style={{ backgroundColor: "#002140" }}
+                  onClick={() => {
+                    setId(user.id);
+                  }}
+                >
+                  Edit User
+                </Button>
+              </Link>
+            </CardBody>
+          </Card>
+        </Col>
+        <Col xs="12" sm="8">
+          <Card>
+            <CardBody style={{ fontSize: "25px", height: "382px" }}>
+              <CardText>Name: {user.name}</CardText>
+              <CardText>SurName: {user.surName}</CardText>
+              <CardText>FatherName: {user.fatherName}</CardText>
+              <CardText>UserName: {user.userName}</CardText>
+              <CardText>Email: {user.email}</CardText>
+              <CardText>Phone: {user.phoneNumber}</CardText>
+              <CardText>UserName: {user.userName}</CardText>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

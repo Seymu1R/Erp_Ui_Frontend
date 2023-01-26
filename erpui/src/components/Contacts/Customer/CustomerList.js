@@ -32,15 +32,21 @@ function CustomerList() {
     {
       title: "CustomerCode",
       dataIndex: "customerCode",
+      filters: customerlist.map((customers) => {
+        return { text: customers.customerCode, value: customers.customerCode };
+      }),
+      filterSearch: true,
+      onFilter: (value, record) => record.customerCode.startsWith(value),
     },
     {
       title: "BusinessName",
       dataIndex: "businessName",
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-    },
+      filters: customerlist.map((customers) => {
+        return { text: customers.businessName, value: customers.businessName };
+      }),
+      filterSearch: true,
+      onFilter: (value, record) => record.businessName.startsWith(value)
+    },   
     {
       title: "Taxnumber",
       dataIndex: "taxNumber",
@@ -72,7 +78,7 @@ function CustomerList() {
       dataIndex: "",
       key: "x",
       fixed: "right",
-
+      width: "18%",
       render: (record) => (
         <div className="d-flex ">
           <Button

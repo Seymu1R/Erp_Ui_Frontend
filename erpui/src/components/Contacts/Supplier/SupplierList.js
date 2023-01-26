@@ -32,14 +32,20 @@ function SupplierList() {
     {
       title: "SupplierCode",
       dataIndex: "supplierCode",
+      filters: suppliers.map((suppliers) => {
+        return { text: suppliers.supplierCode, value: suppliers.supplierCode };
+      }),
+      filterSearch: true,
+      onFilter: (value, record) => record.supplierCode.startsWith(value),
     },
     {
       title: "BusinessName",
       dataIndex: "businessName",
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
+      filters: suppliers.map((suppliers) => {
+        return { text: suppliers.businessName, value: suppliers.businessName };
+      }),
+      filterSearch: true,
+      onFilter: (value, record) => record.businessName.startsWith(value),
     },
 
     {
@@ -70,13 +76,15 @@ function SupplierList() {
     {
       title: "TotalPurchaseReturn",
       dataIndex: "totalPurchaseReturn",
-      sorter: (a, b) => a.totalPurchaseReturn - b.totalPurchaseReturn,
+      width: "13%",
+      sorter: (a, b) => a.totalPurchase - b.totalPurchase
     },
     {
       title: "Actions",
       dataIndex: "",
       key: "x",
       fixed: "right",
+      width: "18%",
       render: (record) => (
         <div className="d-flex ">
           <Button
