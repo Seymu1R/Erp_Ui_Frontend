@@ -1,9 +1,10 @@
 import React from 'react'
 import { Col, Row, Input, Button, Form } from "antd";
 import { brandservices } from '../APIs/Services/BrandsService';
+import { useNavigate } from 'react-router-dom';
 
 function AddBrand() {
-  
+  const navigation  = useNavigate()
   const addBrand = (body) => {
     brandservices
       .createBrand(body)
@@ -12,7 +13,7 @@ function AddBrand() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(navigation('/brands'));
   };
 
   return (

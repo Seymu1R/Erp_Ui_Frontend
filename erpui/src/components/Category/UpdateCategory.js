@@ -3,10 +3,12 @@ import ErpContext from "../store/erp-context";
 import { Col, Row, Input, Button, Form } from "antd";
 import { categoriesservices } from "../APIs/Services/CategoryServices";
 import { useForm } from "antd/es/form/Form";
+import { useNavigate } from "react-router-dom";
 
 function UpdateCategory() {
   const [{ id }] = useContext(ErpContext);
   const [form] = useForm();
+  const navigate = useNavigate()
 
   useEffect(() => {
     categoriesservices.getCategory(id).then(({ data: category }) => {
@@ -24,7 +26,7 @@ function UpdateCategory() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(navigate('/categories'));
   };
 
   return (
@@ -67,7 +69,7 @@ function UpdateCategory() {
         </Col>
       </Row>
       <Button htmlType={"submit"} type="primary">
-        Add
+        Update
       </Button>
     </Form>
   );

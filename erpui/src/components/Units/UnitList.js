@@ -6,20 +6,22 @@ import { Link } from "react-router-dom";
 import UnitsHeader from "./UnitsHeader";
 import { unitservices } from "../APIs/Services/UnitsServices";
 import DeleteModal from "../UI/DeleteModal";
+import Loading from "../UI/Loading";
 
 function UnitList() {
-  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
+    useContext(ErpContext);
   const [unitlist, setUnitList] = useState([]);
 
   useEffect(() => {
     unitservices.getAllUnits().then(({ data: units }) => {
       setUnitList(units.data);
-    });
-  }, [deleteState]);
+    }).finally(setLoading(false));
+  }, [loading ,setLoading]);
 
   const deleteUnit = (id) => {
     unitservices.deleteUnit(id).then((data) => {
-      console.log(data.message);
+      setLoading(true)
     });
   };
 
@@ -71,6 +73,7 @@ function UnitList() {
 
   return (
     <>
+      {loading && <Loading/>}
       {deleteState && <DeleteModal deleteItem={deleteUnit} />}
       <UnitsHeader />
       <Table

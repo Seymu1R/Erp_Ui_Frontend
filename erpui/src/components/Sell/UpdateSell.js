@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Col, Row, Input, Select, Form } from "antd";
 import Button from "react-bootstrap/esm/Button";
 import { stockservices } from "../APIs/Services/StockService";
@@ -9,15 +9,17 @@ import ProductCommerceList from "../UI/ProductCommerceList";
 import SellCommerceAdd from "../PurchaseCommerce/SellCommerceAdd";
 import { useParams } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
+import ErpContext from "../store/erp-context";
 
 function UpdateSell() {
   const [customers, setCustomers] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [discounts, setDiscounts] = useState([]);
   let { sellId } = useParams();
+  const [{ total }] = useContext(ErpContext);
   const [form] = useForm();
 
-  useEffect(() => {    
+  useEffect(() => {
     customerservice.getAllCustomers().then(({ data: customers }) => {
       setCustomers(customers.data);
     });
@@ -36,15 +38,15 @@ function UpdateSell() {
         customerId: sell.data.customerId,
         stockId: sell.data.stockId,
         shippingStatus: sell.data.shippingStatus,
-        discountIds: sell.data.discountIds
+        discountIds: sell.data.discountIds,
       });
     });
   }, [form, sellId]);
 
-  const optionsCategory = customers.map((category) => {
+  const optionsCategory = customers.map((customer) => {
     return (
-      <Select.Option key={category.id} value={category.id}>
-        {category.name}
+      <Select.Option key={customer.id} value={customer.id}>
+        {customer.buisnessName}
       </Select.Option>
     );
   });
@@ -65,7 +67,7 @@ function UpdateSell() {
 
   const addSell = (body) => {
     sellservices
-      .createSell(body)
+      .updateSell(body)
       .then((res) => {
         console.log(res.data);
       })
@@ -77,17 +79,20 @@ function UpdateSell() {
   return (
     <>
       <Form
-      form={form}
+        form={form}
         autoComplete="off"
         onFinish={(values) => {
           console.log(values);
           const postObj = {
+            id: `${sellId}`,
             customerId: `${values.customerId}`,
             stockId: `${values.stockId}`,
             shippingAddress: `${values.shippingAddress}`,
             payTerm: `${values.payTerm}`,
             sellNote: `${values.sellNote}`,
             discountIds: values.discountIds,
+            total: `${total}`,
+            invoiceStatuse: values.invoiceStatuse
           };
           addSell(postObj);
         }}
@@ -238,8 +243,42 @@ function UpdateSell() {
               </Select>
             </Form.Item>
           </Col>
+          <Col span={8}>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+              hasFeedback
+              name="invoiceStatuse"
+              label="InvoiceStatus"
+            >
+              <Select                             
+                style={{ width: 200 }}
+                placeholder="invoiceStatus"
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                  0
+                }
+              >
+                <Select.Option key={1} value={1}>
+                  Draft
+                </Select.Option>
+                <Select.Option key={2} value={2}>
+                Proforma
+                </Select.Option>
+                <Select.Option key={3} value={3}>
+                Final
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
         </Row>
-        <Button variant="warning">Edit</Button>
+        <Button type="submit" variant="warning">
+          Edit
+        </Button>
       </Form>
       <SellCommerceAdd sellId={sellId} />
       <ProductCommerceList sellId={sellId} />

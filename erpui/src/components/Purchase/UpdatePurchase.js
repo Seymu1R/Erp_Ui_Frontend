@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Col, Row, Input, Select, Form } from "antd";
 import Button from "react-bootstrap/Button";
 import { supplierservices } from "../APIs/Services/SupplierServices";
 import { stockservices } from "../APIs/Services/StockService";
 import { purchaseservices } from "../APIs/Services/PurchaseServices";
 import PurchaseCommerceAdd from "../PurchaseCommerce/PurchaseCommerceAdd";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import ProductCommerceListPruchase from "../PurchaseCommerce/ProductCommerceListPruchase";
+import ErpContext from "../store/erp-context";
 
 function UpdatePurchase() {
   let { purchaseId } = useParams();
   const [form] = useForm();
+  const navigate = useNavigate()
   const [suppliers, setSuppliers] = useState([]);
   const [stocks, setStocks] = useState([]);
+  const [{total}] = useContext(ErpContext)
+  
 
   useEffect(() => {
     supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
@@ -32,6 +36,8 @@ function UpdatePurchase() {
     });
   }, [purchaseId, form]);
 
+ 
+
   const optionsPurchase = suppliers.map((supplier) => {
     return (
       <Select.Option key={supplier.id} value={supplier.id}>
@@ -47,16 +53,19 @@ function UpdatePurchase() {
     );
   });
 
-  const addSell = (body) => {
+ 
+  const updatePurchase = (body) => {
     purchaseservices
-      .createPurchase(body)
+      .updatePurchase(body)
       .then((res) => {
         console.log(res.data);
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(navigate('/purchases'));
   };
+
+ 
 
   return (
     <>
@@ -66,12 +75,15 @@ function UpdatePurchase() {
         onFinish={(values) => {
           console.log(values);
           const postObj = {
+            id: `${purchaseId}`,
             supplierId: `${values.supplierId}`,
             stockId: `${values.stockId}`,
             payTerm: `${values.payTerm}`,
             additionalNote: `${values.additionalNote}`,
+            total : `${total}`
           };
-          addSell(postObj);
+          updatePurchase(postObj);
+         
         }}
       >
         <Row style={{ marginBottom: "20px" }}>
@@ -171,10 +183,10 @@ function UpdatePurchase() {
             </Form.Item>
           </Col>
         </Row>
-        <Button variant="warning">Edit</Button>
+        <Button type="submit" variant="warning">Edit</Button>
       </Form>
       <PurchaseCommerceAdd purchaseId={purchaseId} />
-      <ProductCommerceListPruchase purchaseId={purchaseId} />
+      <ProductCommerceListPruchase  purchaseId={purchaseId} />
     </>
   );
 }

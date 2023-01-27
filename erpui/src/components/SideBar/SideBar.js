@@ -37,8 +37,7 @@ const items = [
   ]),
   getItem("Products", "2", <CodepenOutlined />, [
     getItem("List Products", "productlist"),
-    getItem("Add Product", "addproduct"),
-    getItem("Variations ", "variations"),
+    getItem("Add Product", "addproduct"),    
     getItem("Units", "units"),
     getItem("Categories", "categories"),
     getItem("Brands", "brands"),

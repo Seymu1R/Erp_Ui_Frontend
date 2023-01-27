@@ -2,8 +2,10 @@ import React from "react";
 import { Col, Row, Input , Form} from "antd";
 import Button from "react-bootstrap/Button";
 import { supplierservices } from "../../APIs/Services/SupplierServices";
+import { useNavigate } from "react-router-dom";
 
 function AddSupplier() {
+  const navigate = useNavigate()
   const addSupplier = (body) => {
     supplierservices
       .createSupplier(body)
@@ -12,7 +14,9 @@ function AddSupplier() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(
+        navigate("/suppliers")
+      );
   };
 
   return (

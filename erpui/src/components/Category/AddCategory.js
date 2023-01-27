@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row, Input, Button, Checkbox, Select, Form } from "antd";
 import { categoriesservices } from "../APIs/Services/CategoryServices";
+import { useNavigate } from "react-router-dom";
 
 function AddCategory() {
   const [parentCategoryhandler, setParentCategoryHandler] = useState(false);
+  const navigation = useNavigate()
 
   const [categoryList, setCategoryList] = useState([]);
   useEffect(() => {
@@ -28,7 +30,7 @@ function AddCategory() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(navigation('/categories'));
   };
 
   return (

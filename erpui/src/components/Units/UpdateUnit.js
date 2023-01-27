@@ -3,10 +3,12 @@ import ErpContext from "../store/erp-context";
 import { Col, Row, Input, Button, Form } from "antd";
 import { unitservices } from "../APIs/Services/UnitsServices";
 import { useForm } from "antd/es/form/Form";
+import { useNavigate } from "react-router-dom";
 
 function UpdateUnit() {
   const [{ id }] = useContext(ErpContext);
   const [form] = useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     unitservices.getUnit(id).then(({ data: unit }) => {
@@ -25,7 +27,9 @@ function UpdateUnit() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(
+        navigate("/units")
+      );;
   };
 
   return (
@@ -94,7 +98,7 @@ function UpdateUnit() {
       </Row>
 
       <Button htmlType={"submit"} type="primary">
-        Add
+        Update
       </Button>
     </Form>
   );

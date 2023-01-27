@@ -15,7 +15,7 @@ function PurchaseList() {
     purchaseservices.getAllPurchases().then(({data:purchases}) => {
       setPurchaseList(purchases.data)
     })
-  },[])
+  },[deleteState])
 
   const deletePurchase = (id) => {
     purchaseservices.deletePurchase(id).then((data) => {
@@ -32,26 +32,18 @@ function PurchaseList() {
     {
       title: "PurchaseCode",
       dataIndex: "purchaseCode",
+      filters: purchaseList.map((purchase) => {
+        return { text: purchase.purchaseCode, value: purchase.purchaseCode };
+      }),
+      filterSearch: true,
+      onFilter: (value, record) => record.purchaseCode.startsWith(value),
+      width: "25%",
+      
     },
     {
       title: "PurchaseStatus",
       dataIndex: "purchaseStatus",
-      filters: [
-        {
-          text: "Received",
-          value: "Received",
-        },
-        {
-          text: "Pending",
-          value: "Pending",
-        },
-        {
-          text: "Ordered",
-          value: "Ordered",
-        },
-      ],
-      onFilter: (value, record) => record.address.startsWith(value),
-      filterSearch: true,
+      render : (purchaseStatus) => purchaseStatus===1 ? "Pending" : "Ordered"      
     },
     {
       title: "PayTerm",
@@ -62,7 +54,11 @@ function PurchaseList() {
     {
       title: "AdditionalNote",
       dataIndex: "additionalNote",
-    },  
+    }, 
+    {
+      title: "Total",
+      dataIndex: "total",
+    }, 
     {
       title: "Actions",
       dataIndex: "",
@@ -111,7 +107,7 @@ function PurchaseList() {
     <>
       {deleteState && <DeleteModal deleteItem={deletePurchase} />}
       <PurchaseHeader />
-      <Table columns={columns} dataSource={purchaseList}/>
+      <Table rowKey={(record) => record.id} columns={columns} dataSource={purchaseList}/>
     </>
   );
 }

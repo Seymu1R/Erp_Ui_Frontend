@@ -1,9 +1,10 @@
 import React from 'react'
 import { Col, Row, Input, Button , Form} from "antd";
 import { unitservices } from '../APIs/Services/UnitsServices';
+import { useNavigate } from 'react-router-dom';
 
 function AddUnit() {
-
+ const navigate =  useNavigate()
   const addUnit = (body) => {
     unitservices
       .createUnit(body)
@@ -12,7 +13,9 @@ function AddUnit() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(
+        navigate("/units")
+      );
   };   
 
   return (

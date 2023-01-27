@@ -6,16 +6,21 @@ import { Link } from "react-router-dom";
 import CategoryHeader from "./CategoryHeader";
 import { categoriesservices } from "../APIs/Services/CategoryServices";
 import DeleteModal from "../UI/DeleteModal";
+import Loading from "../UI/Loading";
 
 function CategoryList() {
-  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
+    useContext(ErpContext);
   const [categoryList, setCategoryList] = useState([]);
 
   useEffect(() => {
-    categoriesservices.getAllCategories().then(({ data: categories }) => {
-      setCategoryList(categories.data);
-    });
-  }, [deleteState]);
+    categoriesservices
+      .getAllCategories()
+      .then(({ data: categories }) => {
+        setCategoryList(categories.data);
+      })
+      .finally(setLoading(false));
+  }, [loading]);
 
   const transFormedData = categoryList.map((el) =>
     el.isMain === true ? { ...el, Main: "Main" } : { ...el, Main: "Notmain" }
@@ -23,7 +28,7 @@ function CategoryList() {
 
   const deleteCategory = (id) => {
     categoriesservices.deleteCategory(id).then((data) => {
-      console.log(data.message);
+      setLoading(true)
     });
   };
 
@@ -81,6 +86,7 @@ function CategoryList() {
 
   return (
     <>
+    {loading && <Loading/>}
       {deleteState && <DeleteModal deleteItem={deleteCategory} />}
       <CategoryHeader />
       <Table

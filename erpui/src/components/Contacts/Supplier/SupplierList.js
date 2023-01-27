@@ -6,16 +6,21 @@ import SupplierHeader from "./SupplierHeader";
 import ErpContext from "../../store/erp-context";
 import DeleteModal from "../../UI/DeleteModal";
 import { supplierservices } from "../../APIs/Services/SupplierServices";
+import Loading from "../../UI/Loading";
 
 function SupplierList() {
-  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
+    useContext(ErpContext);
   const [suppliers, setSuppliers] = useState([]);
 
   useEffect(() => {
-    supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
-      setSuppliers(suppliers.data);
-    });
-  }, [deleteState]);
+    supplierservices
+      .getAllSuppliers()
+      .then(({ data: suppliers }) => {        
+        setSuppliers(suppliers.data);
+      })
+      .finally(setLoading(false));
+  }, [loading, setLoading]);
 
   const deleteMOdalHandling = (id) => {
     setId(id);
@@ -24,7 +29,7 @@ function SupplierList() {
 
   const deleteSupplier = (id) => {
     supplierservices.deleteSupplier(id).then((data) => {
-      console.log(data.message);
+      setLoading(true)
     });
   };
 
@@ -77,7 +82,7 @@ function SupplierList() {
       title: "TotalPurchaseReturn",
       dataIndex: "totalPurchaseReturn",
       width: "13%",
-      sorter: (a, b) => a.totalPurchase - b.totalPurchase
+      sorter: (a, b) => a.totalPurchase - b.totalPurchase,
     },
     {
       title: "Actions",
@@ -108,11 +113,6 @@ function SupplierList() {
               Edit
             </Button>
           </Link>
-          <Link to="">
-            <Button id={record.id} variant="info">
-              Deactive
-            </Button>
-          </Link>
         </div>
       ),
     },
@@ -120,6 +120,7 @@ function SupplierList() {
 
   return (
     <>
+      {loading && <Loading />}
       {deleteState && <DeleteModal deleteItem={deleteSupplier} />}
       <SupplierHeader />
       <Table

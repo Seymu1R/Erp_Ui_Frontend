@@ -6,20 +6,22 @@ import { Link } from "react-router-dom";
 import ErpContext from "../../store/erp-context";
 import DeleteModal from "../../UI/DeleteModal";
 import { customerservice } from "../../APIs/Services/CustomerServices";
+import Loading from "../../UI/Loading";
 
 function CustomerList() {
-  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
+    useContext(ErpContext);
   const [customerlist, setCustomerList] = useState([]);
 
   useEffect(() => {
     customerservice.getAllCustomers().then(({ data: customers }) => {
       setCustomerList(customers.data);
-    });
-  }, [deleteState]);
+    }).finally(setLoading(false));
+  }, [loading,setLoading]);
 
   const deleteCustomer = (id) => {
     customerservice.deleteCustomer(id).then((data) => {
-      console.log(data.message);
+      setLoading(true)
     });
   };
 
@@ -101,18 +103,14 @@ function CustomerList() {
             >
               Edit
             </Button>
-          </Link>
-          <Link to="">
-            <Button id={record.id} variant="info">
-              Deactive
-            </Button>
-          </Link>
+          </Link>         
         </div>
       ),
     },
   ];
   return (
     <>
+    {loading&&<Loading/>}      
       {deleteState && <DeleteModal deleteItem={deleteCustomer} />}
       <CustomerHeader></CustomerHeader>{" "}
       <Table

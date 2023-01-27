@@ -8,23 +8,23 @@ import DeleteModal from "../UI/DeleteModal";
 import { productservices } from "../APIs/Services/ProductServices";
 import Loading from "../UI/Loading";
 
-
 function ProductList() {
-  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
-  const [productList, setProductList] = useState([]); 
-  const [loading, setLoading] = useState(true)
-
+  const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
+    useContext(ErpContext);
+  const [productList, setProductList] = useState([]);
 
   useEffect(() => {
-    productservices.getAllpRoducts().then(({ data: Products }) => {
-      setProductList(Products.data);
-      setLoading(false)
-    });
-  }, []);
+    productservices
+      .getAllpRoducts()
+      .then(({ data: Products }) => {
+        setProductList(Products.data);
+      })
+      .finally(setLoading(false));
+  }, [loading, setLoading]);
 
   const deleteProduct = (id) => {
     productservices.deleteProduct(id).then((data) => {
-      console.log(data.message);
+      setLoading(true)
     });
   };
 
@@ -59,7 +59,7 @@ function ProductList() {
       title: "SellingPrice",
       dataIndex: "sellingPrice",
       key: "sellingPrice",
-    },  
+    },
     {
       title: "Actions",
       dataIndex: "",
@@ -76,7 +76,7 @@ function ProductList() {
           >
             Delete
           </Button>
-         
+
           <Link to={`/productlist/${record.id}`}>
             <Button
               id={record.id}
@@ -90,12 +90,12 @@ function ProductList() {
           </Link>
         </div>
       ),
-    },   
+    },
   ];
 
   return (
     <>
-    {loading&&<Loading/>}
+      {loading && <Loading />}
       {deleteState && <DeleteModal deleteItem={deleteProduct} />}
       <ProductHeader />
       <Table

@@ -14,7 +14,7 @@ function AddProduct() {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [suppliers, setSupliers] = useState([]);
-  const navigate =  useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     unitservices.getAllUnits().then(({ data: units }) => {
       setUnit(units.data);
@@ -42,31 +42,29 @@ function AddProduct() {
   const optionsSuppliers = suppliers.map((supplier) => {
     return { label: supplier.businessName, value: supplier.id };
   });
-  
+
   const addProduct = (body) => {
     productservices
       .createProduct(body)
       .then((res) => {
         console.log(res.data);
-      }).finally(
-        navigate("./")
-      )
+      })
       .catch((eror) => {
         window.alert(eror);
-      });
+      })
+      .finally(navigate("./productlist"));
   };
 
-
   return (
-    <Form      
+    <Form
       autoComplete="off"
-      onFinish={(values) => {   
-        console.log(values);     
+      onFinish={(values) => {
+        console.log(values);
         const postObj = {
           name: `${values.name}`,
           skuCode: `${values.skuCode}`,
           barCode: `${values.barCode}`,
-          productImage : values.productImage,     
+          productImage: values.productImage,
           description: `${values.description}`,
           purchasePrice: `${values.purchasePrice}`,
           sellingPrice: `${values.sellingPrice}`,
@@ -158,14 +156,9 @@ function AddProduct() {
       </Row>
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
-          <Form.Item           
-            
-            hasFeedback
-            name="productImage"
-            label="Image"
-          >
+          <Form.Item hasFeedback name="productImage" label="Image">
             <div>
-              <MDBFile accept=".jpg, .png, .jpeg"  id="productImage" />
+              <MDBFile accept=".jpg, .png, .jpeg" id="productImage" />
             </div>
           </Form.Item>
         </Col>

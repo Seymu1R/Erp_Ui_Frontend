@@ -62,6 +62,7 @@ function PurchaseView() {
               <CardText>PurchaseStatus: {purchase.purchaseStatus}</CardText>
               <CardText>Supplier: {supplier}</CardText>
               <CardText>Stock: {stock}</CardText>
+              <CardText>Total: {purchase.total}</CardText>
             </CardBody>
           </Card>
         </Col>

@@ -22,7 +22,7 @@ function PurchaseAdd() {
   const optionsSuppliers = suppliers.map((supplier) => {
     return (
       <Select.Option key={supplier.id} value={supplier.id}>
-        {supplier.name}
+        {supplier.businessName}
       </Select.Option>
     );
   });

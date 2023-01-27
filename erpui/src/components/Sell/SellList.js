@@ -16,20 +16,8 @@ function SellList() {
     });
   }, []);
 
-  const sellModifiedByShippingStatus = sellList.map((sell) => {
-    if (sell.shippingStatus === 1) {
-      return { ...sell, ShippingStatus: "Ordered" };
-    } else if (sell.shippingStatus === 2) {
-      return { ...sell, ShippingStatus: "Shipped" };
-    } else if (sell.shippingStatus === 3) {
-      return { ...sell, ShippingStatus: "Delivered" };
-    } else if (sell.shippingStatus === 4) {
-      return { ...sell, ShippingStatus: "Cancelled" };
-    }
-    return "Error";
-  });
 
-  const sellModifiedByInvoiceStatus = sellModifiedByShippingStatus.map(
+  const sellModifiedByInvoiceStatus = sellList.map(
     (sell) => {
       if (sell.invoiceStatuse === 1) {
         return { ...sell, InvoiceStatus: "Draft" };
@@ -105,31 +93,7 @@ function SellList() {
       dataIndex: "total",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.total - b.total,
-    },
-    {
-      title: "ShippingStatus",
-      dataIndex: "ShippingStatus",
-      filters: [
-        {
-          text: "Ordered",
-          value: "Ordered",
-        },
-        {
-          text: "Shipped",
-          value: "Shipped",
-        },
-        {
-          text: "Delivered",
-          value: "Delivered",
-        },
-        {
-          text: "Cancelled",
-          value: "Cancelled",
-        },
-      ],
-      onFilter: (value, record) => record.ShippingStatus.startsWith(value),
-      filterSearch: true,
-    },
+    },    
     {
       title: "Actions",
       dataIndex: "",
@@ -139,7 +103,7 @@ function SellList() {
           <Button
             id={record.id}
             onClick={() => {
-              deleteMOdalHandling(record.id);
+              deleteMOdalHandling(record.id);              
             }}
             className="margin "
             variant="danger"

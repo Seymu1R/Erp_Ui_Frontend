@@ -45,9 +45,7 @@ import EditUser from "../components/Users/EditUser/EditUser";
 import Roles from "../components/Users/Roles";
 import UserInfo from "../components/Users/UserInfo/UserInfo";
 import Users from "../components/Users/Users";
-import AddVariation from "../components/Variations/AddVariation";
-import UpdateVariation from "../components/Variations/UpdateVariation";
-import Variationslist from "../components/Variations/Variationslist";
+
 
 function Navigate() {
   return (
@@ -83,10 +81,7 @@ function Navigate() {
       <Route
         path="/productlist/:productid"
         element={<ProductInfoPage />}
-      ></Route>
-      <Route path="/variations" element={<Variationslist />}></Route>
-      <Route path="/addvariation" element={<AddVariation />}></Route>
-      <Route path="/variations/update" element={<UpdateVariation />}></Route>
+      ></Route>      
       <Route path="/units" element={<UnitList />}></Route>
       <Route path="/addunit" element={<AddUnit />}></Route>
       <Route path="/units/update" element={<UpdateUnit />}></Route>

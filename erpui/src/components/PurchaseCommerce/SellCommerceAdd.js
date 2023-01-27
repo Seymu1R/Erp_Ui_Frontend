@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Col, Row, Input, Button, Select, Form } from "antd";
 import { Option } from "antd/es/mentions";
 import { productservices } from "../APIs/Services/ProductServices";
 import { productcommerceservices } from "../APIs/Services/ProductCommerce";
+import ErpContext from "../store/erp-context";
 
 function SellCommerceAdd({sellId}) {
   const [products, setProducts] = useState([]);
+  const [{setLoading}] = useContext(ErpContext)
   useEffect(() => {
     productservices.getAllpRoducts().then(({ data: products }) => {
       setProducts(products.data);
@@ -20,6 +22,7 @@ function SellCommerceAdd({sellId}) {
     productcommerceservices
       .createProductCommerce(body)
       .then(({ data: productCommerce }) => {
+        setLoading(true)
         console.log(productCommerce.data);
       });
   };

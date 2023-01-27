@@ -6,21 +6,22 @@ import { Link } from 'react-router-dom'
 import BrandHeader from './BrandHeader';
 import { brandservices } from '../APIs/Services/BrandsService';
 import DeleteModal from '../UI/DeleteModal';
+import Loading from '../UI/Loading';
 
-function BrandsList() {  
-
-  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+function BrandsList() {
+  const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
+    useContext(ErpContext);
   const [brandList, setBrandlist] = useState([]);
 
   useEffect(() => {
     brandservices.getAllBrands().then(({ data: brands }) => {
       setBrandlist(brands.data);
-    });
-  }, [deleteState]);
+    }).finally(setLoading(false));
+  }, [loading, setLoading]);
 
   const deleteBrand = (id) => {
     brandservices.deleteBrand(id).then((data) => {
-      console.log(data.message);
+      setLoading(true)
     });
   };
 
@@ -76,6 +77,7 @@ function BrandsList() {
     
       return (
         <> 
+        {loading && <Loading/>}
         {deleteState && <DeleteModal deleteItem={deleteBrand} />}
         <BrandHeader/> 
           <Table  rowKey={(record) => record.id} columns={columns} dataSource={brandList} />

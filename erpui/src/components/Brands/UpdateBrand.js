@@ -3,10 +3,12 @@ import ErpContext from "../store/erp-context";
 import { Col, Row, Input, Button, Form } from "antd";
 import { brandservices } from "../APIs/Services/BrandsService";
 import { useForm } from "antd/es/form/Form";
+import { useNavigate } from "react-router-dom";
 
 function UpdateBrand() {
   const [{ id }] = useContext(ErpContext);
   const [form] = useForm();
+  const navigation = useNavigate()
 
   useEffect(() => {
     brandservices.getBrand(id).then(({ data: brand }) => {
@@ -24,7 +26,7 @@ function UpdateBrand() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(navigation('/brands'));
   };
 
   return (
@@ -68,7 +70,7 @@ function UpdateBrand() {
       </Row>
 
       <Button htmlType={"submit"} type="primary">
-        Add
+        Update
       </Button>
     </Form>
   );

@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Col, Row, Input, Button, Select, Form } from "antd";
 import { Option } from "antd/es/mentions";
 import { productservices } from "../APIs/Services/ProductServices";
 import { productcommerceservices } from "../APIs/Services/ProductCommerce";
+import ErpContext from "../store/erp-context";
 
 function PurchaseCommerceAdd({purchaseId}) {
     const [products, setProducts] = useState([]);
+    const [{setLoading}] = useContext(ErpContext)
     useEffect(() => {
       productservices.getAllpRoducts().then(({ data: products }) => {
         setProducts(products.data);
@@ -21,11 +23,12 @@ function PurchaseCommerceAdd({purchaseId}) {
         .createProductCommerce(body)
         .then(({ data: productCommerce }) => {
           console.log(productCommerce.data);
-        });
+        }).finally(setLoading(true));
     };
   
     return (
       <Form
+       
         autoComplete="off"
         onFinish={(values) => {
           console.log(values);

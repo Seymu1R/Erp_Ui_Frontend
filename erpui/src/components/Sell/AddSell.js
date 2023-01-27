@@ -23,10 +23,10 @@ function AddSell() {
     });
   }, []);
 
-  const optionsCategory = customers.map((category) => {
+  const optionsCustomer = customers.map((customer) => {
     return (
-      <Select.Option key={category.id} value={category.id}>
-        {category.name}
+      <Select.Option key={customer.id} value={customer.id}>
+        {customer.businessName}
       </Select.Option>
     );
   });
@@ -95,7 +95,7 @@ function AddSell() {
                   0
                 }
               >
-                {optionsCategory}
+                {optionsCustomer}
               </Select>
             </Form.Item>
           </Col>
