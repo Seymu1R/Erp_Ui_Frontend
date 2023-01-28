@@ -11,8 +11,8 @@ class RoleServices extends HttpClient {
   deleteRole(id) {
     return this.delete(`DeleteRole?roleId=${id}`);
   }
-  getRoleUser(id){
-    return this.get(`GetRolesToUser?userid=${id}`)
+  getRoleUser(username){
+    return this.get(`GetRolesToUser?Username=${username}`)
   }
 
 }

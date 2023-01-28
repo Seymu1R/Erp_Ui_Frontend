@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Login from "../components/Auths/Login/Login";
+import RequireAuth from "../components/Auths/RequireAuth";
 import AddBrand from "../components/Brands/AddBrand";
 import BrandsList from "../components/Brands/BrandsList";
 import UpdateBrand from "../components/Brands/UpdateBrand";
@@ -37,6 +37,7 @@ import StockList from "../components/Stock/StockList";
 import AddStockTransfer from "../components/StockTransfer/AddStockTransfer";
 import StockTransferEdit from "../components/StockTransfer/StockTransferEdit";
 import StockTransferList from "../components/StockTransfer/StockTransferList";
+import NotAuthziration from "../components/UI/NotAuthziration";
 import AddUnit from "../components/Units/AddUnit";
 import UnitList from "../components/Units/UnitList";
 import UpdateUnit from "../components/Units/UpdateUnit";
@@ -46,17 +47,49 @@ import Roles from "../components/Users/Roles";
 import UserInfo from "../components/Users/UserInfo/UserInfo";
 import Users from "../components/Users/Users";
 
+const ROLES = {
+  Worker: "Worker",
+  Admin: "Admin",
+};
 
 function Navigate() {
   return (
     <Routes>
       <Route path="/" element={<Home />}></Route>
-      <Route path="/users" element={<Users />}></Route>
-      <Route path="/adduser" element={<AddUsers />}></Route>
+      <Route
+        path="/users"
+        element={
+          <RequireAuth allowedRoles={[ROLES.Admin]}>
+            <Users />
+          </RequireAuth>
+        }
+      ></Route>
+      <Route
+        path="/adduser"
+        element={
+          <RequireAuth allowedRoles={[ROLES.Admin]}>
+            <AddUsers />
+          </RequireAuth>
+        }
+      ></Route>
       <Route path="/edituser">
-        <Route path=":userId" element={<EditUser />} />
+        <Route
+          path=":userId"
+          element={
+            <RequireAuth allowedRoles={[ROLES.Admin]}>
+              <EditUser />
+            </RequireAuth>
+          }
+        />
       </Route>
-      <Route path="/roles" element={<Roles />}></Route>
+      <Route
+        path="/roles"
+        element={
+          <RequireAuth allowedRoles={[ROLES.Admin]}>
+            <Roles />
+          </RequireAuth>
+        }
+      ></Route>
       <Route path="/userinfo">
         <Route path=":userId" element={<UserInfo />} />
       </Route>
@@ -81,7 +114,7 @@ function Navigate() {
       <Route
         path="/productlist/:productid"
         element={<ProductInfoPage />}
-      ></Route>      
+      ></Route>
       <Route path="/units" element={<UnitList />}></Route>
       <Route path="/addunit" element={<AddUnit />}></Route>
       <Route path="/units/update" element={<UpdateUnit />}></Route>
@@ -125,7 +158,7 @@ function Navigate() {
       <Route path="/stocklist" element={<StockList />}></Route>
       <Route path="/addstock" element={<AddStock />}></Route>
       <Route path="/editstock/:stockId" element={<EditStock />}></Route>
-      <Route path="/login" element={<Login />}></Route>
+      <Route path="/authirize" element={<NotAuthziration/>}></Route>
     </Routes>
   );
 }
