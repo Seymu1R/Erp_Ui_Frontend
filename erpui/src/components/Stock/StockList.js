@@ -83,7 +83,15 @@ function StockList() {
                 >
                   Edit
                 </Button>
-              </Link>            
+              </Link>
+              <Link to={`/viewstock/${record.id}`}>
+                <Button
+                  id={record.id}                  
+                  variant="info"
+                >
+                  View
+                </Button>
+              </Link>               
             </div>
           ),
         },

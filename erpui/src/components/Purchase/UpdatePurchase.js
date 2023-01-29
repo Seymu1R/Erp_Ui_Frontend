@@ -13,11 +13,13 @@ import ErpContext from "../store/erp-context";
 function UpdatePurchase() {
   let { purchaseId } = useParams();
   const [form] = useForm();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [suppliers, setSuppliers] = useState([]);
   const [stocks, setStocks] = useState([]);
-  const [{total}] = useContext(ErpContext)
-  
+  const [supplierItem, setSupplierItem] = useState({})
+  const [supplierTotal, setSupplierTotal] = useState(0);
+  const [stockId, setStockId] = useState('');
+  const [{ total }] = useContext(ErpContext);
 
   useEffect(() => {
     supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
@@ -26,17 +28,23 @@ function UpdatePurchase() {
     stockservices.getAllStocks().then(({ data: stocks }) => {
       setStocks(stocks.data);
     });
-    purchaseservices.getPurchase(purchaseId).then(({ data: purchase }) => {
+    purchaseservices.getPurchase(purchaseId).then(({ data: purchase }) => {  
+      setStockId(purchase.data.stockId)    
       form.setFieldsValue({
         supplierId: purchase.data.supplierId,
         stockId: purchase.data.stockId,
         payTerm: purchase.data.payTerm,
         additionalNote: purchase.data.additionalNote,
-      });
+      });      
+      supplierservices
+        .getSupplier(purchase.data.supplierId)
+        .then(({ data: supplier }) => {
+          setSupplierItem(supplier.data)
+          setSupplierTotal(supplier.data.totalPurchase + total);
+          
+        });
     });
-  }, [purchaseId, form]);
-
- 
+  }, [purchaseId, form, total, supplierTotal]);
 
   const optionsPurchase = suppliers.map((supplier) => {
     return (
@@ -53,19 +61,32 @@ function UpdatePurchase() {
     );
   });
 
- 
-  const updatePurchase = (body) => {
+  const updatePurchase = (body) => {   
     purchaseservices
       .updatePurchase(body)
       .then((res) => {
+        supplierservices
+        .updateSupplier({
+          id: `${supplierItem.id}`,
+          totalPurchase: supplierTotal,
+          businessName: `${supplierItem.businessName}`,
+          email: `${supplierItem.email}`,
+          taxNumber: `${supplierItem.taxNumber}`,
+          payTerm: supplierItem.payTerm,
+          address: `${supplierItem.address}`,
+          phoneNumber: supplierItem.phoneNumber,
+        })
+        .then((data) => {
+          console.log(data);
+        });
         console.log(res.data);
       })
       .catch((eror) => {
         window.alert(eror);
-      }).finally(navigate('/purchases'));
-  };
+      })
+      .finally(navigate("/purchases"));
 
- 
+  };
 
   return (
     <>
@@ -80,10 +101,9 @@ function UpdatePurchase() {
             stockId: `${values.stockId}`,
             payTerm: `${values.payTerm}`,
             additionalNote: `${values.additionalNote}`,
-            total : `${total}`
+            total: `${total}`,
           };
           updatePurchase(postObj);
-         
         }}
       >
         <Row style={{ marginBottom: "20px" }}>
@@ -183,10 +203,12 @@ function UpdatePurchase() {
             </Form.Item>
           </Col>
         </Row>
-        <Button type="submit" variant="warning">Edit</Button>
+        <Button type="submit" variant="warning">
+          Edit
+        </Button>
       </Form>
-      <PurchaseCommerceAdd purchaseId={purchaseId} />
-      <ProductCommerceListPruchase  purchaseId={purchaseId} />
+      <PurchaseCommerceAdd stockId = {stockId}  purchaseId={purchaseId} />
+      <ProductCommerceListPruchase purchaseId={purchaseId} />
     </>
   );
 }

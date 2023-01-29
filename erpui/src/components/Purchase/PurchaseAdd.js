@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Col, Row, Input, Select, Form } from "antd";
 import Button from "react-bootstrap/Button";
 import { stockservices } from "../APIs/Services/StockService";
 import { supplierservices } from "../APIs/Services/SupplierServices";
 import { purchaseservices } from "../APIs/Services/PurchaseServices";
+import { useNavigate } from "react-router-dom";
 
 function PurchaseAdd() {
   const [suppliers, setSuppliers] = useState([]);
   const [stocks, setStocks] = useState([]);
-  
+  const navigate = useNavigate();
 
   useEffect(() => {
     supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
@@ -16,7 +17,7 @@ function PurchaseAdd() {
     });
     stockservices.getAllStocks().then(({ data: stocks }) => {
       setStocks(stocks.data);
-    });  
+    });
   }, []);
 
   const optionsSuppliers = suppliers.map((supplier) => {
@@ -33,7 +34,6 @@ function PurchaseAdd() {
       </Select.Option>
     );
   });
- 
 
   const addPurchase = (body) => {
     purchaseservices
@@ -43,7 +43,8 @@ function PurchaseAdd() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      })
+      .finally(navigate("/purchases"));
   };
 
   return (
@@ -54,7 +55,7 @@ function PurchaseAdd() {
           console.log(values);
           const postObj = {
             supplierId: `${values.supplierId}`,
-            stockId: `${values.stockId}`,            
+            stockId: `${values.stockId}`,
             payTerm: `${values.payTerm}`,
             additionalNote: `${values.additionalNote}`,
           };
@@ -157,12 +158,8 @@ function PurchaseAdd() {
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
-           
-          </Col>
-          <Col span={8}>
-            
-          </Col>
+          <Col span={8}></Col>
+          <Col span={8}></Col>
         </Row>
         <Button type="primary">Add</Button>
       </Form>

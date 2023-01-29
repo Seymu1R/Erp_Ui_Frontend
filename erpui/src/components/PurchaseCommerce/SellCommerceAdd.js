@@ -5,7 +5,7 @@ import { productservices } from "../APIs/Services/ProductServices";
 import { productcommerceservices } from "../APIs/Services/ProductCommerce";
 import ErpContext from "../store/erp-context";
 
-function SellCommerceAdd({sellId}) {
+function SellCommerceAdd({sellId, stockId}) {
   const [products, setProducts] = useState([]);
   const [{setLoading}] = useContext(ErpContext)
   useEffect(() => {
@@ -35,7 +35,8 @@ function SellCommerceAdd({sellId}) {
         const postObj = {
           productId: values.productId,
           productAmount: `${values.productAmount}`,
-          sellId: `${sellId}`          
+          sellId: `${sellId}` ,
+          stockId : `${stockId}`         
         };
         addPurchaseCommerce(postObj);
       }}

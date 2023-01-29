@@ -69,12 +69,7 @@ function CustomerList() {
       title: "Totalsale",
       dataIndex: "totalSale",
       sorter: (a, b) => a.totalSale - b.totalSale,
-    },
-    {
-      title: "Totalsalereturn",
-      dataIndex: "totalSaleReturn",
-      sorter: (a, b) => a.totalSaleReturn - b.totalSaleReturn,
-    },
+    },    
     {
       title: "Actions",
       dataIndex: "",

@@ -6,38 +6,57 @@ import { Link } from "react-router-dom";
 import SellHeader from "./SellHeader";
 import { sellservices } from "../APIs/Services/SellsServices";
 import DeleteModal from "../UI/DeleteModal";
+import { customerservice } from "../APIs/Services/CustomerServices";
 
 function SellList() {
-  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [{ deleteState, setDeleteState, setId, total, setTotal }] =
+    useContext(ErpContext);
   const [sellList, setSellList] = useState([]);
+  const [sellTotal, setSellTotal] = useState();
+  const [customer, setCustomer] = useState(0);
   useEffect(() => {
     sellservices.getAllSells().then(({ data: sells }) => {
       setSellList(sells.data);
     });
   }, []);
 
-
-  const sellModifiedByInvoiceStatus = sellList.map(
-    (sell) => {
-      if (sell.invoiceStatuse === 1) {
-        return { ...sell, InvoiceStatus: "Draft" };
-      } else if (sell.invoiceStatuse === 2) {
-        return { ...sell, InvoiceStatus: "Proforma" };
-      } else if (sell.invoiceStatuse === 3) {
-        return { ...sell, InvoiceStatus: "Final" };
-      }
-      return "Error";
+  const sellModifiedByInvoiceStatus = sellList.map((sell) => {
+    if (sell.invoiceStatuse === 1) {
+      return { ...sell, InvoiceStatus: "Draft" };
+    } else if (sell.invoiceStatuse === 2) {
+      return { ...sell, InvoiceStatus: "Proforma" };
+    } else if (sell.invoiceStatuse === 3) {
+      return { ...sell, InvoiceStatus: "Final" };
     }
-  );
+    return "Error";
+  });
 
   const deleteSell = (id) => {
     sellservices.deleteSell(id).then((data) => {
       console.log(data.message);
+      customerservice.updateCustomer({
+        id: `${customer.id}`,
+        totalSale: customer.totalSale - sellTotal,
+        businessName: `${customer.businessName}`,
+        email: `${customer.email}`,
+        taxNumber: `${customer.taxNumber}`,
+        address: `${customer.address}`,
+        phoneNumber: customer.phoneNumber,
+      });
     });
   };
 
   const deleteMOdalHandling = (id) => {
     setId(id);
+    sellservices.getSell(id).then(({ data: sell }) => {
+      setSellTotal(sell.data.total);
+      customerservice
+        .getCustomer(sell.data.customerId)
+        .then(({ data: customer }) => {
+          setCustomer(customer.data);
+        });
+      
+    });
     setDeleteState(true);
   };
 
@@ -93,7 +112,7 @@ function SellList() {
       dataIndex: "total",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.total - b.total,
-    },    
+    },
     {
       title: "Actions",
       dataIndex: "",
@@ -103,7 +122,7 @@ function SellList() {
           <Button
             id={record.id}
             onClick={() => {
-              deleteMOdalHandling(record.id);              
+              deleteMOdalHandling(record.id);
             }}
             className="margin "
             variant="danger"
@@ -111,10 +130,7 @@ function SellList() {
             Delete
           </Button>
           <Link to={`/sales/update/${record.id}`}>
-            <Button
-              id={record.id}              
-              variant="warning"
-            >
+            <Button id={record.id} variant="warning">
               Edit
             </Button>
           </Link>

@@ -5,7 +5,7 @@ import { productservices } from "../APIs/Services/ProductServices";
 import { productcommerceservices } from "../APIs/Services/ProductCommerce";
 import ErpContext from "../store/erp-context";
 
-function PurchaseCommerceAdd({purchaseId}) {
+function PurchaseCommerceAdd({purchaseId, stockId}) {
     const [products, setProducts] = useState([]);
     const [{setLoading}] = useContext(ErpContext)
     useEffect(() => {
@@ -27,15 +27,15 @@ function PurchaseCommerceAdd({purchaseId}) {
     };
   
     return (
-      <Form
-       
+      <Form       
         autoComplete="off"
         onFinish={(values) => {
           console.log(values);
           const postObj = {
             productId: values.productId,
             productAmount: `${values.productAmount}`,
-            purchaseId: `${purchaseId}`          
+            purchaseId: `${purchaseId}`,
+            stockId: `${stockId}`          
           };
           addPurchaseCommerce(postObj);
         }}

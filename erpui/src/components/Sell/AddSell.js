@@ -5,11 +5,13 @@ import { stockservices } from "../APIs/Services/StockService";
 import { discountservices } from "../APIs/Services/DiscountsServices";
 import { customerservice } from "../APIs/Services/CustomerServices";
 import { sellservices } from "../APIs/Services/SellsServices";
+import { useNavigate } from "react-router-dom";
 
 function AddSell() {
   const [customers, setCustomers] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [discounts, setDiscounts] = useState([]);
+  const navigate = useNavigate()
 
   useEffect(() => {
     customerservice.getAllCustomers().then(({ data: customers }) => {
@@ -53,7 +55,7 @@ function AddSell() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(navigate('/sales'));
   };
 
   return (

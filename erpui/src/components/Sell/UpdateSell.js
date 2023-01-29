@@ -7,7 +7,7 @@ import { customerservice } from "../APIs/Services/CustomerServices";
 import { sellservices } from "../APIs/Services/SellsServices";
 import ProductCommerceList from "../UI/ProductCommerceList";
 import SellCommerceAdd from "../PurchaseCommerce/SellCommerceAdd";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import ErpContext from "../store/erp-context";
 
@@ -17,7 +17,11 @@ function UpdateSell() {
   const [discounts, setDiscounts] = useState([]);
   let { sellId } = useParams();
   const [{ total }] = useContext(ErpContext);
+  const [customerItem, setCustomerItem] = useState({})
+  const [customerTotal, setCustomerTotal] = useState(0);
+  const [stockId , setStockId ] = useState();
   const [form] = useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     customerservice.getAllCustomers().then(({ data: customers }) => {
@@ -30,6 +34,7 @@ function UpdateSell() {
       setDiscounts(discounts.data);
     });
     sellservices.getSell(sellId).then(({ data: sell }) => {
+     setStockId(sell.data.stockId);
       form.setFieldsValue({
         payTerm: sell.data.payTerm,
         invoiceStatuse: sell.data.invoiceStatuse,
@@ -40,8 +45,15 @@ function UpdateSell() {
         shippingStatus: sell.data.shippingStatus,
         discountIds: sell.data.discountIds,
       });
+      customerservice
+      .getCustomer(sell.data.customerId)
+      .then(({ data: customer }) => {
+        setCustomerItem(customer.data)
+        setCustomerTotal(customer.data.totalSale + total);
+        
+      });
     });
-  }, [form, sellId]);
+  }, [form, sellId ,total]);
 
   const optionsCategory = customers.map((customer) => {
     return (
@@ -65,15 +77,28 @@ function UpdateSell() {
     );
   });
 
-  const addSell = (body) => {
+  const editSell = (body) => {
     sellservices
       .updateSell(body)
       .then((res) => {
+        customerservice
+        .updateCustomer({
+          id: `${customerItem.id}`,
+          totalSale: customerTotal,
+          businessName: `${customerItem.businessName}`,
+          email: `${customerItem.email}`,
+          taxNumber: `${customerItem.taxNumber}`,
+          address: `${customerItem.address}`,
+          phoneNumber: customerItem.phoneNumber
+        })
+        .then((data) => {
+          console.log(data);
+        });
         console.log(res.data);
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(navigate('./sales'));
   };
 
   return (
@@ -94,7 +119,7 @@ function UpdateSell() {
             total: `${total}`,
             invoiceStatuse: values.invoiceStatuse
           };
-          addSell(postObj);
+          editSell(postObj);
         }}
       >
         <Row style={{ marginBottom: "20px" }}>
@@ -280,7 +305,7 @@ function UpdateSell() {
           Edit
         </Button>
       </Form>
-      <SellCommerceAdd sellId={sellId} />
+      <SellCommerceAdd stockId = {stockId} sellId={sellId} />
       <ProductCommerceList sellId={sellId} />
     </>
   );

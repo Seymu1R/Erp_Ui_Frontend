@@ -6,25 +6,44 @@ import { Link } from "react-router-dom";
 import PurchaseHeader from "./PurchaseHeader";
 import { purchaseservices } from "../APIs/Services/PurchaseServices";
 import DeleteModal from "../UI/DeleteModal";
+import { supplierservices } from "../APIs/Services/SupplierServices";
 
 function PurchaseList() {
-  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [{ deleteState, setDeleteState, setId, total ,setTotal }] = useContext(ErpContext);
   const [purchaseList, setPurchaseList] = useState([]);
+  const [supplier, setSuppliers] = useState({}) 
 
   useEffect(() => {
     purchaseservices.getAllPurchases().then(({data:purchases}) => {
       setPurchaseList(purchases.data)
     })
+
   },[deleteState])
 
   const deletePurchase = (id) => {
     purchaseservices.deletePurchase(id).then((data) => {
       console.log(data.message);
+      supplierservices.updateSupplier({
+        id: `${supplier.id}`,
+        totalPurchase: supplier.totalPurchase - total,
+        businessName: `${supplier.businessName}`,
+        email: `${supplier.email}`,
+        taxNumber: `${supplier.taxNumber}`,
+        payTerm: supplier.payTerm,
+        address: `${supplier.address}`,
+        phoneNumber: supplier.phoneNumber,
+      })
     });
   };
 
   const deleteMOdalHandling = (id) => {
     setId(id);
+    purchaseservices.getPurchase(id).then(({data:purchase}) => {
+      setTotal(purchase.data.total)
+      supplierservices.getSupplier(purchase.data.supplierId).then(({data:supplier}) => {
+        setSuppliers(supplier.data)       
+      })
+    })
     setDeleteState(true);
   };
 

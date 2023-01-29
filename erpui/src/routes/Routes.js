@@ -33,6 +33,7 @@ import SellList from "../components/Sell/SellList";
 import UpdateSell from "../components/Sell/UpdateSell";
 import AddStock from "../components/Stock/AddStock";
 import EditStock from "../components/Stock/EditStock";
+import SotockView from "../components/Stock/SotockView";
 import StockList from "../components/Stock/StockList";
 import AddStockTransfer from "../components/StockTransfer/AddStockTransfer";
 import StockTransferEdit from "../components/StockTransfer/StockTransferEdit";
@@ -158,6 +159,7 @@ function Navigate() {
       <Route path="/stocklist" element={<StockList />}></Route>
       <Route path="/addstock" element={<AddStock />}></Route>
       <Route path="/editstock/:stockId" element={<EditStock />}></Route>
+      <Route path="/viewstock/:stockId" element={<SotockView/>}></Route>
       <Route path="/authirize" element={<NotAuthziration/>}></Route>
     </Routes>
   );
