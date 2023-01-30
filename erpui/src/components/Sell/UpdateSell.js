@@ -98,7 +98,7 @@ function UpdateSell() {
       })
       .catch((eror) => {
         window.alert(eror);
-      }).finally(navigate('./sales'));
+      }).finally(navigate('/sales'));
   };
 
   return (

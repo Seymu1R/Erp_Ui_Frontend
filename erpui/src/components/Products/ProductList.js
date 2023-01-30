@@ -24,7 +24,7 @@ function ProductList() {
 
   const deleteProduct = (id) => {
     productservices.deleteProduct(id).then((data) => {
-      setLoading(true)
+      setLoading(true);
     });
   };
 

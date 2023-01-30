@@ -25,3 +25,4 @@ class BankServices extends HttpClient{
         return this.put("UpdateBank", body)
       }
 }
+export const bankservices = new BankServices();

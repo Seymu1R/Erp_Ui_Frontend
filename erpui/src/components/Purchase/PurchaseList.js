@@ -7,18 +7,29 @@ import PurchaseHeader from "./PurchaseHeader";
 import { purchaseservices } from "../APIs/Services/PurchaseServices";
 import DeleteModal from "../UI/DeleteModal";
 import { supplierservices } from "../APIs/Services/SupplierServices";
+import Loading from "../UI/Loading";
 
 function PurchaseList() {
-  const [{ deleteState, setDeleteState, setId, total ,setTotal }] = useContext(ErpContext);
+  const [
+    {
+      deleteState,
+      setDeleteState,
+      setId,
+      total,
+      setTotal,
+      loading,
+      setLoading,
+    },
+  ] = useContext(ErpContext);
   const [purchaseList, setPurchaseList] = useState([]);
-  const [supplier, setSuppliers] = useState({}) 
+  const [supplier, setSuppliers] = useState({});
 
   useEffect(() => {
-    purchaseservices.getAllPurchases().then(({data:purchases}) => {
-      setPurchaseList(purchases.data)
-    })
-
-  },[deleteState])
+    setLoading(false)
+    purchaseservices.getAllPurchases().then(({ data: purchases }) => {
+      setPurchaseList(purchases.data);
+    });
+  }, [deleteState, loading, setLoading]);
 
   const deletePurchase = (id) => {
     purchaseservices.deletePurchase(id).then((data) => {
@@ -32,18 +43,20 @@ function PurchaseList() {
         payTerm: supplier.payTerm,
         address: `${supplier.address}`,
         phoneNumber: supplier.phoneNumber,
-      })
+      });
     });
   };
 
   const deleteMOdalHandling = (id) => {
     setId(id);
-    purchaseservices.getPurchase(id).then(({data:purchase}) => {
-      setTotal(purchase.data.total)
-      supplierservices.getSupplier(purchase.data.supplierId).then(({data:supplier}) => {
-        setSuppliers(supplier.data)       
-      })
-    })
+    purchaseservices.getPurchase(id).then(({ data: purchase }) => {
+      setTotal(purchase.data.total);
+      supplierservices
+        .getSupplier(purchase.data.supplierId)
+        .then(({ data: supplier }) => {
+          setSuppliers(supplier.data);
+        });
+    });
     setDeleteState(true);
   };
 
@@ -57,12 +70,12 @@ function PurchaseList() {
       filterSearch: true,
       onFilter: (value, record) => record.purchaseCode.startsWith(value),
       width: "25%",
-      
     },
     {
       title: "PurchaseStatus",
       dataIndex: "purchaseStatus",
-      render : (purchaseStatus) => purchaseStatus===1 ? "Pending" : "Ordered"      
+      render: (purchaseStatus) =>
+        purchaseStatus === 1 ? "Pending" : "Ordered",
     },
     {
       title: "PayTerm",
@@ -73,11 +86,11 @@ function PurchaseList() {
     {
       title: "AdditionalNote",
       dataIndex: "additionalNote",
-    }, 
+    },
     {
       title: "Total",
       dataIndex: "total",
-    }, 
+    },
     {
       title: "Actions",
       dataIndex: "",
@@ -120,13 +133,18 @@ function PurchaseList() {
         </div>
       ),
     },
-  ]; 
- 
+  ];
+
   return (
     <>
+      {loading && <Loading />}
       {deleteState && <DeleteModal deleteItem={deletePurchase} />}
       <PurchaseHeader />
-      <Table rowKey={(record) => record.id} columns={columns} dataSource={purchaseList}/>
+      <Table
+        rowKey={(record) => record.id}
+        columns={columns}
+        dataSource={purchaseList}
+      />
     </>
   );
 }

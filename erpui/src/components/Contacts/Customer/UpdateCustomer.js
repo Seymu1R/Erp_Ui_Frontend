@@ -1,18 +1,28 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row, Input, Form } from "antd";
 import Button from "react-bootstrap/Button";
 import { customerservice } from "../../APIs/Services/CustomerServices";
-import ErpContext from "../../store/erp-context";
+import { useForm } from "antd/es/form/Form";
+import { useNavigate, useParams } from "react-router-dom";
 
-  function UpdateCustomer() {
-  const [{ id }] = useContext(ErpContext);
-  const [customeritem, setCustomer] = useState({});
+function UpdateCustomer() {
+  const [total, setTotalSell] = useState(0);
+  const [form] = useForm();
+  const navigate = useNavigate();
+  const {customerId} =  useParams()
 
-  useEffect(()=>{
-  customerservice.getCustomer(id).then(({data:customer})=>{
-   setCustomer(customer.data)
-  })
-  },[id])
+  useEffect(() => {
+    customerservice.getCustomer(customerId).then(({ data: customer }) => {
+      setTotalSell(customer.data.totalSale);
+      form.setFieldsValue({
+        address: customer.data.address,
+        businessName: customer.data.businessName,
+        email: customer.data.email,
+        taxNumber: customer.data.taxNumber,
+        phoneNumber: customer.data.phoneNumber        
+      });
+    });
+  }, [customerId, total, form]);
 
   const updateCustomer = (body) => {
     customerservice
@@ -22,21 +32,23 @@ import ErpContext from "../../store/erp-context";
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      })
+      .finally(navigate("/customers"));
   };
   return (
     <Form
+      form={form}
       autoComplete="off"
       onFinish={(values) => {
         console.log(values);
         const Obj = {
-          id: `${id}`,
+          id: customerId,
           address: `${values.address}`,
           businessName: `${values.businessName}`,
-          email: `${values.email}`,
-          name: `${values.name}`,
+          email: `${values.email}`,          
           taxNumber: `${values.taxNumber}`,
           phoneNumber: `${values.phoneNumber}`,
+          totalSale: total,
         };
         updateCustomer(Obj);
       }}
@@ -44,7 +56,6 @@ import ErpContext from "../../store/erp-context";
       <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
           <Form.Item
-            defaultValue={customeritem.businessName}
             rules={[
               {
                 required: true,
@@ -64,34 +75,10 @@ import ErpContext from "../../store/erp-context";
               size="large"
               placeholder="BusinessName"
               style={{ width: "90%" }}
-              defaultValue={customeritem.businessName}
             />
           </Form.Item>
         </Col>
-        <Col span={8}>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please enter  Name",
-                whitespace: true,
-                min: 3,
-                max: 20,
-              },
-            ]}
-            hasFeedback
-            name="name"
-            label="Name"
-          >
-            <Input
-              style={{ width: "90%" }}
-              type="text"
-              id="name"
-              size="large"
-              placeholder="Name"
-            />
-          </Form.Item>
-        </Col>
+
         <Col span={8}>
           <Form.Item
             rules={[
@@ -116,8 +103,6 @@ import ErpContext from "../../store/erp-context";
             />
           </Form.Item>
         </Col>
-      </Row>
-      <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
           <Form.Item
             rules={[
@@ -142,6 +127,8 @@ import ErpContext from "../../store/erp-context";
             />
           </Form.Item>
         </Col>
+      </Row>
+      <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
           <Form.Item
             rules={[
@@ -193,8 +180,8 @@ import ErpContext from "../../store/erp-context";
       <Button htmlType={"submit"} type="primary">
         Edit
       </Button>
-    </Form>)
-  
+    </Form>
+  );
 }
 
 export default UpdateCustomer;

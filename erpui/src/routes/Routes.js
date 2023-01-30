@@ -1,6 +1,9 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import RequireAuth from "../components/Auths/RequireAuth";
+import AddBank from "../components/Bank/AddBank";
+import Bank from "../components/Bank/Bank";
+import UpdateBank from "../components/Bank/UpdateBank";
 import AddBrand from "../components/Brands/AddBrand";
 import BrandsList from "../components/Brands/BrandsList";
 import UpdateBrand from "../components/Brands/UpdateBrand";
@@ -30,6 +33,7 @@ import PurchaseCommerceAdd from "../components/PurchaseCommerce/SellCommerceAdd"
 import StockTransferCommerceAdd from "../components/PurchaseCommerce/StockTransferCommerceAdd";
 import AddSell from "../components/Sell/AddSell";
 import SellList from "../components/Sell/SellList";
+import SellView from "../components/Sell/SellView";
 import UpdateSell from "../components/Sell/UpdateSell";
 import AddStock from "../components/Stock/AddStock";
 import EditStock from "../components/Stock/EditStock";
@@ -97,13 +101,13 @@ function Navigate() {
       <Route path="/customers" element={<CustomerList />}></Route>
       <Route path="/addcustomer" element={<AddCustomer />}></Route>
       <Route
-        path="/customers/updatecustomer"
+        path="/customers/updatecustomer/:customerId"
         element={<UpdateCustomer />}
       ></Route>
       <Route path="/suppliers" element={<SupplierList />}></Route>
       <Route path="/addsupplier" element={<AddSupplier />}></Route>
       <Route
-        path="/suppliers/updatesupplier"
+        path="/suppliers/updatesupplier/:supplierId"
         element={<UpdateSupplier />}
       ></Route>
       <Route path="/productlist" element={<ProductList />}></Route>
@@ -121,10 +125,10 @@ function Navigate() {
       <Route path="/units/update" element={<UpdateUnit />}></Route>
       <Route path="/categories" element={<CategoryList />}></Route>
       <Route path="/addcategory" element={<AddCategory />}></Route>
-      <Route path="/categories/update" element={<UpdateCategory />}></Route>
+      <Route path="/categories/update/:cetegoryId" element={<UpdateCategory />}></Route>
       <Route path="/brands" element={<BrandsList />}></Route>
       <Route path="/addbrand" element={<AddBrand />}></Route>
-      <Route path="/brands/update" element={<UpdateBrand />}></Route>
+      <Route path="/brands/update/:barndId" element={<UpdateBrand />}></Route>
       <Route path="/purchases" element={<PurchaseList />}></Route>
       <Route path="/addpurchase" element={<PurchaseAdd />}></Route>
       <Route
@@ -142,6 +146,7 @@ function Navigate() {
       <Route path="/sales" element={<SellList />}></Route>
       <Route path="/addsell" element={<AddSell />}></Route>
       <Route path="/sales/update/:sellId" element={<UpdateSell />}></Route>
+      <Route path="/productlist/view/:sellId" element={<SellView/>}></Route>
       <Route path="/discounts" element={<DiscountList />}></Route>
       <Route path="/adddiscount" element={<AddDiscount />}></Route>
       <Route
@@ -160,6 +165,9 @@ function Navigate() {
       <Route path="/addstock" element={<AddStock />}></Route>
       <Route path="/editstock/:stockId" element={<EditStock />}></Route>
       <Route path="/viewstock/:stockId" element={<SotockView/>}></Route>
+      <Route path="/banks" element={<Bank/>}></Route>
+      <Route path="/addbank" element={<AddBank/>}></Route>
+      <Route path="/banks/update/:bankid" element={<UpdateBank/>}></Route>
       <Route path="/authirize" element={<NotAuthziration/>}></Route>
     </Routes>
   );

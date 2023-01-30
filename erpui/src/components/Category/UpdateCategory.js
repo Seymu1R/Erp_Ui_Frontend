@@ -1,22 +1,21 @@
-import React, { useContext, useEffect } from "react";
-import ErpContext from "../store/erp-context";
+import React, { useEffect } from "react";
 import { Col, Row, Input, Button, Form } from "antd";
 import { categoriesservices } from "../APIs/Services/CategoryServices";
 import { useForm } from "antd/es/form/Form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function UpdateCategory() {
-  const [{ id }] = useContext(ErpContext);
   const [form] = useForm();
   const navigate = useNavigate()
+  const {cetegoryId} = useParams()
 
   useEffect(() => {
-    categoriesservices.getCategory(id).then(({ data: category }) => {
+    categoriesservices.getCategory(cetegoryId).then(({ data: category }) => {
       form.setFieldsValue({
         name: category.data.name,
       });
     });
-  });
+  },[cetegoryId, form]);
 
   const updateCategory = (body) => {
     categoriesservices
@@ -36,7 +35,7 @@ function UpdateCategory() {
       onFinish={(values) => {
         console.log(values);
         const postCategory = {
-          id: `${id}`,
+          id: cetegoryId,
           name: `${values.name}`,
         };
         updateCategory(postCategory);

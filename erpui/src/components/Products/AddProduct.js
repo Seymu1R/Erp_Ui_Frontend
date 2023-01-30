@@ -52,7 +52,7 @@ function AddProduct() {
       .catch((eror) => {
         window.alert(eror);
       })
-      .finally(navigate("./productlist"));
+      .finally(navigate("/productlist"));
   };
 
   return (

@@ -88,7 +88,7 @@ function CustomerList() {
           >
             Delete
           </Button>
-          <Link to="/customers/updatecustomer">
+          <Link to={`/customers/updatecustomer/${record.id}`}>
             <Button
               id={record.id}
               onClick={() => {

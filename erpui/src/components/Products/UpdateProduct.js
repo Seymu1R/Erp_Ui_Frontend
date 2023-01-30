@@ -1,21 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row, Input, Button, Form, Checkbox } from "antd";
-import { DatePicker, Select } from "antd";
+import { Select } from "antd";
 import { productservices } from "../APIs/Services/ProductServices";
 import { unitservices } from "../APIs/Services/UnitsServices";
 import { categoriesservices } from "../APIs/Services/CategoryServices";
 import { brandservices } from "../APIs/Services/BrandsService";
 import { supplierservices } from "../APIs/Services/SupplierServices";
-import ErpContext from "../store/erp-context";
 import { useForm } from "antd/es/form/Form";
+import { useParams } from "react-router-dom";
 
 function UpdateProduct() {
-  const [{ id }] = useContext(ErpContext);
   const [units, setUnit] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [suppliers, setSupliers] = useState([]);  
+  const [suppliers, setSupliers] = useState([]);
   const [form] = useForm();
+  const { productid } = useParams();
 
   useEffect(() => {
     unitservices.getAllUnits().then(({ data: units }) => {
@@ -30,23 +30,24 @@ function UpdateProduct() {
     supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
       setSupliers(suppliers.data);
     });
-    productservices.getProduct(id).then(({ data: product }) => {     
+    productservices.getProduct(productid).then(({ data: product }) => {
       form.setFieldsValue({
-          name: product.data.name,
-          sellingState: product.data.sellingState,
-          skuCode:  product.data.skuCode,
-          barCode: product.data.barCode,         
-          description: product.data.description,
-          purchasePrice: product.data.purchasePrice,
-          sellingPrice: product.data.sellingPrice,
-          alertQuantityOrAmount: product.data.alertQuantityOrAmount,
-          weight: product.data.weight,          
-          stockIds : product.data.stockIds  
-
+        name: product.data.name,
+        sellingState: product.data.sellingState,
+        skuCode: product.data.skuCode,
+        barCode: product.data.barCode,
+        description: product.data.description,
+        purchasePrice: product.data.purchasePrice,
+        sellingPrice: product.data.sellingPrice,
+        alertQuantityOrAmount: product.data.alertQuantityOrAmount,
+        weight: product.data.weight,
+        caregoryId: product.data.caregoryId,
+        brandId: product.data.brandId,
+        suplierId: product.data.suplierId,
+        unitId: product.data.unitId
       });
     });
-   
-  }, [id,form]);
+  }, [productid, form]);
 
   const updateProduct = (body) => {
     productservices
@@ -70,7 +71,7 @@ function UpdateProduct() {
   });
   const optionsSuppliers = suppliers.map((supplier) => {
     return { label: supplier.businessName, value: supplier.id };
-  }); 
+  });
 
   return (
     <Form
@@ -79,7 +80,7 @@ function UpdateProduct() {
       onFinish={(values) => {
         console.log(values);
         const Obj = {
-          Id: `${id}`,
+          Id: productid,
           name: `${values.name}`,
           sellingState: values.sellingState,
           skuCode: `${values.skuCode}`,
@@ -90,12 +91,10 @@ function UpdateProduct() {
           sellingPrice: `${values.sellingPrice}`,
           alertQuantityOrAmount: `${values.alertQuantityOrAmount}`,
           weight: `${values.weight}`,
-          produceDate: values.produceDate,
-          expirationDate: values.expirationDate,
           unitId: `${values.unitId}`,
           caregoryId: `${values.caregoryId}`,
           brandId: `${values.brandId}`,
-          suppliersID: `${values.suppliersID}`,          
+          suppliersID: `${values.suppliersID}`,
         };
         updateProduct(Obj);
       }}
@@ -116,7 +115,7 @@ function UpdateProduct() {
             name="name"
             label="ProductName"
           >
-            <Input             
+            <Input
               name="name"
               type="text"
               id="name"
@@ -306,34 +305,6 @@ function UpdateProduct() {
               },
             ]}
             hasFeedback
-            name="produceDate"
-            label="ProduceDate"
-          >
-            <DatePicker showTime />
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-            hasFeedback
-            name="expirationDate"
-            label="ExpirationDate"
-          >
-            <DatePicker showTime />
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-            hasFeedback
             name="unitId"
             label="Unit"
           >
@@ -347,8 +318,6 @@ function UpdateProduct() {
             />
           </Form.Item>
         </Col>
-      </Row>
-      <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
           <Form.Item
             rules={[
@@ -390,6 +359,8 @@ function UpdateProduct() {
             />
           </Form.Item>
         </Col>
+      </Row>
+      <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
           <Form.Item
             rules={[
@@ -409,8 +380,6 @@ function UpdateProduct() {
             />
           </Form.Item>
         </Col>
-      </Row>
-      <Row style={{ marginBottom: "20px" }}>
         <Col span={8}>
           <Form.Item
             rules={[
@@ -423,15 +392,12 @@ function UpdateProduct() {
             label="SellingState"
             valuePropName="checked"
           >
-            <Checkbox
-            style={{ marginLeft: "20px" }}
-            />
+            <Checkbox style={{ marginLeft: "20px" }} />
           </Form.Item>
-        </Col>      
-       
+        </Col>
       </Row>
       <Button htmlType={"submit"} type="primary">
-        Add
+        Update
       </Button>
     </Form>
   );

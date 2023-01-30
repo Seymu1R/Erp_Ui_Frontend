@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image } from "antd";
 import {
   Card,
@@ -17,7 +17,7 @@ import { brandservices } from "../APIs/Services/BrandsService";
 import { supplierservices } from "../APIs/Services/SupplierServices";
 import { Link, useParams } from "react-router-dom";
 
-function ProductInfoPage() {  
+function ProductInfoPage() {
   const [productitem, setProduct] = useState({});
   const [unit, setunit] = useState("");
   const [category, setCategory] = useState("");
@@ -28,7 +28,6 @@ function ProductInfoPage() {
   let produceDate = new Date(productitem.produceDate);
   let expirationDate = new Date(productitem.expirationDate);
 
-  const stocks = productitem.stockIds;
   useEffect(() => {
     productservices.getProduct(productid).then(({ data: product }) => {
       setProduct(product.data);
@@ -63,10 +62,8 @@ function ProductInfoPage() {
                 <h2>Name: {productitem.name} </h2>
               </CardTitle>
               <Link to={`/productlist/updateproduct/${productid}`}>
-                {" "}
-                <Button style={{ backgroundColor: "#002140" }} color="primary">
-                  {" "}
-                  Edit Product{" "}
+                <Button style={{ backgroundColor: "#002140", marginTop: "40px" }} color="primary">
+                  Edit Product
                 </Button>
               </Link>
             </CardBody>
@@ -103,7 +100,6 @@ function ProductInfoPage() {
                   <CardText>Category: {category} </CardText>
                   <CardText>Brand: {brand} </CardText>
                   <CardText>Supplier: {supplier}</CardText>
-                  <CardText>Stocks: {stocks}</CardText>
                 </Col>
               </Row>
             </CardBody>

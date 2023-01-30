@@ -14,13 +14,14 @@ function CategoryList() {
   const [categoryList, setCategoryList] = useState([]);
 
   useEffect(() => {
+    setLoading(false)
     categoriesservices
       .getAllCategories()
       .then(({ data: categories }) => {
         setCategoryList(categories.data);
       })
-      .finally(setLoading(false));
-  }, [loading]);
+      .finally();
+  }, [loading ,setLoading]);
 
   const transFormedData = categoryList.map((el) =>
     el.isMain === true ? { ...el, Main: "Main" } : { ...el, Main: "Notmain" }
@@ -68,7 +69,7 @@ function CategoryList() {
           >
             Delete
           </Button>
-          <Link to="/categories/update">
+          <Link to={`/categories/update/${record.id}`}>
             <Button
               id={record.id}
               onClick={() => {

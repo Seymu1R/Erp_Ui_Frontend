@@ -8,7 +8,7 @@ import ErpContext from "../store/erp-context";
 import { productservices } from "../APIs/Services/ProductServices";
 
 function SotockView() {
-  const [{ loading, setTotal, setLoading }] = useContext(ErpContext);
+  const [{ loading, setLoading }] = useContext(ErpContext);
   const { stockId } = useParams();
   const [stock, setStock] = useState({});
   const [productCommercelist, setProductCommerceList] = useState([]);

@@ -77,13 +77,7 @@ function SupplierList() {
       title: "TotalPurchase",
       dataIndex: "totalPurchase",
       sorter: (a, b) => a.totalPurchase - b.totalPurchase,
-    },
-    {
-      title: "TotalPurchaseReturn",
-      dataIndex: "totalPurchaseReturn",
-      width: "13%",
-      sorter: (a, b) => a.totalPurchase - b.totalPurchase,
-    },
+    },    
     {
       title: "Actions",
       dataIndex: "",
@@ -102,7 +96,7 @@ function SupplierList() {
           >
             Delete
           </Button>
-          <Link to="/suppliers/updatesupplier">
+          <Link to={`/suppliers/updatesupplier/${record.id}`}>
             <Button
               id={record.id}
               onClick={() => {

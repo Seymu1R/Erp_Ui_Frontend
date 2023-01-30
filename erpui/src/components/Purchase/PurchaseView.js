@@ -41,14 +41,14 @@ function PurchaseView() {
       <Row>
         <Col xs="12" sm="4">
           <Card>
-            <Image width={385} src="https://picsum.photos/300/200" />
+            <Image width={399} src="https://picsum.photos/300/200" />
 
             <CardBody CardBody style={{ fontSize: "10px", height: "244px" }}>
               <CardTitle>
                 <h2>PurchaseCode: {purchase.purchaseCode}</h2>
               </CardTitle>
               <Link to={`/purchase/update/${purchaseId}`}>
-                <Button style={{ backgroundColor: "#002140" }} color="primary">
+                <Button style={{ backgroundColor: "#002140", marginTop:"40px" }} color="primary">
                   Edit Purchase
                 </Button>
               </Link>
@@ -59,7 +59,7 @@ function PurchaseView() {
           <Card>
             <CardBody CardBody style={{ fontSize: "25px", height: "500px" }}>
               <CardText>PayTerm: {purchase.payTerm} Day</CardText>
-              <CardText>PurchaseStatus: {purchase.purchaseStatus}</CardText>
+              <CardText>PurchaseStatus: {purchase.purchaseStatus === 1 ? "Pending" : "Ordered"}</CardText>
               <CardText>Supplier: {supplier}</CardText>
               <CardText>Stock: {stock}</CardText>
               <CardText>Total: {purchase.total}</CardText>

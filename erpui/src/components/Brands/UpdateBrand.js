@@ -1,22 +1,21 @@
-import React, { useContext, useEffect } from "react";
-import ErpContext from "../store/erp-context";
+import React, { useEffect } from "react";
 import { Col, Row, Input, Button, Form } from "antd";
 import { brandservices } from "../APIs/Services/BrandsService";
 import { useForm } from "antd/es/form/Form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function UpdateBrand() {
-  const [{ id }] = useContext(ErpContext);
   const [form] = useForm();
   const navigation = useNavigate()
+  const {barndId} = useParams();
 
   useEffect(() => {
-    brandservices.getBrand(id).then(({ data: brand }) => {
+    brandservices.getBrand(barndId).then(({ data: brand }) => {
       form.setFieldsValue({
         brandName: brand.data.brandName,
       });
     });
-  }, [id, form]);
+  }, [barndId, form]);
 
   const editBrand = (body) => {
     brandservices
@@ -36,7 +35,7 @@ function UpdateBrand() {
       onFinish={(values) => {
         console.log(values);
         const Obj = {
-          id: `${id}`,
+          id: barndId,
           brandName: `${values.brandName}`,
         };
         editBrand(Obj);

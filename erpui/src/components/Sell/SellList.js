@@ -7,18 +7,20 @@ import SellHeader from "./SellHeader";
 import { sellservices } from "../APIs/Services/SellsServices";
 import DeleteModal from "../UI/DeleteModal";
 import { customerservice } from "../APIs/Services/CustomerServices";
+import Loading from "../UI/Loading";
 
 function SellList() {
-  const [{ deleteState, setDeleteState, setId, total, setTotal }] =
+  const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
     useContext(ErpContext);
   const [sellList, setSellList] = useState([]);
   const [sellTotal, setSellTotal] = useState();
   const [customer, setCustomer] = useState(0);
   useEffect(() => {
+    setLoading(false)
     sellservices.getAllSells().then(({ data: sells }) => {
       setSellList(sells.data);
     });
-  }, []);
+  }, [deleteState, loading, setLoading]);
 
   const sellModifiedByInvoiceStatus = sellList.map((sell) => {
     if (sell.invoiceStatuse === 1) {
@@ -33,7 +35,7 @@ function SellList() {
 
   const deleteSell = (id) => {
     sellservices.deleteSell(id).then((data) => {
-      console.log(data.message);
+      console.log(data.message);     
       customerservice.updateCustomer({
         id: `${customer.id}`,
         totalSale: customer.totalSale - sellTotal,
@@ -47,7 +49,7 @@ function SellList() {
   };
 
   const deleteMOdalHandling = (id) => {
-    setId(id);
+    setId(id);    
     sellservices.getSell(id).then(({ data: sell }) => {
       setSellTotal(sell.data.total);
       customerservice
@@ -55,7 +57,6 @@ function SellList() {
         .then(({ data: customer }) => {
           setCustomer(customer.data);
         });
-      
     });
     setDeleteState(true);
   };
@@ -135,7 +136,7 @@ function SellList() {
             </Button>
           </Link>
 
-          <Link to="/productlist/view">
+          <Link to={`/productlist/view/${record.id}`}>
             <Button
               id={record.id}
               onClick={() => {
@@ -152,6 +153,7 @@ function SellList() {
   ];
   return (
     <>
+      {loading && <Loading />}
       {deleteState && <DeleteModal deleteItem={deleteSell} />}
       <SellHeader />
       <Table

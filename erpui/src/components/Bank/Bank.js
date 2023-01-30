@@ -3,24 +3,24 @@ import ErpContext from '../store/erp-context';
 import { Table } from "antd";
 import Button from "react-bootstrap/Button";
 import { Link } from 'react-router-dom'
-import BrandHeader from './BrandHeader';
-import { brandservices } from '../APIs/Services/BrandsService';
 import DeleteModal from '../UI/DeleteModal';
 import Loading from '../UI/Loading';
+import { bankservices } from '../APIs/Services/BankServices';
+import BankHeader from './BankHeader';
 
-function BrandsList() {
-  const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
+function Bank() {
+    const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
     useContext(ErpContext);
-  const [brandList, setBrandlist] = useState([]);
+  const [bankList, setBanklist] = useState([]);
 
   useEffect(() => {
-    brandservices.getAllBrands().then(({ data: brands }) => {      
-      setBrandlist(brands.data);
+      bankservices.getAllBanks().then(({ data: banks }) => {
+        setBanklist(banks.data);
     }).finally(setLoading(false));
   }, [loading, setLoading]);
 
   const deleteBrand = (id) => {
-    brandservices.deleteBrand(id).then((data) => {
+    bankservices.deleteBank(id).then((data) => {
       setLoading(true)
     });
   };
@@ -32,16 +32,20 @@ function BrandsList() {
 
       const columns = [
         {
-          title: "Brand",
-          dataIndex: "brandName",
-          filters: brandList.map((brand) => {
-            return { text: brand.brandName, value: brand.brandName };
+          title: "Bank",
+          dataIndex: "bankName",
+          filters: bankList.map((bank) => {
+            return { text: bank.bankName, value: bank.bankBalance };
           }),
           filterSearch: true,
           onFilter: (value, record) => record.brandName.startsWith(value),
           width: "25%",       
-        },       
-              
+        },   
+        {
+            title: "BankBalance",
+            dataIndex: "bankBalance",           
+            width: "25%",       
+          },                
         {
           title: "Actions",         
           dataIndex: "",
@@ -58,7 +62,7 @@ function BrandsList() {
               >
                 Delete
               </Button>
-              <Link to={`/brands/update/${record.id}`}>
+              <Link to={`/banks/update/${record.id}`}>
                 <Button
                   id={record.id}
                   onClick={() => {
@@ -73,16 +77,14 @@ function BrandsList() {
           ),
         },
       ];
-         
-    
-      return (
-        <> 
-        {loading && <Loading/>}
-        {deleteState && <DeleteModal deleteItem={deleteBrand} />}
-        <BrandHeader/> 
-          <Table  rowKey={(record) => record.id} columns={columns} dataSource={brandList} />
-        </>
-      );
+  return (
+    <> 
+    {loading && <Loading/>}
+    {deleteState && <DeleteModal deleteItem={deleteBrand} />}
+    <BankHeader/> 
+      <Table  rowKey={(record) => record.id} columns={columns} dataSource={bankList} />
+    </>
+  )
 }
 
-export default BrandsList
+export default Bank

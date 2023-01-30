@@ -9,7 +9,6 @@ import {
   CodepenOutlined,
   UserOutlined,
   VerticalAlignBottomOutlined,
-  CarOutlined,
   DatabaseOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu } from "antd";
@@ -34,6 +33,7 @@ const items = [
   getItem("Contacts", "1", <ContactsOutlined />, [
     getItem("Suppliers", "suppliers"),
     getItem("Customers", "customers"),
+    getItem("Banks", "banks"),
   ]),
   getItem("Products", "2", <CodepenOutlined />, [
     getItem("List Products", "productlist"),
@@ -50,10 +50,6 @@ const items = [
     getItem("All Sales", "sales"),
     getItem("Add Sell", "addsell"),
     getItem("Discounts", "discounts"),
-  ]),
-  getItem("StockTransfer", "5", <CarOutlined />, [
-    getItem("Stock Transfer List", "stocktransferlist"),
-    getItem("Add Transfer", "addstocktransfer"),
   ]),
   getItem("Stock", "6", <DatabaseOutlined />, [
     getItem("Stocks List", "stocklist"),

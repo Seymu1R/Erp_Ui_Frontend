@@ -1,16 +1,21 @@
-import React, { useEffect, useContext} from "react";
+import React, { useEffect, useContext, useState} from "react";
 import { Col, Row, Input, Form } from "antd";
 import Button from "react-bootstrap/Button";
 import ErpContext from "../../store/erp-context";
 import { supplierservices } from "../../APIs/Services/SupplierServices";
 import { useForm } from "antd/es/form/Form";
+import { useNavigate, useParams } from "react-router-dom";
 
 function UpdateSupplier() {
   const [{ id }] = useContext(ErpContext);
   const [form] = useForm();
+  const [total, SetTotalpurchase] = useState(0)
+  const navigate = useNavigate()
+  const {supplierId} = useParams()
 
   useEffect(() => {
-    supplierservices.getSupplier(id).then(({ data: supplier }) => {
+    supplierservices.getSupplier(supplierId).then(({ data: supplier }) => {
+      SetTotalpurchase(supplier.data.totalPurchase)
       form.setFieldsValue({
         address: supplier.data.address,
         businessName: supplier.data.businessName,
@@ -21,7 +26,7 @@ function UpdateSupplier() {
         payTerm: supplier.data.payTerm,
       });
     });
-  }, [id,form]);
+  }, [supplierId,form]);
 
   const updateSupplier = (body) => {
     supplierservices
@@ -31,7 +36,7 @@ function UpdateSupplier() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(navigate("/suppliers"));
   };
 
   return (
@@ -49,6 +54,7 @@ function UpdateSupplier() {
           taxNumber: `${values.taxNumber}`,
           phoneNumber: `${values.phoneNumber}`,
           payTerm: `${values.payTerm}`,
+          totalPurchase : `${total}`
         };
         updateSupplier(postObj);
       }}
@@ -81,27 +87,26 @@ function UpdateSupplier() {
         <Col span={8}>
           <Form.Item
             rules={[
-              {
-                required: true,
-                message: "Please enter  Name",
-                whitespace: true,
-                min: 3,
-                max: 20,
+              {      
+                required : true,          
+                message: "Please enter a valid Payterm"                
               },
             ]}
             hasFeedback
-            name="name"
-            label="Name"
+            name="payTerm"
+            label="PayTerm"
           >
             <Input
               style={{ width: "90%" }}
-              type="text"
-              id="name"
+              type="number"
+              id="payTerm"
               size="large"
-              placeholder="Name"
+              placeholder="PayTerm"
             />
           </Form.Item>
         </Col>
+        
+          
         <Col span={8}>
           <Form.Item
             rules={[
@@ -200,33 +205,9 @@ function UpdateSupplier() {
           </Form.Item>
         </Col>
       </Row>
-      <Row style={{ marginBottom: "20px" }}>
-        <Col span={8}>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please enter a valid Email",
-                whitespace: true,
-                min: 0,
-              },
-            ]}
-            hasFeedback
-            name="payTerm"
-            label="PayTerm"
-          >
-            <Input
-              style={{ width: "90%" }}
-              type="number"
-              id="payTerm"
-              size="large"
-              placeholder="PayTerm"
-            />
-          </Form.Item>
-        </Col>
-      </Row>
+      
       <Button htmlType={"submit"} type="primary">
-        Add
+        Update
       </Button>
     </Form>
   );
