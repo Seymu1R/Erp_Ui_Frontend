@@ -20,6 +20,7 @@ const Login = () => {
             AccesToken: token.data.accessToken,
             Roles: roles.data,
             UserName: loginObj.userName,
+            userId: token.data.userId
           });
         });
       })
@@ -29,7 +30,7 @@ const Login = () => {
   return (
     <Row style={{justifyContent:"center" , background: "#cce7e8", alignItems:"center", height:"100vh" }} >
       <Col span={12}>
-        <h1 style={{textAlign:'center', marginBottom:"20px"}} >Basic Erp</h1>
+      <img style={{marginLeft:"195px" }} width={385} src={`${process.env.PUBLIC_URL}/assets/images/logo_transparent.png`} alt="logo" />
         <Form
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
@@ -38,7 +39,7 @@ const Login = () => {
           onFinish={(values) => {
             const loginObj = {
               userName: `${values.userName}`,
-              password: `${values.password}`,
+              password: `${values.password}`
             };
             createToken(loginObj);
           }}

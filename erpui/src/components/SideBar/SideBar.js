@@ -14,7 +14,7 @@ import {
 import { Breadcrumb, Layout, Menu } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navigate from "../../routes/Routes";
-const { Content, Footer, Sider } = Layout;
+const { Content, Footer, Sider  } = Layout;
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -61,22 +61,29 @@ function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
+console.log(collapsed);
   return (
     <Layout
       style={{
         minHeight: "100vh",
       }}
     >
-      <Sider
-        collapsible
+      
+      <Sider        
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         style={{
           background: " #cce7e8",
         }}
       >
+        <img
+          style={{ width: "200px", height: "120px" }}
+          src={`${process.env.PUBLIC_URL}/assets/images/logo_transparent.png`}
+          alt="logo"
+        />
+        
         <div />
+        
         <Menu
           onClick={({ key }) => {
             navigate(key);
@@ -89,8 +96,11 @@ function SideBar() {
             background: " #cce7e8",
             color: "black",
           }}
-        ></Menu>
+        >    
+          
+        </Menu>
       </Sider>
+      
       <Layout className="site-layout">
         <Header />
         <Content

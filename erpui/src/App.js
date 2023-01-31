@@ -17,9 +17,11 @@ function App() {
           <Route path="/register" element={<Register />}></Route>
         </Routes>
       )}
-      <PrivateRoute>
-        <SideBar />;
-      </PrivateRoute>
+      {auth !== false && (
+        <PrivateRoute>
+          <SideBar />;
+        </PrivateRoute>
+      )}
     </>
   );
 }
