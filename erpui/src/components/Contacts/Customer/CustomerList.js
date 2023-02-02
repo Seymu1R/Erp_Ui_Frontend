@@ -7,17 +7,25 @@ import ErpContext from "../../store/erp-context";
 import DeleteModal from "../../UI/DeleteModal";
 import { customerservice } from "../../APIs/Services/CustomerServices";
 import Loading from "../../UI/Loading";
+import { sellservices } from "../../APIs/Services/SellsServices";
 
 function CustomerList() {
   const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
     useContext(ErpContext);
   const [customerlist, setCustomerList] = useState([]);
+  const [sells, setSells] = useState([])
 
   useEffect(() => {
     customerservice.getAllCustomers().then(({ data: customers }) => {
       setCustomerList(customers.data);
     }).finally(setLoading(false));
+    sellservices.getAllSells().then(({data:sells}) => {
+      setSells(sells.data)
+    })
   }, [loading,setLoading]);
+
+
+
 
   const deleteCustomer = (id) => {
     customerservice.deleteCustomer(id).then((data) => {

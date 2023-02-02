@@ -70,7 +70,7 @@ function AddSell() {
             shippingAddress: `${values.shippingAddress}`,
             payTerm: `${values.payTerm}`,
             sellNote: `${values.sellNote}`,
-            discountIds: values.discountIds,
+            discountId: values.discountId,
           };
           addSell(postObj);
         }}
@@ -203,12 +203,11 @@ function AddSell() {
                 },
               ]}
               hasFeedback
-              name="discountIds"
+              name="discountId"
               label="Discounts"
             >
               <Select
                 showSearch
-                mode="multiple"
                 style={{ width: 200 }}
                 placeholder="Search Discount"
                 optionFilterProp="children"

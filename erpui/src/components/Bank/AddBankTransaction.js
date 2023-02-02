@@ -4,12 +4,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { customerservice } from "../APIs/Services/CustomerServices";
 import { supplierservices } from "../APIs/Services/SupplierServices";
 import { banktransactionservices } from "../APIs/Services/BankTransactionsservices";
+import { bankservices } from "../APIs/Services/BankServices";
 
 function AddBankTransaction() {
   const [showCustomer, setShowCustomer] = useState(true);
   const [showSupplier, setShowSupplier] = useState(false); 
   const [customerList, setCustomers] = useState([]);
   const [supplierList, setSuppliers] = useState([]);
+  const [ bank, setBank] = useState({})
   const navigation = useNavigate();
   const {bankId} = useParams()
 
@@ -20,7 +22,10 @@ function AddBankTransaction() {
     supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
       setSuppliers(suppliers.data);
     });
-  }, []);
+    bankservices.getBank(bankId).then(({data:bank}) => {
+      setBank(bank.data)
+    })
+  }, [bankId]);
 
   const optionCustomers = customerList.map((customer) => {
     return { value: customer.id, label: customer.businessName };
@@ -34,12 +39,31 @@ function AddBankTransaction() {
     banktransactionservices
       .createBankTransaction(body)
       .then((res) => {
+        if(body.suplierId){
+          bankservices.updateBank({...bank,bankBalance :bank.bankBalance - body.paymentAmount}).then(({data:bank})=>{
+            console.log(bank.data);
+          })
+          supplierservices.getSupplier(body.suplierId).then(({data:supplier}) => {
+            supplierservices.updateSupplier({...supplier.data, totalPurchase: +(supplier.data.totalPurchase - body.paymentAmount)}).then((data)=>{
+              console.log(data);
+            })
+          })
+        }
+        if(body.customerId){
+          bankservices.updateBank({...bank,bankBalance : bank.bankBalance + eval(body.paymentAmount)}).then(({data:bank})=>{
+            console.log(bank.data);
+          })
+          customerservice.getCustomer(body.customerId).then(({data:customer}) => {
+            customerservice.updateCustomer({...customer.data,totalSale:customer.data.totalSale - body.paymentAmount})
+          })
+        }
+        
         console.log(res.data);
       })
       .catch((eror) => {
         window.alert(eror);
       })
-      .finally(navigation("/categories"));
+      .finally(navigation(`/banks/view/${bankId}`));
   };
 
   return (
@@ -47,17 +71,17 @@ function AddBankTransaction() {
       autoComplete="off"
       onFinish={(values) => {
         console.log(values);
-        const postSuppliertransaction= {
+        const postCustomertransaction= {
             customerId: `${values.customerId}`,
             bankId: bankId,
-            paymentAmount: `${values.paymentAmount}`
+            paymentAmount: values.paymentAmount
         };
-        const postCustomertransaction = {
+        const postSuppliertransaction = {
             suplierId: `${values.suplierId}`,
             bankId: bankId,
-            paymentAmount: `${values.paymentAmount}`
+            paymentAmount: values.paymentAmount
         };
-        addBankTransaction(showCustomer ? postCustomertransaction : postSuppliertransaction);
+        addBankTransaction(showCustomer ? postSuppliertransaction : postCustomertransaction);
       }}
     >
       <Row style={{ marginBottom: "20px" }}>

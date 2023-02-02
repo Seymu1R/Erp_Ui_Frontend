@@ -15,6 +15,7 @@ function UpdateSell() {
   const [customers, setCustomers] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [discounts, setDiscounts] = useState([]);
+  const [disCountAmount, setDiscountAmount] = useState(0)
   let { sellId } = useParams();
   const [{ total }] = useContext(ErpContext);
   const [customerItem, setCustomerItem] = useState({})
@@ -35,6 +36,9 @@ function UpdateSell() {
     });
     sellservices.getSell(sellId).then(({ data: sell }) => {
      setStockId(sell.data.stockId);
+     discountservices.getDiscount(sell.data.discountId).then(({data:discount}) => {
+      setDiscountAmount(discount.data.discountPercent)
+     })
       form.setFieldsValue({
         payTerm: sell.data.payTerm,
         invoiceStatuse: sell.data.invoiceStatuse,
@@ -43,7 +47,7 @@ function UpdateSell() {
         customerId: sell.data.customerId,
         stockId: sell.data.stockId,
         shippingStatus: sell.data.shippingStatus,
-        discountIds: sell.data.discountIds,
+        discountId: sell.data.discountId,
       });
       customerservice
       .getCustomer(sell.data.customerId)
@@ -115,8 +119,8 @@ function UpdateSell() {
             shippingAddress: `${values.shippingAddress}`,
             payTerm: `${values.payTerm}`,
             sellNote: `${values.sellNote}`,
-            discountIds: values.discountIds,
-            total: `${total}`,
+            discountId: `${values.discountId}`,
+            total: total,
             invoiceStatuse: values.invoiceStatuse
           };
           editSell(postObj);
@@ -250,12 +254,11 @@ function UpdateSell() {
                 },
               ]}
               hasFeedback
-              name="discountIds"
+              name="discountId"
               label="Discounts"
             >
               <Select
                 showSearch
-                mode="multiple"
                 style={{ width: 200 }}
                 placeholder="Search Discount"
                 optionFilterProp="children"
@@ -306,7 +309,7 @@ function UpdateSell() {
         </Button>
       </Form>
       <SellCommerceAdd stockId = {stockId} sellId={sellId} />
-      <ProductCommerceList sellId={sellId} />
+      <ProductCommerceList  discountPercent = {disCountAmount} sellId={sellId} />
     </>
   );
 }

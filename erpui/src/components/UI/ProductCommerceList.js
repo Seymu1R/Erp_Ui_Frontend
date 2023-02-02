@@ -6,12 +6,13 @@ import { productcommerceservices } from "../APIs/Services/ProductCommerce";
 import { productservices } from "../APIs/Services/ProductServices";
 import Loading from "./Loading";
 
-function ProductCommerceList({ sellId }) {
+function ProductCommerceList({ sellId, discountPercent }) {
   const [productList, setProductList] = useState([]);
   const [
     {  setLoading, setTotal, loading },
   ] = useContext(ErpContext);
   const [productCommerces, setProductcommerces] = useState([]);
+  const [discountHandler, setDiscountHandler] = useState(false)
 
   useEffect(() => {
     productservices.getAllpRoducts().then(({ data: products }) => {
@@ -23,7 +24,7 @@ function ProductCommerceList({ sellId }) {
         })
         .finally(setLoading(false));
     });
-  }, [loading, setLoading]);
+  }, [loading, setLoading, discountHandler]);
 
   const modifiedData = productCommerces.filter((item) => {
     return item.sellId === sellId;
@@ -43,6 +44,9 @@ function ProductCommerceList({ sellId }) {
     }
   });
 
+const disCountarr = arr.map(item =>  ({...item, DisCountTotal: item.SubTotal - (item.SubTotal*discountPercent)/100 }))
+
+if(!discountHandler){
   if (arr.length !== 0) {
     let totalSelling = 0;
     arr.forEach((el) => {
@@ -50,6 +54,17 @@ function ProductCommerceList({ sellId }) {
       setTotal(totalSelling);
     });
   }
+}
+if(discountHandler){
+  if (disCountarr.length !== 0) {
+    let totalSelling = 0;
+    disCountarr.forEach((el) => {
+      totalSelling += el.DisCountTotal;
+      setTotal(totalSelling);
+    });
+  }
+}
+ 
 
   
   const deleteProductCommerce = (id) => {
@@ -76,6 +91,10 @@ function ProductCommerceList({ sellId }) {
       dataIndex: "SubTotal",
     },
     {
+      title: "DisCountTotal",
+      dataIndex: "DisCountTotal",
+    },
+    {
       title: "Actions",
       dataIndex: "",
       key: "x",
@@ -98,8 +117,11 @@ function ProductCommerceList({ sellId }) {
 
   return (
     <div>
+      <Button onClick={()=>{
+        setDiscountHandler(true)
+      }} > Endirimləri Tətbiq et</Button>
       {loading && <Loading />}      
-      <Table columns={columns} dataSource={arr} />
+      <Table columns={columns} dataSource={ discountHandler ? disCountarr : arr} />
     </div>
   );
 }
