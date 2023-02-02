@@ -2,7 +2,9 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import RequireAuth from "../components/Auths/RequireAuth";
 import AddBank from "../components/Bank/AddBank";
+import AddBankTransaction from "../components/Bank/AddBankTransaction";
 import Bank from "../components/Bank/Bank";
+import BankView from "../components/Bank/BankView";
 import UpdateBank from "../components/Bank/UpdateBank";
 import AddBrand from "../components/Brands/AddBrand";
 import BrandsList from "../components/Brands/BrandsList";
@@ -168,6 +170,8 @@ function Navigate() {
       <Route path="/banks" element={<Bank/>}></Route>
       <Route path="/addbank" element={<AddBank/>}></Route>
       <Route path="/banks/update/:bankid" element={<UpdateBank/>}></Route>
+      <Route path="/banks/view/:bankId" element={<BankView/>}></Route>
+      <Route path="/addbanktransaction/:bankId" element={<AddBankTransaction/>}></Route>
       <Route path="/authirize" element={<NotAuthziration/>}></Route>
     </Routes>
   );

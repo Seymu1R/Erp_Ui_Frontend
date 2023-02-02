@@ -8,35 +8,35 @@ import {
   Container,
   Row,
   Col,
-  Button,
 } from "reactstrap";
 import { productservices } from "../APIs/Services/ProductServices";
-import { Link } from "react-router-dom";
 import { discountservices } from "../APIs/Services/DiscountsServices";
 import { useParams } from "react-router-dom";
 
 function DiscountInfo() {
   let { discountId } = useParams();
   const [discount, setDiscount] = useState({});
-  const [productList, setproductList] = useState([]);
-  const [selllist, setSelllist] = useState([]);
+  const [productName, setproductNameList] = useState([]);
 
-  const products = [];
 
   useEffect(() => {
     discountservices.getDiscount(discountId).then(({ data: discount }) => {
       setDiscount(discount.data);
-      setproductList(discount.data.productIds);
-      setSelllist(discount.data.sellIds);
+      let arr = [];
+      discount.data.productIds.forEach((element) => {
+        productservices.getProduct(element).then(({ data: product }) => {
+          arr.push(product.data.name);
+            setproductNameList(arr);          
+        });
+      });
     });
   }, [discountId]);
 
-  for (let index = 0; index < productList.length; index++) {
-    const element = productList[index];
-    productservices.getProduct(element).then(({ data: product }) => {
-      products.push(element.name);
-    });
-  }
+  console.log(productName);
+
+  let startAt = new Date(discount.startsAt);
+
+  let edsnAt = new Date(discount.endsTime);
 
   return (
     <Container>
@@ -48,23 +48,19 @@ function DiscountInfo() {
               <CardTitle>
                 <h2>Name: {discount.name} </h2>
               </CardTitle>
-              <Link to={`/discount/update/${discountId}`}>
-                <Button style={{ backgroundColor: "#002140", marginTop:"100px" }} color="primary">Edit Discount</Button>
-              </Link>
             </CardBody>
           </Card>
         </Col>
         <Col xs="12" sm="6">
           <Card>
-          <CardBody CardBody style={{ fontSize: "25px", height: "641px" }}>
-              <CardText>StartTime: {discount.startsAt}</CardText>
-              <CardText>EndsTime: {discount.endsTime}</CardText>
-              <CardText>DiscountAmount: {discount.discountAmount}$</CardText>
+            <CardBody CardBody style={{ fontSize: "25px", height: "641px" }}>
+              <CardText>StartTime: {startAt.toLocaleString("en-US")}</CardText>
+              <CardText>EndsTime: {edsnAt.toLocaleString("en-US")}</CardText>
+              <CardText>DiscountAmount: {discount.discountPercent}%</CardText>
               <CardText>
                 DiscountType: {discount.discountType ? "Fixed" : "Persentage"}
               </CardText>
-              <CardText>Products: {products}</CardText>
-              <CardText>Sells: </CardText>
+              <CardText>Products: {productName.join(", ")}</CardText>              
             </CardBody>
           </Card>
         </Col>

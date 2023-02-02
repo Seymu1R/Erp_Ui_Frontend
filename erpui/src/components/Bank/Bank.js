@@ -64,15 +64,23 @@ function Bank() {
               </Button>
               <Link to={`/banks/update/${record.id}`}>
                 <Button
-                  id={record.id}
-                  onClick={() => {
-                    setId(record.id)
-                  }}
+                  id={record.id}                
                   variant="primary"
                 >
                   Edit
                 </Button>
-              </Link>              
+              </Link>
+              <Link to={`/banks/view/${record.id}`}>
+                <Button
+                  id={record.id}
+                  onClick={() => {
+                    setId(record.id)
+                  }}
+                  variant="info"
+                >
+                  View
+                </Button>
+              </Link>                
             </div>
           ),
         },

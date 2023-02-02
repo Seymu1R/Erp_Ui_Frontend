@@ -3,9 +3,12 @@ import { Col, Row, Input, DatePicker, Form, Select } from "antd";
 import Button from "react-bootstrap/Button";
 import { discountservices } from "../APIs/Services/DiscountsServices";
 import { productservices } from "../APIs/Services/ProductServices";
+import { useNavigate } from "react-router-dom";
 
 function AddDiscount() {
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     productservices.getAllpRoducts().then(({ data: products }) => {
       setProducts(products.data);
@@ -24,7 +27,7 @@ function AddDiscount() {
       })
       .catch((eror) => {
         window.alert(eror);
-      });
+      }).finally(navigate('/discounts'));
   };
 
   return (
@@ -37,7 +40,7 @@ function AddDiscount() {
           startsAt: values.startsAt,
           endsTime: values.endsTime,
           discountPercent: `${values.discountPercent}`,
-          productIds: values.caregoryId,         
+          productIds: values.productIds,         
         };
         addDiscount(postObj);
       }}

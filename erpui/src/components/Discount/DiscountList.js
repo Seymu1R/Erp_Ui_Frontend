@@ -6,28 +6,36 @@ import { Link } from "react-router-dom";
 import DiscountHeader from "./DiscountHeader";
 import { discountservices } from "../APIs/Services/DiscountsServices";
 import DeleteModal from "../UI/DeleteModal";
+import Loading from "../UI/Loading";
 
 function DiscountList() {
-  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [{ deleteState, setDeleteState, setId, loading, setLoading }] = useContext(ErpContext);
   const [discountList, setDiscountList] = useState([]);
   
 
   useEffect(() => {
     discountservices.getAllDiscounts().then(({ data: Products }) => {
       setDiscountList(Products.data);
-    });
-  }, []);
+    }).finally(setLoading(false));
+  }, [loading, setLoading]);
 
   const deleteDiscount = (id) => {
     discountservices.deleteDiscount(id).then((data) => {
       console.log(data.message);
+      setLoading(true)
     });
   };
 
   const deleteMOdalHandling = (id) => {
+    
     setId(id);
     setDeleteState(true);
   };
+
+  const returnTime = (date) => {
+    return new Date(date)
+  }
+
 
   const columns = [
     {
@@ -43,14 +51,16 @@ function DiscountList() {
     {
       title: "StartTime",
       dataIndex: "startsAt",
+      render: (startsAt) => returnTime(startsAt).toLocaleString("en-US")
     },
     {
       title: "EndTime",
       dataIndex: "endsTime",
+      render: (endsTime) => returnTime(endsTime).toLocaleString("en-US")
     },
     {
       title: "DiscountAmount",
-      dataIndex: "discountAmount",
+      dataIndex: "discountPercent",
     },
     {
       title: "DiscountType",
@@ -92,6 +102,7 @@ function DiscountList() {
 
   return (
     <>
+    {loading && <Loading />}
       {deleteState && <DeleteModal deleteItem={deleteDiscount} />}
       <DiscountHeader />
       <Table
