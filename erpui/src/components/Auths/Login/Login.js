@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useContext } from "react";
 import { Button, Col, Form, Input, Row } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import ErpContext from "../../store/erp-context";
 import { authservices } from "../../APIs/Services/AuthService";
 import { roleservice } from "../../APIs/Services/RoleServices";
+import ErorModal from "../../UI/ErorModal";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [modalHandler, setModalHandler] = useState(false);
+  const [erorStatusCode, setErorStatusCode] = useState("");
+  const [erorData, setErorData] = useState("")
   const [{ setAuth }] = useContext(ErpContext);
 
   const createToken = (loginObj) => {
@@ -23,12 +27,25 @@ const Login = () => {
             userId: token.data.userId
           });
         });
+      }).catch(function (error) {
+        if (error.response) {         
+          setErorStatusCode(error.response.status)
+          setErorData("Username or password is wrong !")         
+          setModalHandler(true)
+        } else if (error.request) {          
+          console.log(error.request);
+        } else {          
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
       })
-      .finally(navigate("/"));
+     
   };
 
   return (
-    <Row style={{justifyContent:"center" , background: "#cce7e8", alignItems:"center", height:"100vh" }} >
+    <>
+     { modalHandler && <ErorModal data={erorData} setmodalHandler = {setModalHandler} statusCode = {erorStatusCode} />}
+     <Row style={{justifyContent:"center" , background: "#cce7e8", alignItems:"center", height:"100vh" }} >
       <Col span={12}>
       <img style={{marginLeft:"195px" }} width={385} src={`${process.env.PUBLIC_URL}/assets/images/logo_transparent.png`} alt="logo" />
         <Form
@@ -86,6 +103,7 @@ const Login = () => {
         </Form>
       </Col>
     </Row>
+    </>   
   );
 };
 export default Login;

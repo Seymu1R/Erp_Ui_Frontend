@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Row, Col, Space, Dropdown, Button } from "antd";
 import ErpContext from "../store/erp-context";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 
 function Header() {
   const [{ auth }] = useContext(ErpContext);
@@ -10,7 +10,9 @@ function Header() {
   const logOut = () => {
     localStorage.removeItem("auth");
     window.location.reload();
-    navigate("http://localhost:3000/login");
+    //navigate("http://localhost:3000");
+    //window.location.replace("localhost:3000/");
+    redirect("/login")
   };
 
   var currentdate = new Date();

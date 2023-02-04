@@ -5,8 +5,8 @@ class UsersService extends HttpClient {
     super("https://localhost:7149/api/Users");
   }
 
-  getAllUsers() {
-    return this.getall("GetAllUsers");
+  getAllUsers(header) {
+    return this.getall("GetAllUsers", header);
   }
 
   getUser(id) {

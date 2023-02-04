@@ -23,10 +23,11 @@ function UserInfo() {
   useEffect(() => {
     userservice.getUser(userId).then(({ data: user }) => {
       setUser(user.data);
+      roleservice.getRoleUser(user.data.userName).then(({ data: role }) => {
+        setRole(role.data);
+      });
     });
-    roleservice.getRoleUser(userId).then(({ data: role }) => {
-      setRole(role.data);
-    });
+   
   }, [userId]);
   return (
     <Container>

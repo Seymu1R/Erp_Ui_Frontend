@@ -9,14 +9,15 @@ import { userservice } from "../APIs/Services/UserServices";
 import DeleteModal from "../UI/DeleteModal";
 
 const Users = () => {
-  const [{ deleteState, setDeleteState, setId }] = useContext(ErpContext);
+  const [{ deleteState, setDeleteState, setId, auth }] = useContext(ErpContext);
   const [users, setUsers] = useState([]);
+  const header =  {"Authorization" :`Bearer ${auth.Acc}`} ;
 
   useEffect(() => {
-    userservice.getAllUsers().then(({ data: usersData }) => {
+    userservice.getAllUsers(header).then(({ data: usersData }) => {
       setUsers(usersData.data);
     });
-  }, [deleteState]);
+  }, [deleteState, header]);
 
   const deleteUser = (id) => {
     userservice.deleteUser(id).then((data) => {
