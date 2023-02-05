@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Col, Row, Input, Button, Select, Form } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { customerservice } from "../APIs/Services/CustomerServices";
 import { supplierservices } from "../APIs/Services/SupplierServices";
 import { banktransactionservices } from "../APIs/Services/BankTransactionsservices";
 import { bankservices } from "../APIs/Services/BankServices";
+import ErpContext from "../store/erp-context";
 
 function AddBankTransaction() {
   const [showCustomer, setShowCustomer] = useState(true);
@@ -14,6 +15,8 @@ function AddBankTransaction() {
   const [ bank, setBank] = useState({})
   const navigation = useNavigate();
   const {bankId} = useParams()
+  const [{auth}] = useContext(ErpContext)
+  const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
 
   useEffect(() => {
     customerservice.getAllCustomers().then(({ data: customers }) => {
@@ -22,7 +25,7 @@ function AddBankTransaction() {
     supplierservices.getAllSuppliers().then(({ data: suppliers }) => {
       setSuppliers(suppliers.data);
     });
-    bankservices.getBank(bankId).then(({data:bank}) => {
+    bankservices.getBank(bankId, config).then(({data:bank}) => {
       setBank(bank.data)
     })
   }, [bankId]);
@@ -37,10 +40,10 @@ function AddBankTransaction() {
 
   const addBankTransaction = (body) => {
     banktransactionservices
-      .createBankTransaction(body)
+      .createBankTransaction(body, config)
       .then((res) => {
         if(body.suplierId){
-          bankservices.updateBank({...bank,bankBalance :bank.bankBalance - body.paymentAmount}).then(({data:bank})=>{
+          bankservices.updateBank({...bank,bankBalance :bank.bankBalance - body.paymentAmount}, config).then(({data:bank})=>{
             console.log(bank.data);
           })
           supplierservices.getSupplier(body.suplierId).then(({data:supplier}) => {
@@ -50,7 +53,7 @@ function AddBankTransaction() {
           })
         }
         if(body.customerId){
-          bankservices.updateBank({...bank,bankBalance : bank.bankBalance + eval(body.paymentAmount)}).then(({data:bank})=>{
+          bankservices.updateBank({...bank,bankBalance : bank.bankBalance + eval(body.paymentAmount)}, config).then(({data:bank})=>{
             console.log(bank.data);
           })
           customerservice.getCustomer(body.customerId).then(({data:customer}) => {

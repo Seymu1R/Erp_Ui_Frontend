@@ -12,15 +12,17 @@ function Bank() {
     const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
     useContext(ErpContext);
   const [bankList, setBanklist] = useState([]);
+  const [{auth}] = useContext(ErpContext)
+  const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
 
   useEffect(() => {
-      bankservices.getAllBanks().then(({ data: banks }) => {
+      bankservices.getAllBanks(config).then(({ data: banks }) => {
         setBanklist(banks.data);
     }).finally(setLoading(false));
   }, [loading, setLoading]);
 
   const deleteBrand = (id) => {
-    bankservices.deleteBank(id).then((data) => {
+    bankservices.deleteBank(id, config).then((data) => {
       setLoading(true)
     });
   };

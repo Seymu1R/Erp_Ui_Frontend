@@ -1,13 +1,17 @@
 import { Button, Col, Form, Input, Row } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { bankservices } from "../APIs/Services/BankServices";
+import ErpContext from "../store/erp-context";
 
 function AddBank() {
   const navigation = useNavigate();
+  const [{auth}] = useContext(ErpContext)
+  const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
+
   const addBrand = (body) => {
     bankservices
-      .createBank(body)
+      .createBank(body, config)
       .then((res) => {
         console.log(res.data);
       })

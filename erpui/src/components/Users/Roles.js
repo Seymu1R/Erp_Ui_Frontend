@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Table } from "antd";
 import './Roles.scss'
 import Button from "react-bootstrap/Button";
 import { roleservice } from "../APIs/Services/RoleServices";
+import ErpContext from "../store/erp-context";
 
 function Roles() {
-
+  const [{auth}] = useContext(ErpContext)
   const[rolearr, setRoles] = useState([])
+  const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
 
   useEffect(()=>{
-    roleservice.getAllRoles().then(({data : roles}) => {
+    roleservice.getAllRoles(config).then(({data : roles}) => {
       setRoles(roles.data)
     })
   },[])
 
-  const deleteRole = (id) => {
+  const deleteRole = (id, config) => {
     roleservice.deleteRole(id).then(data => {
       window.alert("Deleted")
     })

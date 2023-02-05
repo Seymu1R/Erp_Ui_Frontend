@@ -5,11 +5,11 @@ class RoleServices extends HttpClient {
     super("https://localhost:7149/api/Roles");
   }
 
-  getAllRoles() {
-    return this.getall("GetAllRoles");
+  getAllRoles(config) {
+    return this.getall("GetAllRoles", config);
   }
-  deleteRole(id) {
-    return this.delete(`DeleteRole?roleId=${id}`);
+  deleteRole(id, config) {
+    return this.delete(`DeleteRole?roleId=${id}`, config);
   }
   getRoleUser(username){
     return this.get(`GetRolesToUser?Username=${username}`)

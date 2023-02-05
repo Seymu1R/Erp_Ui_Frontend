@@ -9,20 +9,20 @@ class BankTransactionServices extends HttpClient {
     return this.get(`GetBankTransaction?transactionId=${id}`);
   }
 
-  getAllBankTransactions() {
-    return this.getall("GetAllBankTransactions");
+  getAllBankTransactions(headers) {
+    return this.getall("GetAllBankTransactions", headers);
   }
 
-  deleteBankTransaction(id) {
-    return this.delete(`DeleteBankTransaction?banktransactionId=${id}`);
+  deleteBankTransaction(id, headers) {
+    return this.delete(`DeleteBankTransaction?banktransactionId=${id}`, headers);
   }
 
-  createBankTransaction(body) {
-    return this.post("CreateBankTransaction", body);
+  createBankTransaction(body, headers) {
+    return this.post("CreateBankTransaction", body, headers);
   }
 
-  updateBankTransaction(body) {
-    return this.put("UpdateBankTransaction", body);
+  updateBankTransaction(body, headers) {
+    return this.put("UpdateBankTransaction", body, headers);
   }
 }
 

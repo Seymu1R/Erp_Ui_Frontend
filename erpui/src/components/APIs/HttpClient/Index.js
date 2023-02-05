@@ -7,20 +7,19 @@ export class HttpClient {
       this.baseUrl = url;
     }
   
-    async get(endpoint) {
-      return await axios.get(`${this.baseUrl}/${endpoint}`);
+    async get(endpoint, headers) {
+      return await axios.get(`${this.baseUrl}/${endpoint}`, headers);
     }
-    async getall(endpoint) {
-        return await axios.get(`${this.baseUrl}/${endpoint}`);
+    async getall(endpoint, headers) {
+        return await axios.get(`${this.baseUrl}/${endpoint}`, headers);
     } 
-    async delete(endpoint) {
-        return await axios.delete(`${this.baseUrl}/${endpoint}`);
+    async delete(endpoint, headers) {
+        return await axios.delete(`${this.baseUrl}/${endpoint}`, headers);
       }
-    async post(endpoint, body) {
-      return await axios.post(`${this.baseUrl}/${endpoint}`,body);
+    async post(endpoint, body, headers) {
+      return await axios.post(`${this.baseUrl}/${endpoint}`,body, headers);
     }
-    async put(endpoint, body) {
-      return await axios.put(`${this.baseUrl}/${endpoint}`,body);
-    }  
-   
+    async put(endpoint, body, headers) {
+      return await axios.put(`${this.baseUrl}/${endpoint}`,body, headers);
+    }     
   }

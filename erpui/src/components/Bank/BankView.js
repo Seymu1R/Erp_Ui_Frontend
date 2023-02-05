@@ -15,10 +15,12 @@ function BankView() {
   const [banktransactions, setBankTransactionlist] = useState([]);
   const [suppliers, setSupplies] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [{auth}] = useContext(ErpContext)
+  const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
 
   useEffect(() => {
     banktransactionservices
-      .getAllBankTransactions()
+      .getAllBankTransactions(config)
       .then(({ data: banktransactions }) => {
         setBankTransactionlist(banktransactions.data);
       })
@@ -31,7 +33,7 @@ function BankView() {
       setCustomers(customers.data);
     });
 
-    bankservices.getBank(bankId).then(({ data: bank }) => {
+    bankservices.getBank(bankId, config).then(({ data: bank }) => {
       setBank(bank.data);
     });
   }, [bankId, loading, setLoading]);

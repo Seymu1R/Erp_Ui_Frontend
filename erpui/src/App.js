@@ -16,9 +16,7 @@ function App() {
          <Route path='*' element={<Navigate to='/login' />} />        
          <Route path="/login" element={<Login />}></Route>
          <Route path="/register" element={<Register />}></Route>
-       </Routes> 
-        
-       
+       </Routes>       
       )}
       {auth !== false && (
         <PrivateRoute>

@@ -5,24 +5,24 @@ class BankServices extends HttpClient{
         super("https://localhost:7192/api/Banks");
       }
     
-      getBank(id) {
-        return this.get(`GetBank?bankId=${id}`);
+      getBank(id, config) {
+        return this.get(`GetBank?bankId=${id}`, config);
       }
     
-      getAllBanks(){
-        return this.getall("GetAllBanks")
+      getAllBanks(config){
+        return this.getall("GetAllBanks", config)
       }
     
-      deleteBank(id){
-        return this.delete(`DeleteBank?bankId=${id}`)
+      deleteBank(id, config){
+        return this.delete(`DeleteBank?bankId=${id}`, config)
       }
     
-      createBank(body){
-        return this.post("CreateBank", body)
+      createBank(body, config){
+        return this.post("CreateBank", body, config)
       }
     
-      updateBank(body){
-        return this.put("UpdateBank", body)
+      updateBank(body, config){
+        return this.put("UpdateBank", body, config)
       }
 }
 export const bankservices = new BankServices();

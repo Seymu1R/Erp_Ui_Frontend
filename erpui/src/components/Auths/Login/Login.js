@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [modalHandler, setModalHandler] = useState(false);
   const [erorStatusCode, setErorStatusCode] = useState("");
-  const [erorData, setErorData] = useState("")
+  const [erorDatalogin, setErorDatalogin] = useState("")
   const [{ setAuth }] = useContext(ErpContext);
 
   const createToken = (loginObj) => {
@@ -30,7 +30,7 @@ const Login = () => {
       }).catch(function (error) {
         if (error.response) {         
           setErorStatusCode(error.response.status)
-          setErorData("Username or password is wrong !")         
+          setErorDatalogin("Username or password is wrong !")         
           setModalHandler(true)
         } else if (error.request) {          
           console.log(error.request);
@@ -44,7 +44,7 @@ const Login = () => {
 
   return (
     <>
-     { modalHandler && <ErorModal data={erorData} setmodalHandler = {setModalHandler} statusCode = {erorStatusCode} />}
+     { modalHandler && <ErorModal datalogin={erorDatalogin} setmodalHandler = {setModalHandler} statusCode = {erorStatusCode} />}
      <Row style={{justifyContent:"center" , background: "#cce7e8", alignItems:"center", height:"100vh" }} >
       <Col span={12}>
       <img style={{marginLeft:"195px" }} width={385} src={`${process.env.PUBLIC_URL}/assets/images/logo_transparent.png`} alt="logo" />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../AddUsers/AddUsers.scss";
 import { Col, Row, Input, Select, Form } from "antd";
 import Button from "react-bootstrap/Button";
@@ -6,11 +6,15 @@ import { useParams } from "react-router-dom";
 import { userservice } from "../../APIs/Services/UserServices";
 import { useForm } from "antd/es/form/Form";
 import { roleservice } from "../../APIs/Services/RoleServices";
-
+import ErpContext from "../../store/erp-context";
 function EditUser() {
   const [form] = useForm();
   let { userId } = useParams();
   const [roles, setRoles] = useState([]);
+  const [{auth}] = useContext(ErpContext)
+
+  const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
+
 
   useEffect(() => {
     userservice.getUser(userId).then(({ data: user }) => {
@@ -23,7 +27,7 @@ function EditUser() {
         fatherName: user.data.fatherName,
       });
     });
-    roleservice.getAllRoles().then(({ data: roles }) => {
+    roleservice.getAllRoles(config).then(({ data: roles }) => {
       setRoles(roles.data);
     });
   }, [form, userId]);
@@ -32,17 +36,19 @@ function EditUser() {
     return { label: role.name, value: role.name };
   });
 
+  const assignRole = (body) =>{
+    userservice.assignRoleToUser(body, config).then(({data:role}) => {
+       console.log(role.data);
+    })
+  }
+
   const updateUser = (body) => {
     userservice.editUser(body).then(({ data: user }) => {
       console.log(user.data);
     });
   };
 
-  const assignRole = (body) =>{
-    userservice.assignRoleToUser(body).then(({data:role}) => {
-       console.log(role.data);
-    })
-  }
+
 
   return (
     <>

@@ -9,9 +9,7 @@ function Header() {
 
   const logOut = () => {
     localStorage.removeItem("auth");
-    window.location.reload();
-    //navigate("http://localhost:3000");
-    //window.location.replace("localhost:3000/");
+    window.location.reload();    
     redirect("/login")
   };
 

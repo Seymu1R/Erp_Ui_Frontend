@@ -1,19 +1,21 @@
 import { HttpClient } from "../HttpClient/Index";
 
+
+
 class UsersService extends HttpClient {
   constructor() {
     super("https://localhost:7149/api/Users");
   }
 
-  getAllUsers(header) {
-    return this.getall("GetAllUsers", header);
+  getAllUsers(config) {
+    return this.getall("GetAllUsers", config);
   }
 
   getUser(id) {
     return this.get(`GetUser?userId=${id}`);
   }
-  deleteUser(id) {
-    return this.delete(`DeleteUser?userId=${id}`);
+  deleteUser(id, config) {
+    return this.delete(`DeleteUser?userId=${id}`, config);
   }
 
   createUser(body){
@@ -23,8 +25,8 @@ class UsersService extends HttpClient {
   editUser( body) {
     return this.put("UptadeUser", body);
   }
-  assignRoleToUser(body) {
-    return this.post("AssignRoleToUser", body)
+  assignRoleToUser(body, config) {
+    return this.post("AssignRoleToUser", body, config)
   }
 }
 

@@ -32,7 +32,7 @@ const Register = () => {
   const navigate = useNavigate();
   const onFinish = (values) => {
     userservice
-      .createUser({ userName: "Worker", ...values })
+      .createUser(values)
       .then(({ data: response }) => {
         if (response.statusCode) {
           navigate("/login");

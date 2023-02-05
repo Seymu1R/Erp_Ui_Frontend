@@ -11,16 +11,16 @@ import DeleteModal from "../UI/DeleteModal";
 const Users = () => {
   const [{ deleteState, setDeleteState, setId, auth }] = useContext(ErpContext);
   const [users, setUsers] = useState([]);
-  const header =  {"Authorization" :`Bearer ${auth.Acc}`} ;
+  const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
 
   useEffect(() => {
-    userservice.getAllUsers(header).then(({ data: usersData }) => {
+    userservice.getAllUsers(config).then(({ data: usersData }) => {
       setUsers(usersData.data);
     });
-  }, [deleteState, header]);
+  }, [deleteState]);
 
   const deleteUser = (id) => {
-    userservice.deleteUser(id).then((data) => {
+    userservice.deleteUser(id, config).then((data) => {
       console.log(data);
     });
   };
@@ -50,7 +50,6 @@ const Users = () => {
       }),
       filterSearch: true,
       onFilter: (value, record) => record.name.startsWith(value),
-           
     },
     {
       title: "Email",

@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-function ErorModal({ data, statusCode, setmodalHandler, usename }) {
+function ErorModal({ data, statusCode, setmodalHandler, usename, datalogin }) {
   const [show, setShow] = useState(true);
 
   const handleClose = () => {
     setShow(false);
     setmodalHandler(false);
   };
-console.log(data);
+  console.log(datalogin);
   return (
     <>
       <Modal
@@ -22,8 +22,8 @@ console.log(data);
           <Modal.Title>{statusCode}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <p>{usename}</p>
-        
+          <p>{usename}</p>
+          <p>{datalogin && datalogin}</p>
           <p>{data && data.PhoneNumber}</p>
           <p>{data && data.UserName}</p>
           <p>{data && data.FatherName}</p>

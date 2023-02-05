@@ -1,16 +1,19 @@
 import { Button, Col, Form, Input, Row } from "antd";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { bankservices } from "../APIs/Services/BankServices";
 import { useForm } from "antd/es/form/Form";
+import ErpContext from "../store/erp-context";
 
 function UpdateBank() {
     let { bankid } = useParams();
   const [form] = useForm();
   const navigation = useNavigate();
+  const [{auth}] = useContext(ErpContext)
+  const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
 
   useEffect(() => {
-    bankservices.getBank(bankid).then(({ data: bank }) => {
+    bankservices.getBank(bankid, config).then(({ data: bank }) => {
       form.setFieldsValue({
         bankName: bank.data.bankName,
         bankBalance : bank.data.bankBalance        
@@ -20,7 +23,7 @@ function UpdateBank() {
 
   const updateBank = (body) => {
     bankservices
-      .updateBank(body)
+      .updateBank(body, config)
       .then((res) => {
         console.log(res.data);
       })
