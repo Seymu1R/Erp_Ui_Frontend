@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Table } from "antd";
 import Button from "react-bootstrap/Button";
 import CustomerHeader from "./CustomerHeader";
@@ -10,26 +10,27 @@ import Loading from "../../UI/Loading";
 import { sellservices } from "../../APIs/Services/SellsServices";
 
 function CustomerList() {
+  const tableRef = useRef(null);
   const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
     useContext(ErpContext);
   const [customerlist, setCustomerList] = useState([]);
-  const [sells, setSells] = useState([])
+  const [sells, setSells] = useState([]);
 
   useEffect(() => {
-    customerservice.getAllCustomers().then(({ data: customers }) => {
-      setCustomerList(customers.data);
-    }).finally(setLoading(false));
-    sellservices.getAllSells().then(({data:sells}) => {
-      setSells(sells.data)
-    })
-  }, [loading,setLoading]);
-
-
-
+    customerservice
+      .getAllCustomers()
+      .then(({ data: customers }) => {
+        setCustomerList(customers.data);
+      })
+      .finally(setLoading(false));
+    sellservices.getAllSells().then(({ data: sells }) => {
+      setSells(sells.data);
+    });
+  }, [loading, setLoading]);
 
   const deleteCustomer = (id) => {
     customerservice.deleteCustomer(id).then((data) => {
-      setLoading(true)
+      setLoading(true);
     });
   };
 
@@ -55,8 +56,8 @@ function CustomerList() {
         return { text: customers.businessName, value: customers.businessName };
       }),
       filterSearch: true,
-      onFilter: (value, record) => record.businessName.startsWith(value)
-    },   
+      onFilter: (value, record) => record.businessName.startsWith(value),
+    },
     {
       title: "Taxnumber",
       dataIndex: "taxNumber",
@@ -77,7 +78,7 @@ function CustomerList() {
       title: "Totalsale",
       dataIndex: "totalSale",
       sorter: (a, b) => a.totalSale - b.totalSale,
-    },    
+    },
     {
       title: "Actions",
       dataIndex: "",
@@ -100,23 +101,24 @@ function CustomerList() {
             <Button
               id={record.id}
               onClick={() => {
-                setId(record.id)
+                setId(record.id);
               }}
               variant="primary"
             >
               Edit
             </Button>
-          </Link>         
+          </Link>
         </div>
       ),
     },
   ];
   return (
     <>
-    {loading&&<Loading/>}      
+      {loading && <Loading />}
       {deleteState && <DeleteModal deleteItem={deleteCustomer} />}
-      <CustomerHeader></CustomerHeader>{" "}
+      <CustomerHeader tableRef = {tableRef} />
       <Table
+        ref={tableRef}
         scroll={{
           x: 1500,
         }}

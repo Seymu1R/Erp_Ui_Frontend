@@ -1,5 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Row, Col, Table, Button } from "antd";
+import "./BankView.scss"
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Row, Col, Table } from "antd";
+import Button from "react-bootstrap/Button";
 import { Link, useParams } from "react-router-dom";
 import Loading from "../UI/Loading";
 import ErpContext from "../store/erp-context";
@@ -7,18 +9,24 @@ import { banktransactionservices } from "../APIs/Services/BankTransactionsservic
 import { bankservices } from "../APIs/Services/BankServices";
 import { supplierservices } from "../APIs/Services/SupplierServices";
 import { customerservice } from "../APIs/Services/CustomerServices";
+import { DownloadTableExcel } from "react-export-table-to-excel";
+import DeleteModal from "../UI/DeleteModal";
+
 
 function BankView() {
-  const [{ loading, setLoading }] = useContext(ErpContext);
-  const { bankId } = useParams();
+  const tableRef = useRef(null);
+  const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
+  useContext(ErpContext);
+    const { bankId } = useParams();
   const [bank, setBank] = useState({});
   const [banktransactions, setBankTransactionlist] = useState([]);
+  const [bankTransaction, setBankTransaction ] = useState()
   const [suppliers, setSupplies] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [{auth}] = useContext(ErpContext)
   const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
 
-  useEffect(() => {
+  useEffect(() => {   
     banktransactionservices
       .getAllBankTransactions(config)
       .then(({ data: banktransactions }) => {
@@ -66,6 +74,37 @@ function BankView() {
     }
   };
 
+  const deleteBankTransaction = (id) => {
+    banktransactionservices.getBankTransaction(id, config).then(({data : bt}) => {
+      if(bt.data.suplierId){
+        bankservices.updateBank({...bank,bankBalance :bank.bankBalance + bt.data.paymentAmount}, config).then(({data:bank})=>{
+          console.log(bank.data);
+        })
+        supplierservices.getSupplier(bt.data.suplierId).then(({data:supplier}) => {
+          supplierservices.updateSupplier({...supplier.data, totalPurchase: + (supplier.data.totalPurchase + bt.data.paymentAmount)}).then((data)=>{
+            console.log(data);
+          })
+        })
+      }
+      if(bt.data.customerId){
+        bankservices.updateBank({...bank,bankBalance : bank.bankBalance - bt.data.paymentAmount}, config).then(({data:bank})=>{
+          console.log(bank.data);
+        })
+        customerservice.getCustomer(bt.data.customerId).then(({data:customer}) => {
+          customerservice.updateCustomer({...customer.data,totalSale:customer.data.totalSale + bt.data.paymentAmount})
+        })
+      }
+      banktransactionservices.deleteBankTransaction(id, config).then((response)=>{
+        setLoading(true)
+      })
+    })    
+  };
+
+  const deleteMOdalHandling = (id) => {
+    setId(id);
+    setDeleteState(true);
+  };
+
   const columns = [
     {
       title: "CreatedTime",
@@ -88,25 +127,54 @@ function BankView() {
       dataIndex: "paymentAmount",
       render: (paymentAmount) => paymentAmount + "  USD",
     },
+    {
+      title: "Actions",         
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <div className="d-flex ">
+          <Button
+            id={record.id}
+            onClick={() => {
+              deleteMOdalHandling(record.id);
+            }}
+            className="margin "
+            variant="danger"
+          >
+            Delete
+          </Button>                                
+        </div>
+      ),
+    },
   ];
   return (
     <>
       <Row>
-        <Col md={8}>
-          <p>BankName: {bank.bankName}</p>
+        <Col md={6}>
+          <p className="bank" >BankName: <span>{bank.bankName}</span></p>
         </Col>
-        <Col md={8}>
-          <p>BankBalance: {bank.bankBalance}</p>
+        <Col md={6}>
+          <p className="bank" >BankBalance: <span>{bank.bankBalance}</span></p>
         </Col>
-        <Col md={8}>
+        <Col md={6}>
             <Link to={`/addbanktransaction/${bankId}`}>
-            <Button htmlType={"submit"} type="primary" > Add BankTransaction </Button>
+            <button style={{background:"#2c86dd", color:"white"}} > Add BankTransaction </button>
             </Link>          
+        </Col>
+        <Col md={6}>
+        <DownloadTableExcel
+        filename="bank transaction table"
+        sheet="tables"
+        currentTableRef={tableRef.current}
+      >
+        <button style={{background:"#2c86dd", color:"white"}} > Export excel </button>
+      </DownloadTableExcel>       
         </Col>
       </Row>
       <div>
-        {loading && <Loading />}        
-        <Table columns={columns} dataSource={bankTransactions} />
+        {loading && <Loading />}
+        {deleteState && <DeleteModal deleteItem={deleteBankTransaction} />}        
+        <Table ref={tableRef} columns={columns} dataSource={bankTransactions} />
       </div>
     </>
   );

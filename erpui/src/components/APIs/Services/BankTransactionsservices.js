@@ -5,8 +5,8 @@ class BankTransactionServices extends HttpClient {
     super("https://localhost:7192/api/BankTransactions");
   }
 
-  getBankTransaction(id) {
-    return this.get(`GetBankTransaction?transactionId=${id}`);
+  getBankTransaction(id, headers) {
+    return this.get(`GetBankTransaction?transactionId=${id}`, headers);
   }
 
   getAllBankTransactions(headers) {

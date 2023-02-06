@@ -28,6 +28,7 @@ const Users = () => {
   const deleteMOdalHandling = (id) => {
     setId(id);
     setDeleteState(true);
+    deleteUser(id);
   };
 
   const columns = [
@@ -65,8 +66,7 @@ const Users = () => {
           <Button
             id={record.id}
             onClick={() => {
-              deleteMOdalHandling(record.id);
-              deleteUser(record.id);
+              deleteMOdalHandling(record.id);              
             }}
             className="margin "
             variant="danger"

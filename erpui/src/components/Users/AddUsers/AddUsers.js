@@ -1,36 +1,54 @@
 import React, { useEffect, useState } from "react";
 import "./AddUsers.scss";
 import { Col, Row, Input, Form, Button } from "antd";
-import { roleservice } from "../../APIs/Services/RoleServices";
 import { userservice } from "../../APIs/Services/UserServices";
+import { useNavigate } from "react-router-dom";
+import ErorModal from "../../UI/ErorModal";
 
 function AddUsers() {
-  const [options, setOptions] = useState([]);
-
-  useEffect(() => {
-    roleservice.getAllRoles().then(({ data: roles }) => {
-      const transformedData = roles.data.map((role) => {
-        return {
-          value: role.name,
-          label: role.name,
-        };
-      });
-      setOptions(transformedData);
-    });
-  }, []);
+const navigate = useNavigate()
+const [modalHandler, setModalHandler] = useState(false);
+const [erorStatusCode, setErorStatusCode] = useState("");
+const [usenameTaken, setUserNameTaken] = useState("");
+const [erorData, setErorData] = useState({});
 
   const addUSer = (body) => {
     userservice
       .createUser(body)
-      .then((res) => {
-        console.log(res.data);
+      .then(({data : response}) => {
+        if (response.statusCode) {
+          navigate("/users");
+        }
       })
-      .catch((eror) => {
-        window.alert(eror);
+      .catch(function (error) {
+        if (error.response) {
+          if (error.response.status === 500) {
+            setUserNameTaken("Username or Email has been taken");
+            setErorStatusCode("500");            
+            setModalHandler(true);
+          }
+          setErorStatusCode(error.response.status);
+          setErorData(error.response.data.errors);
+          setModalHandler(true);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
       });
   };
 
   return (
+    <>
+    {modalHandler && (
+        <ErorModal
+          usename={usenameTaken}
+          data={erorData}
+          setmodalHandler={setModalHandler}
+          statusCode={erorStatusCode}
+        />
+      )}
     <Form
       autoComplete="off"
       onFinish={(values) => {
@@ -239,35 +257,13 @@ function AddUsers() {
               placeholder="ConfirmedPassword"
             />
           </Form.Item>
-        </Col>
-        <Col span={8}>
-          {/* <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please enter your Role",
-              },
-            ]}
-            hasFeedback
-            name="assignrole"
-            label="Assign Role"
-          >
-            <Select
-              id="assignrole"
-              mode="tags"
-              style={{
-                width: "100%",
-              }}
-              tokenSeparators={[","]}
-              options={options}
-            />
-          </Form.Item> */}
-        </Col>
+        </Col>        
       </Row>
       <Button htmlType={"submit"} type="primary">
         Add
       </Button>
     </Form>
+    </>    
   );
 }
 

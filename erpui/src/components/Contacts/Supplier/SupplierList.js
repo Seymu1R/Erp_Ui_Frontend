@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Table } from "antd";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
@@ -9,6 +9,7 @@ import { supplierservices } from "../../APIs/Services/SupplierServices";
 import Loading from "../../UI/Loading";
 
 function SupplierList() {
+  const tableRef = useRef(null);
   const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
     useContext(ErpContext);
   const [suppliers, setSuppliers] = useState([]);
@@ -115,9 +116,10 @@ function SupplierList() {
   return (
     <>
       {loading && <Loading />}
-      {deleteState && <DeleteModal deleteItem={deleteSupplier} />}
-      <SupplierHeader />
+      {deleteState && <DeleteModal deleteItem={deleteSupplier} />}      
+      <SupplierHeader tableRef = {tableRef} />
       <Table
+        ref={tableRef}
         scroll={{
           x: 1500,
         }}

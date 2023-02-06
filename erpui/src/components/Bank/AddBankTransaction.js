@@ -41,7 +41,7 @@ function AddBankTransaction() {
   const addBankTransaction = (body) => {
     banktransactionservices
       .createBankTransaction(body, config)
-      .then((res) => {
+      .then((response) => {
         if(body.suplierId){
           bankservices.updateBank({...bank,bankBalance :bank.bankBalance - body.paymentAmount}, config).then(({data:bank})=>{
             console.log(bank.data);
@@ -61,12 +61,12 @@ function AddBankTransaction() {
           })
         }
         
-        console.log(res.data);
+        
       })
       .catch((eror) => {
         window.alert(eror);
-      })
-      .finally(navigation(`/banks/view/${bankId}`));
+      }).finally(navigation(`/banks/view/${bankId}` ))
+     
   };
 
   return (

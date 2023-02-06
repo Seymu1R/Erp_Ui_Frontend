@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useContext } from "react";
 import { Button, Col, Form, Input, Row } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ErpContext from "../../store/erp-context";
 import { authservices } from "../../APIs/Services/AuthService";
 import { roleservice } from "../../APIs/Services/RoleServices";
 import ErorModal from "../../UI/ErorModal";
 
 const Login = () => {
-  const navigate = useNavigate();
   const [modalHandler, setModalHandler] = useState(false);
   const [erorStatusCode, setErorStatusCode] = useState("");
   const [erorDatalogin, setErorDatalogin] = useState("")

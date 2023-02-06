@@ -4,12 +4,15 @@ import Button from "react-bootstrap/Button";
 import { customerservice } from "../../APIs/Services/CustomerServices";
 import { useForm } from "antd/es/form/Form";
 import { useNavigate, useParams } from "react-router-dom";
+import ErorModal from "../../UI/ErorModal";
 
 function UpdateCustomer() {
   const [total, setTotalSell] = useState(0);
   const [form] = useForm();
   const navigate = useNavigate();
   const {customerId} =  useParams()
+  const [modalHandler, setModalHandler] = useState(false);
+  const [errorName, setErrorname] = useState("");
 
   useEffect(() => {
     customerservice.getCustomer(customerId).then(({ data: customer }) => {
@@ -26,16 +29,29 @@ function UpdateCustomer() {
 
   const updateCustomer = (body) => {
     customerservice
-      .updateCustomer(body)
-      .then((res) => {
-        console.log(res.data);
+      .updateCustomer(body)    
+      .then(({ data: response }) => {
+        if (response.statusCode) {
+          navigate("/customers");
+        }
       })
-      .catch((eror) => {
-        window.alert(eror);
-      })
-      .finally(navigate("/customers"));
+      .catch(function (error) {
+        if (error.response) {
+          setErrorname("Oops, something went wrong");
+          setModalHandler(true);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      });
   };
   return (
+    <>
+     {modalHandler && (
+        <ErorModal usename={errorName} setmodalHandler={setModalHandler} />
+      )}
     <Form
       form={form}
       autoComplete="off"
@@ -181,6 +197,7 @@ function UpdateCustomer() {
         Edit
       </Button>
     </Form>
+    </>    
   );
 }
 

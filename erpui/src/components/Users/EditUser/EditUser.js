@@ -2,19 +2,23 @@ import React, { useContext, useEffect, useState } from "react";
 import "../AddUsers/AddUsers.scss";
 import { Col, Row, Input, Select, Form } from "antd";
 import Button from "react-bootstrap/Button";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { userservice } from "../../APIs/Services/UserServices";
 import { useForm } from "antd/es/form/Form";
 import { roleservice } from "../../APIs/Services/RoleServices";
 import ErpContext from "../../store/erp-context";
+import ErorModal from "../../UI/ErorModal";
 function EditUser() {
   const [form] = useForm();
   let { userId } = useParams();
+  const navigate = useNavigate()
   const [roles, setRoles] = useState([]);
-  const [{auth}] = useContext(ErpContext)
-
+  const [{ auth }] = useContext(ErpContext);
   const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
-
+  const [modalHandler, setModalHandler] = useState(false);
+  const [erorStatusCode, setErorStatusCode] = useState("");
+  const [usenameTaken, setUserNameTaken] = useState("");
+  const [erorData, setErorData] = useState({});
 
   useEffect(() => {
     userservice.getUser(userId).then(({ data: user }) => {
@@ -36,22 +40,68 @@ function EditUser() {
     return { label: role.name, value: role.name };
   });
 
-  const assignRole = (body) =>{
-    userservice.assignRoleToUser(body, config).then(({data:role}) => {
-       console.log(role.data);
+  const assignRole = (body) => {
+    userservice.assignRoleToUser(body, config).then(({ data: response }) => {
+      if (response.statusCode) {
+        navigate("/users");
+      }
     })
-  }
-
-  const updateUser = (body) => {
-    userservice.editUser(body).then(({ data: user }) => {
-      console.log(user.data);
+    .catch(function (error) {
+      if (error.response) {
+        if (error.response.status === 500) {
+          setUserNameTaken("Username or Email has been taken");
+          setErorStatusCode("500");
+          setModalHandler(true);
+        }
+        setErorStatusCode(error.response.status);
+        setErorData(error.response.data.errors);
+        setModalHandler(true);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log("Error", error.message);
+      }
+      console.log(error.config);
     });
   };
 
-
+  const updateUser = (body) => {
+    userservice
+      .editUser(body)
+      .then(({ data: response }) => {
+        if (response.statusCode) {
+          navigate("/users");
+        }
+      })
+      .catch(function (error) {
+        if (error.response) {
+          if (error.response.status === 500) {
+            setUserNameTaken("Username or Email has been taken");
+            setErorStatusCode("500");
+            setModalHandler(true);
+          }
+          setErorStatusCode(error.response.status);
+          setErorData(error.response.data.errors);
+          setModalHandler(true);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      });
+  };
 
   return (
     <>
+     {modalHandler && (
+        <ErorModal
+          usename={usenameTaken}
+          data={erorData}
+          setmodalHandler={setModalHandler}
+          statusCode={erorStatusCode}
+        />
+      )}
       <Form
         form={form}
         autoComplete="off"
@@ -219,15 +269,15 @@ function EditUser() {
         </Button>
       </Form>
       <Form
-       autoComplete="off"
-       onFinish={(values) => {
-         console.log(values);
-         const Obj = {
-          userId: `${userId}`,
-          roleName: `${values.roleName}`        
-         };      
-         assignRole(Obj)
-       }}
+        autoComplete="off"
+        onFinish={(values) => {
+          console.log(values);
+          const Obj = {
+            userId: `${userId}`,
+            roleName: `${values.roleName}`,
+          };
+          assignRole(Obj);
+        }}
       >
         <Row>
           <Col span={8}>
@@ -250,7 +300,9 @@ function EditUser() {
             </Form.Item>
           </Col>
         </Row>
-        <Button type="submit" variant="primary">Assign Role</Button>
+        <Button type="submit" variant="primary">
+          Assign Role
+        </Button>
       </Form>
     </>
   );

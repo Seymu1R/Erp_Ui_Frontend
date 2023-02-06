@@ -63,6 +63,7 @@ const ROLES = {
 function Navigate() {
   return (
     <Routes>
+      <Route path="/login"  element={<Home />}></Route>
       <Route path="/" element={<Home />}></Route>
       <Route
         path="/users"
