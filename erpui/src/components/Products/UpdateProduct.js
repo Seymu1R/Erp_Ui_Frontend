@@ -7,14 +7,18 @@ import { categoriesservices } from "../APIs/Services/CategoryServices";
 import { brandservices } from "../APIs/Services/BrandsService";
 import { supplierservices } from "../APIs/Services/SupplierServices";
 import { useForm } from "antd/es/form/Form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import ErorModal from "../UI/ErorModal";
 
 function UpdateProduct() {
   const [units, setUnit] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [suppliers, setSupliers] = useState([]);
+  const [modalHandler, setModalHandler] = useState(false);
+  const [errorName, setErrorname] = useState("");
   const [form] = useForm();
+  const navigate = useNavigate();
   const { productid } = useParams();
 
   useEffect(() => {
@@ -52,11 +56,21 @@ function UpdateProduct() {
   const updateProduct = (body) => {
     productservices
       .updateProduct(body)
-      .then((res) => {
-        console.log(res.data);
+      .then(({ data: response }) => {
+        if (response.statusCode) {
+          navigate("/productlist");
+        }
       })
-      .catch((eror) => {
-        window.alert(eror);
+      .catch(function (error) {
+        if (error.response) {
+          setErrorname("Oops, something went wrong");
+          setModalHandler(true);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
       });
   };
 
@@ -74,7 +88,11 @@ function UpdateProduct() {
   });
 
   return (
-    <Form
+    <>
+    {modalHandler && (
+        <ErorModal usename={errorName} setmodalHandler={setModalHandler} />
+      )}
+        <Form
       form={form}
       autoComplete="off"
       onFinish={(values) => {
@@ -400,6 +418,7 @@ function UpdateProduct() {
         Update
       </Button>
     </Form>
+    </>  
   );
 }
 

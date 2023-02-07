@@ -87,15 +87,18 @@ const Login = () => {
             <Input.Password />
           </Form.Item>
           <Link to="/register">
-            <p style={{ textAlign: "center" }}>Create Accaunt</p>
-          </Link>
+            <p style={{ textAlign: "center", display:"inline", margin:"180px"}}>Create Accaunt</p>
+            </Link>
+            <Link to="/forgotpassword">
+            <p style={{ textAlign: "center",display:"inline"}}>Forgot password?</p>
+            </Link>
           <Form.Item
             wrapperCol={{
               offset: 8,
               span: 16,
             }}
           >
-            <Button type="primary" htmlType="submit">
+            <Button style={{marginTop:"20px"}} type="primary" htmlType="submit">
               Submit
             </Button>
           </Form.Item>
