@@ -1,36 +1,28 @@
 import React, { useState } from "react";
-import { useContext } from "react";
 import { Button, Col, Form, Input, Row } from "antd";
-import { Link } from "react-router-dom";
-import ErpContext from "../../store/erp-context";
+import { Link, useParams } from "react-router-dom";
 import { authservices } from "../../APIs/Services/AuthService";
-import { roleservice } from "../../APIs/Services/RoleServices";
 import ErorModal from "../../UI/ErorModal";
 
-function ForgetPassword() {
+function ResetPassword() {
   const [modalHandler, setModalHandler] = useState(false);
   const [erorStatusCode, setErorStatusCode] = useState("");
-  const [erorDatalogin, setErorDatalogin] = useState("");
-  const [{ setAuth }] = useContext(ErpContext);
+  const [errorName, setErrorname] = useState("");
+  const { userid } = useParams();
 
-  const createToken = (loginObj) => {
+  const createToken = (obj) => {
     authservices
-      .createToken(loginObj)
-      .then(({ data: token }) => {
-        roleservice.getRoleUser(loginObj.userName).then(({ data: roles }) => {
-          console.log(roles.data);
-          setAuth({
-            AccesToken: token.data.accessToken,
-            Roles: roles.data,
-            UserName: loginObj.userName,
-            userId: token.data.userId,
-          });
-        });
+      .resetPassword(obj)
+      .then(({ data: response }) => {
+        if (response.statusCode) {
+          setErrorname("Sucessfuly changed password");
+          setModalHandler(true);
+        }
       })
       .catch(function (error) {
         if (error.response) {
           setErorStatusCode(error.response.status);
-          setErorDatalogin("Username or password is wrong !");
+          setErrorname("Opps, something went wrong !");
           setModalHandler(true);
         } else if (error.request) {
           console.log(error.request);
@@ -40,12 +32,11 @@ function ForgetPassword() {
         console.log(error.config);
       });
   };
-
   return (
     <>
       {modalHandler && (
         <ErorModal
-          datalogin={erorDatalogin}
+          usename={errorName}
           setmodalHandler={setModalHandler}
           statusCode={erorStatusCode}
         />
@@ -65,36 +56,63 @@ function ForgetPassword() {
             src={`${process.env.PUBLIC_URL}/assets/images/logo_transparent.png`}
             alt="logo"
           />
-            <p style={{ textAlign: "left", marginLeft:"150px" }}> Please, enter enter your email </p>
           <Form
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             style={{ maxWidth: 600 }}
             initialValues={{ remember: true }}
             onFinish={(values) => {
-              const loginObj = {
-                userName: `${values.userName}`,
+              const obj = {
+                id: `${userid}`,
+                confirmedPassword: `${values.confirmedPassword}`,
                 password: `${values.password}`,
               };
-              createToken(loginObj);
+              createToken(obj);
             }}
             autoComplete="off"
           >
             <Form.Item
-              label="Email"
-              name="email"
+              name="password"
+              label="Password"
               rules={[
                 {
                   required: true,
-                  message: "Please input your email!",
+                  message: "Please input your password!",
                 },
               ]}
+              hasFeedback
             >
-              <Input />
+              <Input.Password />
+            </Form.Item>
+            <Form.Item
+              name="confirmedPassword"
+              label="Confirm Password"
+              dependencies={["password"]}
+              hasFeedback
+              rules={[
+                {
+                  required: true,
+                  message: "Please confirm your ConfirmedPassword!",
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        "The two passwords that you entered do not match!"
+                      )
+                    );
+                  },
+                }),
+              ]}
+            >
+              <Input.Password />
             </Form.Item>
 
             <Link to="/login">
-              <p style={{ textAlign: "left", marginLeft:"150px" }}> Return login</p>
+              <p style={{ textAlign: "center" }}>Login</p>
             </Link>
             <Form.Item
               wrapperCol={{
@@ -113,4 +131,4 @@ function ForgetPassword() {
   );
 }
 
-export default ForgetPassword;
+export default ResetPassword;

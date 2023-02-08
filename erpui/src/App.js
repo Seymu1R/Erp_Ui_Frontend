@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { BrowserRouter, Navigate, redirect, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.scss";
-import ForgetPassword from "./components/Auths/ForegetPassword/ForgetPassword";
-import ResetPassword from "./components/Auths/ForegetPassword/ResetPassword";
+import ForgetPassword from "./components/Auths/ForgetPassword/ForgetPassword";
+import ResetPassword from "./components/Auths/ForgetPassword/ResetPassword";
 import Login from "./components/Auths/Login/Login";
 import PrivateRoute from "./components/Auths/PrivateRoute";
 import Register from "./components/Auths/Register/Register";
@@ -19,7 +19,7 @@ function App() {
          <Route path="/login" element={<Login />}></Route>
          <Route path="/register" element={<Register />}></Route>
          <Route path="/forgotpassword" element={<ForgetPassword/>}></Route>
-         <Route path="/resetpassword" element={<ResetPassword />}></Route>
+         <Route path="/resetpassword/:userid" element={<ResetPassword />}></Route>
        </Routes>       
       )}
       {auth !== false && (

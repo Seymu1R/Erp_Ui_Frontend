@@ -23,7 +23,8 @@ const Login = () => {
             AccesToken: token.data.accessToken,
             Roles: roles.data,
             UserName: loginObj.userName,
-            userId: token.data.userId
+            userId: token.data.userId,
+            RefreshToken : token.data.refreshToken
           });
         });
       }).catch(function (error) {
