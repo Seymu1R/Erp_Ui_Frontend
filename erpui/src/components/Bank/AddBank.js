@@ -2,12 +2,11 @@ import { Button, Col, Form, Input, Row } from "antd";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { bankservices } from "../APIs/Services/BankServices";
-import { authservices } from "../APIs/Services/AuthService";
 import ErpContext from "../store/erp-context";
 
 function AddBank() {
   const navigation = useNavigate();
-  const [{auth, setAuth}] = useContext(ErpContext)
+  const [{auth}] = useContext(ErpContext)
   const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
 
   const addBrand = (body) => {
@@ -20,18 +19,7 @@ function AddBank() {
         window.alert(eror);
       })
       .finally(navigation("/banks"));
-      authservices
-      .createRefreshToken({ refreshToken: `${auth.RefreshToken}` })
-      .then(({ data: token }) => {        
-        setAuth({
-          AccesToken: token.data.accessToken,
-          RefreshToken : token.data.refreshToken,
-          Roles: auth.Roles,
-          UserName: `${auth.UserName}`,
-          userId: `${auth.userId}`,
-          
-        });
-      });
+    
   };
   return (
     <Form

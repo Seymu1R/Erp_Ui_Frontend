@@ -1,7 +1,7 @@
 import Header from "../Header/Header";
 import "./SideBar.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   ContactsOutlined,
   ToTopOutlined,
@@ -14,7 +14,9 @@ import {
 import { Breadcrumb, Layout, Menu } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navigate from "../../routes/Routes";
-const { Content, Footer, Sider  } = Layout;
+import { authservices } from "../APIs/Services/AuthService";
+import ErpContext from "../store/erp-context";
+const { Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -37,7 +39,7 @@ const items = [
   ]),
   getItem("Products", "2", <CodepenOutlined />, [
     getItem("List Products", "productlist"),
-    getItem("Add Product", "addproduct"),    
+    getItem("Add Product", "addproduct"),
     getItem("Units", "units"),
     getItem("Categories", "categories"),
     getItem("Brands", "brands"),
@@ -61,15 +63,30 @@ function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-console.log(collapsed);
+  const [{ auth, setAuth }] = useContext(ErpContext);
+
+  const sendRefreshToken = () => {
+    authservices
+      .createRefreshToken({ refreshToken: `${auth.RefreshToken}` })
+      .then(({ data: token }) => {
+        setAuth({
+          AccesToken: token.data.accessToken,
+          RefreshToken: token.data.refreshToken,
+          Roles: auth.Roles,
+          UserName: `${auth.UserName}`,
+          userId: `${auth.userId}`,
+        });
+      });
+  };
+
   return (
     <Layout
+      onClick={sendRefreshToken}
       style={{
         minHeight: "100vh",
       }}
     >
-      
-      <Sider        
+      <Sider
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         style={{
@@ -81,9 +98,9 @@ console.log(collapsed);
           src={`${process.env.PUBLIC_URL}/assets/images/logo_transparent.png`}
           alt="logo"
         />
-        
+
         <div />
-        
+
         <Menu
           onClick={({ key }) => {
             navigate(key);
@@ -96,11 +113,9 @@ console.log(collapsed);
             background: " #cce7e8",
             color: "black",
           }}
-        >    
-          
-        </Menu>
+        ></Menu>
       </Sider>
-      
+
       <Layout className="site-layout">
         <Header />
         <Content

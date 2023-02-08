@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Row, Col, Table } from "antd";
 import { useParams } from "react-router-dom";
 import { stockservices } from "../APIs/Services/StockService";
@@ -6,6 +6,8 @@ import { productcommerceservices } from "../APIs/Services/ProductCommerce";
 import Loading from "../UI/Loading";
 import ErpContext from "../store/erp-context";
 import { productservices } from "../APIs/Services/ProductServices";
+import { DownloadTableExcel } from "react-export-table-to-excel";
+
 
 function SotockView() {
   const [{ loading, setLoading }] = useContext(ErpContext);
@@ -13,6 +15,8 @@ function SotockView() {
   const [stock, setStock] = useState({});
   const [productCommercelist, setProductCommerceList] = useState([]);
   const [productList, setProductList] = useState([]);
+  const tableRef = useRef(null);
+
 
   useEffect(() => {
     productservices.getAllpRoducts().then(({ data: products }) => {
@@ -30,7 +34,12 @@ function SotockView() {
     });
   }, [stockId, loading, setLoading]);
 
-  const b = productCommercelist.map((item) => {
+  const thisProductCommerslist = productCommercelist.filter((item) => {
+      return item.stockId === stockId}     
+  )
+
+
+  const modifiedList = thisProductCommerslist.map((item) => {
     if (item.sellId !== null) {
       return { ...item, productAmount: -item.productAmount };
     }
@@ -39,7 +48,7 @@ function SotockView() {
     }
   }); 
 
-const endresult = Object.values(b.reduce((value, object) => {
+const endresult = Object.values(modifiedList.reduce((value, object) => {
   if (value[object.productId]) {
     value[object.productId].productAmount += object.productAmount; 
     value[object.productId].count++;
@@ -51,9 +60,8 @@ const endresult = Object.values(b.reduce((value, object) => {
   return value;
 }, {}));
 
-console.log(endresult)
 
-const arr = endresult.map((item) => {
+const clientViewList = endresult.map((item) => {
     for (let j = 0; j < productList.length; j++) {
       if (item.productId === productList[j].id) {
         return {
@@ -89,17 +97,26 @@ const arr = endresult.map((item) => {
   return (
     <>
       <Row>
-        <Col md={12}>
+        <Col md={8}>
           <p>StockCode: {stock.stockCode}</p>
         </Col>
-        <Col md={12}>
+        <Col md={8}>
           <p>BuisnessLocation: {stock.buisnessLocation}</p>
         </Col>
+        <Col md={8}>
+        <DownloadTableExcel
+       filename="Stock table"
+       sheet="Stocks"
+       currentTableRef={tableRef.current}
+     >
+       <button style={{background:"#2c86dd", color:"white"}} > Export excel </button>
+     </DownloadTableExcel>
+        </Col>        
       </Row>
-      <div>
+      <>
         {loading && <Loading />}
-        <Table columns={columns} dataSource={arr} />
-      </div>
+        <Table ref={tableRef} columns={columns} dataSource={clientViewList} />
+      </>
     </>
   );
 }

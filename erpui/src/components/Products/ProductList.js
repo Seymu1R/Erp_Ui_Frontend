@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ErpContext from "../store/erp-context";
 import { Table } from "antd";
 import Button from "react-bootstrap/Button";
@@ -9,6 +9,7 @@ import { productservices } from "../APIs/Services/ProductServices";
 import Loading from "../UI/Loading";
 
 function ProductList() {
+  const tableRef = useRef(null);
   const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
     useContext(ErpContext);
   const [productList, setProductList] = useState([]);
@@ -97,8 +98,9 @@ function ProductList() {
     <>
       {loading && <Loading />}
       {deleteState && <DeleteModal deleteItem={deleteProduct} />}
-      <ProductHeader />
+      <ProductHeader tableRef = {tableRef} />
       <Table
+       ref={tableRef}
         rowKey={(record) => record.id}
         columns={columns}
         dataSource={productList}

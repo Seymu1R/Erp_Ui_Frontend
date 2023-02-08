@@ -54,10 +54,7 @@ function AddProduct() {
         if (response.statusCode) {
           navigate("/productlist");
         }
-      })
-      .then((res) => {
-        console.log(res.data);
-      })
+      })      
       .catch(function (error) {
         if (error.response) {
           setErrorname("Oops, something went wrong");
@@ -330,7 +327,6 @@ function AddProduct() {
             label="Unit"
           >
             <Select
-              defaultValue="Kg"
               style={{
                 width: "100%",
               }}

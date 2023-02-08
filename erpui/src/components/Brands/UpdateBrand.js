@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row, Input, Button, Form } from "antd";
 import { brandservices } from "../APIs/Services/BrandsService";
 import { useForm } from "antd/es/form/Form";
 import { useNavigate, useParams } from "react-router-dom";
+import ErorModal from "../UI/ErorModal";
 
 function UpdateBrand() {
   const [form] = useForm();
   const navigation = useNavigate()
   const {barndId} = useParams();
+  const [modalHandler, setModalHandler] = useState(false);
+  const [errorName, setErrorname] = useState("");
 
   useEffect(() => {
     brandservices.getBrand(barndId).then(({ data: brand }) => {
@@ -20,15 +23,28 @@ function UpdateBrand() {
   const editBrand = (body) => {
     brandservices
       .updateBrand(body)
-      .then((res) => {
-        console.log(res.data);
+      .then(({data : response}) => {
+        if (response.statusCode) {
+          navigation("/brands");
+        }
       })
-      .catch((eror) => {
-        window.alert(eror);
-      }).finally(navigation('/brands'));
-  };
-
+      .catch(function (error) {
+        if (error.response) {
+          setErrorname("Oops, something went wrong");
+          setModalHandler(true);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      });
+    }
   return (
+    <>
+     {modalHandler && (
+        <ErorModal usename={errorName} setmodalHandler={setModalHandler} />
+      )}
     <Form
       form={form}
       autoComplete="off"
@@ -72,6 +88,7 @@ function UpdateBrand() {
         Update
       </Button>
     </Form>
+    </>    
   );
 }
 

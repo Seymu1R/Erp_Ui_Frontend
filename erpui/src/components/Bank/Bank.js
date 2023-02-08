@@ -7,13 +7,12 @@ import DeleteModal from "../UI/DeleteModal";
 import Loading from "../UI/Loading";
 import { bankservices } from "../APIs/Services/BankServices";
 import BankHeader from "./BankHeader";
-import { authservices } from "../APIs/Services/AuthService";
 
 function Bank() {
   const [{ deleteState, setDeleteState, setId, loading, setLoading }] =
     useContext(ErpContext);
   const [bankList, setBanklist] = useState([]);
-  const [{ auth, setAuth }] = useContext(ErpContext);
+  const [{ auth }] = useContext(ErpContext);
   const config = { headers: { Authorization: `Bearer ${auth.AccesToken}` } };
 
   useEffect(() => {

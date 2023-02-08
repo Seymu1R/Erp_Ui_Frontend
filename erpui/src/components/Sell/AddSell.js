@@ -6,12 +6,15 @@ import { discountservices } from "../APIs/Services/DiscountsServices";
 import { customerservice } from "../APIs/Services/CustomerServices";
 import { sellservices } from "../APIs/Services/SellsServices";
 import { useNavigate } from "react-router-dom";
+import ErorModal from "../UI/ErorModal";
 
 function AddSell() {
   const [customers, setCustomers] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [discounts, setDiscounts] = useState([]);
   const navigate = useNavigate()
+  const [modalHandler, setModalHandler] = useState(false);
+  const [errorName, setErrorname] = useState("");
 
   useEffect(() => {
     customerservice.getAllCustomers().then(({ data: customers }) => {
@@ -50,16 +53,29 @@ function AddSell() {
   const addSell = (body) => {
     sellservices
       .createSell(body)
-      .then((res) => {
-        console.log(res.data);
+      .then(({data:response}) => {
+        if (response.statusCode) {
+          navigate('/sales');
+        }
       })
-      .catch((eror) => {
-        window.alert(eror);
-      }).finally(navigate('/sales'));
+      .catch(function (error) {
+        if (error.response) {
+          setErrorname("Oops, something went wrong");
+          setModalHandler(true);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      })
   };
 
   return (
     <>
+     {modalHandler && (
+        <ErorModal usename={errorName} setmodalHandler={setModalHandler} />
+      )}
       <Form
         autoComplete="off"
         onFinish={(values) => {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ErpContext from "../store/erp-context";
 import { Table } from "antd";
 import Button from "react-bootstrap/Button";
@@ -23,6 +23,7 @@ function PurchaseList() {
   ] = useContext(ErpContext);
   const [purchaseList, setPurchaseList] = useState([]);
   const [supplier, setSuppliers] = useState({});
+  const tableRef = useRef(null);
 
   useEffect(() => {
     setLoading(false)
@@ -139,8 +140,9 @@ function PurchaseList() {
     <>
       {loading && <Loading />}
       {deleteState && <DeleteModal deleteItem={deletePurchase} />}
-      <PurchaseHeader />
+      <PurchaseHeader tableRef = {tableRef}  />
       <Table
+      ref={tableRef}
         rowKey={(record) => record.id}
         columns={columns}
         dataSource={purchaseList}

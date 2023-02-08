@@ -1,14 +1,17 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ErpContext from "../store/erp-context";
 import { Col, Row, Input, Button, Form } from "antd";
 import { unitservices } from "../APIs/Services/UnitsServices";
 import { useForm } from "antd/es/form/Form";
 import { useNavigate } from "react-router-dom";
+import ErorModal from "../UI/ErorModal";
 
 function UpdateUnit() {
   const [{ id }] = useContext(ErpContext);
   const [form] = useForm();
   const navigate = useNavigate();
+  const [modalHandler, setModalHandler] = useState(false);
+  const [errorName, setErrorname] = useState("");
 
   useEffect(() => {
     unitservices.getUnit(id).then(({ data: unit }) => {
@@ -22,18 +25,30 @@ function UpdateUnit() {
   const editBrand = (body) => {
     unitservices
       .updateUnit(body)
-      .then((res) => {
-        console.log(res.data);
+      .then(({ data: response }) => {
+        if (response.statusCode) {
+          navigate("/productlist");
+        }
       })
-      .catch((eror) => {
-        window.alert(eror);
-      }).finally(
-        navigate("/units")
-      );;
+      .catch(function (error) {
+        if (error.response) {
+          setErrorname("Oops, something went wrong");
+          setModalHandler(true);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      });
   };
 
   return (
-    <Form
+    <>
+      {modalHandler && (
+      <ErorModal usename={errorName} setmodalHandler={setModalHandler} />
+    )}
+     <Form
       form={form}
       autoComplete="off"
       onFinish={(values) => {
@@ -86,7 +101,7 @@ function UpdateUnit() {
             name="unitType"
             label="UnitType"
           >
-            <Input             
+            <Input
               type="text"
               id="unitType"
               size="large"
@@ -101,6 +116,7 @@ function UpdateUnit() {
         Update
       </Button>
     </Form>
+    </>   
   );
 }
 

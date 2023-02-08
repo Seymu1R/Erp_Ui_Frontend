@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ErpContext from "../store/erp-context";
 import { Table } from "antd";
 import Button from "react-bootstrap/esm/Button";
@@ -15,6 +15,9 @@ function SellList() {
   const [sellList, setSellList] = useState([]);
   const [sellTotal, setSellTotal] = useState();
   const [customer, setCustomer] = useState(0);
+  const tableRef = useRef(null);
+
+
   useEffect(() => {
     setLoading(false)
     sellservices.getAllSells().then(({ data: sells }) => {
@@ -155,8 +158,9 @@ function SellList() {
     <>
       {loading && <Loading />}
       {deleteState && <DeleteModal deleteItem={deleteSell} />}
-      <SellHeader />
+      <SellHeader tableRef = {tableRef} />
       <Table
+      ref={tableRef}
         rowKey={(record) => record.id}
         columns={columns}
         dataSource={sellModifiedByInvoiceStatus}

@@ -10,6 +10,7 @@ import SellCommerceAdd from "../PurchaseCommerce/SellCommerceAdd";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 import ErpContext from "../store/erp-context";
+import ErorModal from "../UI/ErorModal";
 
 function UpdateSell() {
   const [customers, setCustomers] = useState([]);
@@ -23,6 +24,8 @@ function UpdateSell() {
   const [stockId , setStockId ] = useState();
   const [form] = useForm();
   const navigate = useNavigate();
+  const [modalHandler, setModalHandler] = useState(false);
+  const [errorName, setErrorname] = useState("");
 
   useEffect(() => {
     customerservice.getAllCustomers().then(({ data: customers }) => {
@@ -95,18 +98,30 @@ function UpdateSell() {
           address: `${customerItem.address}`,
           phoneNumber: customerItem.phoneNumber
         })
-        .then((data) => {
-          console.log(data);
-        });
-        console.log(res.data);
+        .then(({data: response}) => {
+          if (response.statusCode) {
+            navigate('/sales');
+          }
+        });        
       })
-      .catch((eror) => {
-        window.alert(eror);
-      }).finally(navigate('/sales'));
+      .catch(function (error) {
+        if (error.response) {
+          setErrorname("Oops, something went wrong");
+          setModalHandler(true);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      })
   };
 
   return (
     <>
+    {modalHandler && (
+        <ErorModal usename={errorName} setmodalHandler={setModalHandler} />
+      )}
       <Form
         form={form}
         autoComplete="off"

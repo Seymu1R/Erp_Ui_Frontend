@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Col, Row, Input, Button, Checkbox, Select, Form } from "antd";
 import { categoriesservices } from "../APIs/Services/CategoryServices";
 import { useNavigate } from "react-router-dom";
+import ErorModal from "../UI/ErorModal";
 
 function AddCategory() {
   const [parentCategoryhandler, setParentCategoryHandler] = useState(false);
   const navigation = useNavigate()
+  const [modalHandler, setModalHandler] = useState(false);
+  const [errorName, setErrorname] = useState("");
 
   const [categoryList, setCategoryList] = useState([]);
   useEffect(() => {
@@ -25,15 +28,29 @@ function AddCategory() {
   const addCategory = (body) => {
     categoriesservices
       .createCategory(body)
-      .then((res) => {
-        console.log(res.data);
+      .then(({data : response}) => {
+        if (response.statusCode) {
+          navigation('/categories');
+        }
       })
-      .catch((eror) => {
-        window.alert(eror);
-      }).finally(navigation('/categories'));
+      .catch(function (error) {
+        if (error.response) {
+          setErrorname("Oops, something went wrong");
+          setModalHandler(true);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      });
   };
 
   return (
+    <>
+     {modalHandler && (
+        <ErorModal usename={errorName} setmodalHandler={setModalHandler} />
+      )}    
     <Form
       autoComplete="off"
       onFinish={(values) => {
@@ -113,6 +130,7 @@ function AddCategory() {
         Add
       </Button>
     </Form>
+    </>    
   );
 }
 

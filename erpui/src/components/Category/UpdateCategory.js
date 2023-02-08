@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row, Input, Button, Form } from "antd";
 import { categoriesservices } from "../APIs/Services/CategoryServices";
 import { useForm } from "antd/es/form/Form";
 import { useNavigate, useParams } from "react-router-dom";
+import ErorModal from "../UI/ErorModal";
 
 function UpdateCategory() {
   const [form] = useForm();
   const navigate = useNavigate()
   const {cetegoryId} = useParams()
+  const [modalHandler, setModalHandler] = useState(false);
+  const [errorName, setErrorname] = useState("");
 
   useEffect(() => {
     categoriesservices.getCategory(cetegoryId).then(({ data: category }) => {
@@ -20,16 +23,30 @@ function UpdateCategory() {
   const updateCategory = (body) => {
     categoriesservices
       .updateCategory(body)
-      .then((res) => {
-        console.log(res.data);
+      .then(({data : response}) => {
+        if (response.statusCode) {
+          navigate('/categories');
+        }
       })
-      .catch((eror) => {
-        window.alert(eror);
-      }).finally(navigate('/categories'));
+      .catch(function (error) {
+        if (error.response) {
+          setErrorname("Oops, something went wrong");
+          setModalHandler(true);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      });
   };
 
   return (
-    <Form
+    <>
+     {modalHandler && (
+        <ErorModal usename={errorName} setmodalHandler={setModalHandler} />
+      )}
+      <Form
       form={form}
       autoComplete="off"
       onFinish={(values) => {
@@ -71,6 +88,7 @@ function UpdateCategory() {
         Update
       </Button>
     </Form>
+    </>  
   );
 }
 
